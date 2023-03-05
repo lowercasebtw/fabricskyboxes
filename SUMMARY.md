@@ -1,3 +1,4 @@
 # Table of contents
 
-* [Page 1](README.md)
+* [Skybox specification](README.md)
+* [Fabric skyboxes specification (wiki update)](fabric-skyboxes-specification-wiki-update.md)
