@@ -4,39 +4,9 @@ layout: editorial
 
 # Fabric skyboxes specification
 
-This specification defines a format for a set of rules for the purpose of custom sky rendering.
-
-These rules can be categorized into 10 groups. Below you can see a table of contents of these groups.
+This specification defines a format for a set of rules for the purpose of custom sky rendering. These rules can be categorized into 10 groups. See the side panel for the table of contents.
 
 There are going to be examples along the way, and at the very bottom of the page, there's going to be a full example to showcase the structure of a complete file.
-
-## Table of contents:
-
-1. [Schema version](fabric-skyboxes-specification.md#1.-schema-version)
-2. [Type](fabric-skyboxes-specification.md#2.-type)
-   1. [monocolor](fabric-skyboxes-specification.md#2.1-monocolor-skyboxes)
-   2. [textured](fabric-skyboxes-specification.md#2.2-textured-skyboxes)
-3. [Color](fabric-skyboxes-specification.md#3.-color) \*
-4. [Texture](fabric-skyboxes-specification.md#4.-texture) \*
-5. [Animation textures](fabric-skyboxes-specification.md#5.-animation-textures) \*
-6. [FPS](fabric-skyboxes-specification.md#6.-fps) \*\*
-7. [Blend](fabric-skyboxes-specification.md#7.-blend)
-8. [Properties](fabric-skyboxes-specification.md#8.-properties)
-   1. [Fade object](fabric-skyboxes-specification.md#8.1-fade-object)
-   2. [Rotation Object](fabric-skyboxes-specification.md#8.2-rotation-object)
-      1. [Float Vector](fabric-skyboxes-specification.md#8.2.1-float-vector)
-9. [Conditions](fabric-skyboxes-specification.md#9.-conditions)
-   1. [MinMax Entry Object](fabric-skyboxes-specification.md#9.1-minmax-entry-object)
-   2. [Loop Object](fabric-skyboxes-specification.md#9.2-loop-object)
-10. [Decorations](fabric-skyboxes-specification.md#10.-decorations)
-
-[Full example](fabric-skyboxes-specification.md#full-example)
-
-
-
-\* `color`, `texture` and `animationTextures` are mutually exclusive based on the `type` of the skybox.
-
-\*\* `fps` is only to be used for the 2 animated skybox types.
 
 ## 1. Schema version
 
@@ -293,13 +263,13 @@ Specifies the speed, static- and axis of rotation for a skybox. All fields are o
 
 |       Name      |                                Description                               |  Default  |
 | :-------------: | :----------------------------------------------------------------------: | :-------: |
-|     `static`    |                 Specifies the static rotation in degrees                 |  \[0,0,0] |
+|     `static`    |                 Specifies the static rotation in degrees                 | `[0,0,0]` |
 |      `axis`     |                  Specifies the axis rotation in degrees                  | `[0,0,0]` |
 | `rotationSpeed` | Specifies the speed of the skybox rotation, in rotations per 24000 ticks |    `1`    |
 
 Static rotation should be thought of as the initial, "default" rotation of the skybox, before any active rotation is applied, and axis is the actual, well axis- around which the skybox will visibly revolve around. The speed defines how many times will the sky rotate per full, in-game day.
 
-#### 8.2.1 Float vector
+### 8.3 Float vector
 
 Specifies a list of three floating-point literals to represent degrees of rotation.
 
