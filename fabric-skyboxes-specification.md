@@ -53,7 +53,7 @@ Example for `single-sprite-(animated-)square-textured` skybox
 
 ## 3. Color
 
-This should only be used when using the `monocolor` type of skybox.
+This should only be used- and must be used when using the `monocolor` type of skybox.
 
 |   Name  |                                       Description                                       | Required | Default |
 | :-----: | :-------------------------------------------------------------------------------------: | :------: | :-----: |
@@ -68,7 +68,7 @@ This should only be used when using the `monocolor` type of skybox.
 
 ## 4. Texture
 
-This should only be used when using the 2 NON-animated skybox types.
+This should only be used- and must be used when using the 2 NON-animated skybox types.
 
 |    Name    |                                                                                       Description                                                                                      |
 | :--------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -83,18 +83,18 @@ OR
 
 ```
 "textures": {
-		"top": 		"fabricskyboxes:sky/skybox_top.png",
-		"bottom": 	"fabricskyboxes:sky/skybox_bottom.png",
-		"east": 	"fabricskyboxes:sky/skybox_east.png",
-		"west": 	"fabricskyboxes:sky/skybox_west.png",
-		"north": 	"fabricskyboxes:sky/skybox_north.png",
-		"south": 	"fabricskyboxes:sky/skybox_south.png"
-		}
+	"top": "fabricskyboxes:sky/skybox_top.png",
+	"bottom": "fabricskyboxes:sky/skybox_bottom.png",
+	"east": "fabricskyboxes:sky/skybox_east.png",
+	"west": "fabricskyboxes:sky/skybox_west.png",
+	"north": "fabricskyboxes:sky/skybox_north.png",
+	"south": "fabricskyboxes:sky/skybox_south.png"
+	}
 ```
 
 ## 5. Animation textures
 
-This should only be used when using the 2 animated skybox types. Depending on which type of skybox you use, you will need to specify the textures differently.
+This should only be used- and must be used when using the 2 animated skybox types. Depending on which type of skybox you use, you will need to specify the textures differently.
 
 Here's how to do it for `animated-square-textured`, using a 3 frame animation as an example.
 
@@ -132,15 +132,15 @@ And for the `single-sprite-animated-square-textured` type.
 
 ```
 "animationTextures": [
-		"fabricskyboxes:sky/skybox_frame1.png",
-		"fabricskyboxes:sky/skybox_frame2.png",
-		"fabricskyboxes:sky/skybox_frame3.png"
+	"fabricskyboxes:sky/skybox_frame1.png",
+	"fabricskyboxes:sky/skybox_frame2.png",
+	"fabricskyboxes:sky/skybox_frame3.png"
 ]
 ```
 
 ## 6. FPS
 
-This should only be used when using the 2 animated skybox types.
+This should only be used- and must be used when using the 2 animated skybox types.
 
 |  Name |                        Description                        |
 | :---: | :-------------------------------------------------------: |
@@ -178,13 +178,13 @@ OR
 
 ```
 "blend": {
-		"sFactor": 0,
-		"dFactor": 769,
-		"equation": 32774,
-		"redAlphaEnabled": true,
-		"greenAlphaEnabled": true,
-		"blueAlphaEnabled": true,
-		"alphaEnabled": false
+	"sFactor": 0,
+	"dFactor": 769,
+	"equation": 32774,
+	"redAlphaEnabled": true,
+	"greenAlphaEnabled": true,
+	"blueAlphaEnabled": true,
+	"alphaEnabled": false
 }
 ```
 
@@ -210,28 +210,28 @@ Specifies common properties used by all types of skyboxes.
 
 ```
 "properties": {
-			"priority": 1,
-			"fade": {
-				"startFadeIn": 1000,
-				"endFadeIn": 2000,
-				"startFadeOut": 3000,
-				"endFadeOut": 4000,
-				"alwaysOn": false
-				},
-			"shouldRotate": true,
-			"rotation": {
-				"rotationSpeed": 0.866,
-				"static": [0.0, 0.0, 0.0],
-				"axis": [0.0, -180.0, 0.0]
-			},
-			"transitionInDuration": 200,
-			"transitionOutDuration": 300,
-			"changeFog": true,
-			"fogColors": {"red": 0.846678, "green": 0.902068, "blue": 0.974044, "alpha": 1.0},
-			"sunSkyTint": true,
-			"inThickFog": true,
-			"maxAlpha": 0.9
-		}
+	"priority": 1,
+	"fade": {
+		"startFadeIn": 1000,
+		"endFadeIn": 2000,
+		"startFadeOut": 3000,
+		"endFadeOut": 4000,
+		"alwaysOn": false
+		},
+	"shouldRotate": true,
+	"rotation": {
+		"rotationSpeed": 0.866,
+		"static": [0.0, 0.0, 0.0],
+		"axis": [0.0, -180.0, 0.0]
+	},
+	"transitionInDuration": 200,
+	"transitionOutDuration": 300,
+	"changeFog": true,
+	"fogColors": {"red": 0.846678, "green": 0.902068, "blue": 0.974044, "alpha": 1.0},
+	"sunSkyTint": true,
+	"inThickFog": true,
+	"maxAlpha": 0.9
+}
 ```
 
 As you can see, `fade`, `rotation` (and its `static` and `axis` components) have multiple object within, so let's take a look at those in more detail. For `fogColors`, refer to [Color](fabric-skyboxes-specification.md#3.-color) for the specification.
@@ -259,7 +259,7 @@ Conversion table
 
 ### 8.2 Rotation Object
 
-Specifies the speed, static- and axis of rotation for a skybox. All fields are optional
+Specifies the speed, static- and axis of rotation for a skybox. This object is used by both [Properties](fabric-skyboxes-specification.md#8.-properties) and [Decorations](fabric-skyboxes-specification.md#10.-decorations). Properties only affects the skybox rotation, and Decorations only affect the sun, moon and stars rotation. All fields are optional.
 
 |       Name      |                                Description                               |  Default  |
 | :-------------: | :----------------------------------------------------------------------: | :-------: |
@@ -301,19 +301,19 @@ Specifies when and where a skybox should render. All fields are optional.
 
 ```
 "conditions": {
-		"worlds": ["minecraft:overworld"],
-		"dimensions": ["my_datapack:custom_world"],
-		"weather": ["rain", "thunder"],
-		"biomes": ["plains", "forest", "river"],
-		"xRanges": [{"min": -100.0, "max": 100.0}],
-		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
-		"zRanges": [{"min": -150.0, "max": 150.0}],
-		"loop": {
-			"days": 8,
-			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
-			},
-		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
-	}
+	"worlds": ["minecraft:overworld"],
+	"dimensions": ["my_datapack:custom_world"],
+	"weather": ["rain", "thunder"],
+	"biomes": ["plains", "forest", "river"],
+	"xRanges": [{"min": -100.0, "max": 100.0}],
+	"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+	"zRanges": [{"min": -150.0, "max": 150.0}],
+	"loop": {
+		"days": 8,
+		"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+		},
+	"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
+}
 ```
 
 Similarly to Properties, some conditions have multiple objects within. Let's take a look at them.
@@ -333,8 +333,8 @@ To show a concrete example, let's take a look at the day ranges of a loop object
 
 ```
 "loop": {
-			"days": 8,
-			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+	"days": 8,
+	"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
 }
 ```
 
@@ -367,19 +367,19 @@ The loop object's start and end points are determined by the fade times in the g
 
 ```
 "properties": {
-		"fade": {
-				"startFadeIn": 1000,
-				"endFadeIn": 2000,
-				"startFadeOut": 3000,
-				"endFadeOut": 4000
-				}
-		},
-"conditions": {
-		"loop": {
-				"days": 8,
-				"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
-			}
+	"fade": {
+		"startFadeIn": 1000,
+		"endFadeIn": 2000,
+		"startFadeOut": 3000,
+		"endFadeOut": 4000
 		}
+	},
+"conditions": {
+	"loop": {
+		"days": 8,
+		"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+	}
+}
 ```
 
 In this scenario, the loop starts at `/time set 1000`. Then if we `/time add 195000` (8×24000+3000), that is when the loop will end, and it will start again the next day at time 1000.
@@ -401,20 +401,22 @@ Stores all specifications for the stars, sun and moon configuration. For optimum
 
 ```
 "decorations": {
-		"sun": "minecraft:textures/environment/sun.png",
-		"moon": "minecraft:textures/environment/moon_phases.png",
-		"showSun": true,
-		"showMoon": true,
-		"showStars": true,
-		"rotation": {
-				"rotationSpeed": 0.5,
-				"static": [0.0, 0.0, 0.0],
-				"axis": [0.0, 0.0, 90.0]
-		}
+	"sun": "minecraft:textures/environment/sun.png",
+	"moon": "minecraft:textures/environment/moon_phases.png",
+	"showSun": true,
+	"showMoon": true,
+	"showStars": true,
+	"rotation": {
+		"rotationSpeed": 0.5,
+		"static": [0.0, 0.0, 0.0],
+		"axis": [0.0, 0.0, 90.0]
 	}
+}
 ```
 
-This rotation only affects the decorations, and not the skybox. To see how to implement the rotation, check [Rotation Object](fabric-skyboxes-specification.md#8.2-rotation-object) and [Float Vector](fabric-skyboxes-specification.md#8.2.1-float-vector).
+Rotation in Decorations only affects the sun, moon and stars, and not the skybox. To see how to implement the rotation, check [Rotation Object](fabric-skyboxes-specification.md#8.2-rotation-object) and [Float Vector](fabric-skyboxes-specification.md#8.2.1-float-vector).
+
+It is worth knowing, that it is possible to specify unique rotation for the sun, moon and stars all individually, if they are set to show `true` in 3 separate json files, and the other 2 decorations are set to show `false`.
 
 ## Full example
 
