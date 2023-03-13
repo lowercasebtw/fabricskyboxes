@@ -6,7 +6,7 @@ layout: editorial
 
 This specification defines a format for a set of rules for the purpose of custom sky rendering. These rules can be categorized into 10 groups. See the side panel for the table of contents.
 
-There are going to be examples along the way, and at the very bottom of the page, there's going to be a full example to showcase the structure of a complete file.
+There are going to be examples along the way, and at the very bottom of the page, there are going to be full examples of the different types of skyboxes to showcase the structure of a complete file, as well as template files to help you to quickly start your own pack.
 
 ## 1. Schema version
 
@@ -418,7 +418,171 @@ Rotation in Decorations only affects the sun, moon and stars, and not the skybox
 
 It is worth knowing, that it is possible to specify unique rotation for the sun, moon and stars all individually, if they are set to show `true` in 3 separate json files, and the other 2 decorations are set to show `false`.
 
-## Full example
+## Examples and templates
+
+<details>
+
+<summary>square-textured</summary>
+
+```
+{
+	"schemaVersion": 2,
+	"type": "square-textured",
+	"textures": {
+		"top": "fabricskyboxes:sky/skybox_top.png",
+		"bottom": "fabricskyboxes:sky/skybox_bottom.png",
+		"east": "fabricskyboxes:sky/skybox_east.png",
+		"west": "fabricskyboxes:sky/skybox_west.png",
+		"north": "fabricskyboxes:sky/skybox_north.png",
+		"south": "fabricskyboxes:sky/skybox_south.png"
+	}
+	"blend": {"type" : "alpha"},
+	"properties": {
+		"priority": 1,
+		"fade": {
+			"startFadeIn": 1000,
+			"endFadeIn": 2000,
+			"startFadeOut": 3000,
+			"endFadeOut": 4000,
+			"alwaysOn": false
+			},
+		"shouldRotate": true,
+		"rotation": {
+			"rotationSpeed": 0.866,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, -180.0, 0.0]
+		},
+		"transitionInDuration": 200,
+		"transitionOutDuration": 300,
+		"changeFog": true,
+		"fogColors": {"red": 0.846678, "green": 0.902068, "blue": 0.974044, "alpha": 1.0},
+		"sunSkyTint": true,
+		"inThickFog": true,
+		"maxAlpha": 0.9
+	},
+	"conditions": {
+		"worlds": ["minecraft:overworld"],
+		"dimensions": ["my_datapack:custom_world"],
+		"weather": ["rain", "thunder"],
+		"biomes": ["plains", "forest", "river"],
+		"xRanges": [{"min": -100.0, "max": 100.0}],
+		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+		"zRanges": [{"min": -150.0, "max": 150.0}],
+		"loop": {
+			"days": 8,
+			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+		},
+		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
+	},
+	"decorations": {
+		"sun": "minecraft:textures/environment/sun.png",
+		"moon": "minecraft:textures/environment/moon_phases.png",
+		"showSun": true,
+		"showMoon": true,
+		"showStars": true,
+		"rotation": {
+			"rotationSpeed": 0.5,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, 0.0, 90.0]
+		}
+	}
+}
+```
+
+</details>
+
+<details>
+
+<summary>animated-square-textured</summary>
+
+```
+{
+	"schemaVersion": 2,
+	"type": "animated-square-textured",
+	"animationTextures": [
+		{
+			"top": "fabricskyboxes:sky/skybox_frame1_top.png",
+			"bottom": "fabricskyboxes:sky/skybox_frame1_bottom.png",
+			"east": "fabricskyboxes:sky/skybox_frame1_east.png",
+			"west": "fabricskyboxes:sky/skybox_frame1_west.png",
+			"north": "fabricskyboxes:sky/skybox_frame1_north.png",
+			"south": "fabricskyboxes:sky/skybox_frame1_south.png"
+		},
+		{
+			"top": "fabricskyboxes:sky/skybox_frame2_top.png",
+			"bottom": "fabricskyboxes:sky/skybox_frame2_bottom.png",
+			"east": "fabricskyboxes:sky/skybox_frame2_east.png",
+			"west": "fabricskyboxes:sky/skybox_frame2_west.png",
+			"north": "fabricskyboxes:sky/skybox_frame2_north.png",
+			"south": "fabricskyboxes:sky/skybox_frame2_south.png"
+		},
+		{
+			"top": "fabricskyboxes:sky/skybox_frame3_top.png",
+			"bottom": "fabricskyboxes:sky/skybox_frame3_bottom.png",
+			"east": "fabricskyboxes:sky/skybox_frame3_east.png",
+			"west": "fabricskyboxes:sky/skybox_frame3_west.png",
+			"north": "fabricskyboxes:sky/skybox_frame3_north.png",
+			"south": "fabricskyboxes:sky/skybox_frame3_south.png"
+		}
+	]
+	"blend": {"type" : "alpha"},
+	"properties": {
+		"priority": 1,
+		"fade": {
+			"startFadeIn": 1000,
+			"endFadeIn": 2000,
+			"startFadeOut": 3000,
+			"endFadeOut": 4000,
+			"alwaysOn": false
+			},
+		"shouldRotate": true,
+		"rotation": {
+			"rotationSpeed": 0.866,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, -180.0, 0.0]
+		},
+		"transitionInDuration": 200,
+		"transitionOutDuration": 300,
+		"changeFog": true,
+		"fogColors": {"red": 0.846678, "green": 0.902068, "blue": 0.974044, "alpha": 1.0},
+		"sunSkyTint": true,
+		"inThickFog": true,
+		"maxAlpha": 0.9
+	},
+	"conditions": {
+		"worlds": ["minecraft:overworld"],
+		"dimensions": ["my_datapack:custom_world"],
+		"weather": ["rain", "thunder"],
+		"biomes": ["plains", "forest", "river"],
+		"xRanges": [{"min": -100.0, "max": 100.0}],
+		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+		"zRanges": [{"min": -150.0, "max": 150.0}],
+		"loop": {
+			"days": 8,
+			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+		},
+		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
+	},
+	"decorations": {
+		"sun": "minecraft:textures/environment/sun.png",
+		"moon": "minecraft:textures/environment/moon_phases.png",
+		"showSun": true,
+		"showMoon": true,
+		"showStars": true,
+		"rotation": {
+			"rotationSpeed": 0.5,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, 0.0, 90.0]
+		}
+	}
+}
+```
+
+</details>
+
+<details>
+
+<summary>single-sprite-square-textured</summary>
 
 ```
 {
@@ -477,3 +641,147 @@ It is worth knowing, that it is possible to specify unique rotation for the sun,
 	}
 }
 ```
+
+</details>
+
+<details>
+
+<summary>single-sprite-animated-square-textured</summary>
+
+```
+{
+	"schemaVersion": 2,
+	"type": "single-sprite-animated-square-textured",
+	"animationTextures": [
+		"fabricskyboxes:sky/skybox_frame1.png",
+		"fabricskyboxes:sky/skybox_frame2.png",
+		"fabricskyboxes:sky/skybox_frame3.png"
+	]
+	"blend": {"type" : "alpha"},
+	"properties": {
+		"priority": 1,
+		"fade": {
+			"startFadeIn": 1000,
+			"endFadeIn": 2000,
+			"startFadeOut": 3000,
+			"endFadeOut": 4000,
+			"alwaysOn": false
+			},
+		"shouldRotate": true,
+		"rotation": {
+			"rotationSpeed": 0.866,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, -180.0, 0.0]
+		},
+		"transitionInDuration": 200,
+		"transitionOutDuration": 300,
+		"changeFog": true,
+		"fogColors": {"red": 0.846678, "green": 0.902068, "blue": 0.974044, "alpha": 1.0},
+		"sunSkyTint": true,
+		"inThickFog": true,
+		"maxAlpha": 0.9
+	},
+	"conditions": {
+		"worlds": ["minecraft:overworld"],
+		"dimensions": ["my_datapack:custom_world"],
+		"weather": ["rain", "thunder"],
+		"biomes": ["plains", "forest", "river"],
+		"xRanges": [{"min": -100.0, "max": 100.0}],
+		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+		"zRanges": [{"min": -150.0, "max": 150.0}],
+		"loop": {
+			"days": 8,
+			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+		},
+		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
+	},
+	"decorations": {
+		"sun": "minecraft:textures/environment/sun.png",
+		"moon": "minecraft:textures/environment/moon_phases.png",
+		"showSun": true,
+		"showMoon": true,
+		"showStars": true,
+		"rotation": {
+			"rotationSpeed": 0.5,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, 0.0, 90.0]
+		}
+	}
+}
+```
+
+</details>
+
+<details>
+
+<summary>monocolor</summary>
+
+```
+{
+	"schemaVersion": 2,
+	"type": "monocolor",
+	"color": {"red": 0.84, "green": 0.91, "blue": 0.72, "alpha": 1.0},
+	"blend": {"type" : "add"},
+	"properties": {
+		"priority": 1,
+		"fade": {
+			"startFadeIn": 1000,
+			"endFadeIn": 2000,
+			"startFadeOut": 3000,
+			"endFadeOut": 4000,
+			"alwaysOn": false
+			},
+		"shouldRotate": true,
+		"rotation": {
+			"rotationSpeed": 0.866,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, -180.0, 0.0]
+		},
+		"transitionInDuration": 200,
+		"transitionOutDuration": 300,
+		"changeFog": true,
+		"fogColors": {"red": 0.846678, "green": 0.902068, "blue": 0.974044, "alpha": 1.0},
+		"sunSkyTint": true,
+		"inThickFog": true,
+		"maxAlpha": 0.9
+	},
+	"conditions": {
+		"worlds": ["minecraft:overworld"],
+		"dimensions": ["my_datapack:custom_world"],
+		"weather": ["rain", "thunder"],
+		"biomes": ["plains", "forest", "river"],
+		"xRanges": [{"min": -100.0, "max": 100.0}],
+		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+		"zRanges": [{"min": -150.0, "max": 150.0}],
+		"loop": {
+			"days": 8,
+			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+		},
+		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
+	},
+	"decorations": {
+		"sun": "minecraft:textures/environment/sun.png",
+		"moon": "minecraft:textures/environment/moon_phases.png",
+		"showSun": true,
+		"showMoon": true,
+		"showStars": true,
+		"rotation": {
+			"rotationSpeed": 0.5,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, 0.0, 90.0]
+		}
+	}
+}
+```
+
+</details>
+
+{% file src=".gitbook/assets/template_square.zip" %}
+
+{% file src=".gitbook/assets/template_square_anim.zip" %}
+
+{% file src=".gitbook/assets/template_single_sprite.zip" %}
+
+{% file src=".gitbook/assets/template_single_sprite_anim.zip" %}
+
+{% file src=".gitbook/assets/template_monocolor.zip" %}
