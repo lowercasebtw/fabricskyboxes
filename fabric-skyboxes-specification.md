@@ -435,7 +435,7 @@ It is worth knowing, that it is possible to specify unique rotation for the sun,
 		"west": "fabricskyboxes:sky/skybox_west.png",
 		"north": "fabricskyboxes:sky/skybox_north.png",
 		"south": "fabricskyboxes:sky/skybox_south.png"
-	}
+	},
 	"blend": {"type" : "alpha"},
 	"properties": {
 		"priority": 1,
@@ -524,7 +524,8 @@ It is worth knowing, that it is possible to specify unique rotation for the sun,
 			"north": "fabricskyboxes:sky/skybox_frame3_north.png",
 			"south": "fabricskyboxes:sky/skybox_frame3_south.png"
 		}
-	]
+	],
+	"fps": 4,
 	"blend": {"type" : "alpha"},
 	"properties": {
 		"priority": 1,
@@ -656,7 +657,8 @@ It is worth knowing, that it is possible to specify unique rotation for the sun,
 		"fabricskyboxes:sky/skybox_frame1.png",
 		"fabricskyboxes:sky/skybox_frame2.png",
 		"fabricskyboxes:sky/skybox_frame3.png"
-	]
+	],
+	"fps": 4,
 	"blend": {"type" : "alpha"},
 	"properties": {
 		"priority": 1,
