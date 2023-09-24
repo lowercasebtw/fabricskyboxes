@@ -1,4 +1,4 @@
 # Table of contents
 
 * [Skybox specification](README.md)
-* [Fabric skyboxes specification](fabric-skyboxes-specification.md)
+* [FabricSkyBoxes specification](fabricskyboxes-specification.md)
