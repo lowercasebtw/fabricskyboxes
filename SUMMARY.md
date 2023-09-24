@@ -1,3 +1,3 @@
 # Table of contents
 
-* [FabricSkyBoxes Specification](README.md)
+* [Specification](README.md)
