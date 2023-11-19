@@ -63,12 +63,7 @@ This is exclusive to and is a requirement when using the `monocolor` type of sky
 <table><thead><tr><th width="126" align="center">Name</th><th align="center">Description</th><th width="108" align="center">Required</th><th width="100" align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>red</code></td><td align="center">Specifies the amount of red color to be used. Must be a value between 0 and 1.</td><td align="center">✅</td><td align="center">-</td></tr><tr><td align="center"><code>green</code></td><td align="center">Specifies the amount of green color to be used. Must be a value between 0 and 1.</td><td align="center">✅</td><td align="center">-</td></tr><tr><td align="center"><code>blue</code></td><td align="center">Specifies the amount of blue color to be used. Must be a value between 0 and 1.</td><td align="center">✅</td><td align="center">-</td></tr><tr><td align="center"><code>alpha</code></td><td align="center">Specifies the amount of alpha transparency to be used. Must be a value between 0 and 1.</td><td align="center">❌</td><td align="center"><code>1.0</code></td></tr></tbody></table>
 
 ```json
-"color": {
-  "red": 0.84,
-  "green": 0.91,
-  "blue": 0.72,
-  "alpha": 1.0
-}
+"color": {"red": 0.84, "green": 0.91, "blue": 0.72, "alpha": 1.0}
 ```
 
 ## 4. Texture
@@ -117,10 +112,7 @@ Example for a skybox with 2 animations
     "gridColumns": 2,
     "gridRows": 4,
     "duration": 50,
-    "frameDuration": {
-      "1": 20,
-      "5": 10
-    }
+    "frameDuration": {"1": 20, "5": 10}
   },
   {
     "texture": "fabricskyboxes:/sky/anim_texture_2.png",
@@ -133,10 +125,7 @@ Example for a skybox with 2 animations
     "gridColumns": 3,
     "gridRows": 5,
     "duration": 10,
-    "frameDuration": {
-      "1": 30,
-      "5": 40
-    }
+    "frameDuration": {"1": 30, "5": 40}
   }
 ]
 ```
@@ -270,32 +259,15 @@ Specifies common properties used by all types of skyboxes.
   },
   "rotation": {
     "rotationSpeedY": 0.866,
-    "static": [
-      0.0,
-      0.0,
-      0.0
-    ],
-    "axis": [
-      0.0,
-      -180.0,
-      0.0
-    ],
-    "timeShift": [
-      0,
-      0,
-      0
-    ],
+    "static": [0.0, 0.0, 0.0],
+    "axis": [0.0, -180.0, 0.0],
+    "timeShift": [0, 0, 0],
     "skyboxRotation": "true"
   },
   "transitionInDuration": 200,
   "transitionOutDuration": 300,
   "changeFog": true,
-  "fogColors": {
-    "red": 0.84,
-    "green": 0.91,
-    "blue": 0.97,
-    "alpha": 1.0
-  },
+  "fogColors": {"red": 0.84, "green": 0.91, "blue": 0.97, "alpha": 1.0},
   "sunSkyTint": true,
   "inThickFog": true,
   "minAlpha": 0.1,
@@ -353,43 +325,15 @@ Specifies when and where a skybox should render. All fields are optional.
 
 ```json
 "conditions": {
-  "worlds": [
-    "minecraft:overworld"
-  ],
-  "dimensions": [
-    "my_datapack:custom_world"
-  ],
-  "weather": [
-    "rain",
-    "thunder"
-  ],
-  "biomes": [
-    "plains",
-    "forest",
-    "river"
-  ],
-  "xRanges": [
-    {"min": -100.0, "max": 100.0}
-  ],
-  "yRanges": [
-    {"min": -128.0, "max": 150.0},
-    {"min": 200.0, "max": 320.0}
-  ],
-  "zRanges": [
-    {"min": -150.0, "max": 150.0}
-  ],
-  "loop": {
-    "days": 8,
-    "ranges": [
-      {"min": 0, "max": 4},
-      {"min": 5, "max": 8}
-    ]
-  },
-  "effects": [
-    "minecraft:jump_boost",
-    "minecraft:speed",
-    "minecraft:slowness"
-  ]
+  "worlds": ["minecraft:overworld"],
+  "dimensions": ["my_datapack:custom_world"],
+  "weather": ["rain", "thunder"],
+  "biomes": ["plains", "forest", "river"],
+  "xRanges": [{"min": -100.0, "max": 100.0}],
+  "yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+  "zRanges": [{"min": -150.0, "max": 150.0}],
+  "loop": {"days": 8, "ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]},
+  "effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
 }
 ```
 
@@ -408,10 +352,7 @@ To show a concrete example, let's take a look at the day ranges of a loop object
 ```json
 "loop": {
   "days": 8,
-  "ranges": [
-    {"min": 0, "max": 4},
-    {"min": 5, "max": 8}
-  ]
+  "ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
 }
 ```
 
@@ -455,10 +396,7 @@ The loop object's start and end points are determined by the fade times in the g
 "conditions": {
   "loop": {
     "days": 8,
-    "ranges": [
-      {"min": 0, "max": 4},
-      {"min": 5, "max": 8}
-    ]
+    "ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
   }
 }
 ```
@@ -477,9 +415,7 @@ Stores all specifications for the stars, sun and moon configuration. For optimum
 
 ```json
 "decorations": {
-  "blend": {
-    "type": "decorations"
-  },
+  "blend": {"type": "decorations"},
   "sun": "minecraft:textures/environment/sun.png",
   "moon": "minecraft:textures/environment/moon_phases.png",
   "showSun": true,
@@ -500,6 +436,72 @@ Rotation in Decorations only affects the sun, moon and stars, and not the skybox
 It is worth knowing, that it is possible to specify unique rotation and blending for the sun, moon and stars all individually, if they are set to show `true` in 3 separate json files, and the other 2 decorations are set to show `false`. And you can also add multiple suns and moon with different blending and/or rotation, if you assign them to multiple different sky layers.
 
 ## Examples and templates
+
+<details>
+
+<summary>monocolor</summary>
+
+```
+{
+	"schemaVersion": 2,
+	"type": "monocolor",
+	"color": {"red": 0.84, "green": 0.91, "blue": 0.72, "alpha": 1.0},
+	"blend": {"type" : "add"},
+	"properties": {
+		"priority": 1,
+		"fade": {
+			"startFadeIn": 1000,
+			"endFadeIn": 2000,
+			"startFadeOut": 3000,
+			"endFadeOut": 4000,
+			"alwaysOn": false
+			},
+		"rotation": {
+			"rotationSpeedY": 0.0,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, -180.0, 0.0]
+		},
+		"transitionInDuration": 200,
+		"transitionOutDuration": 300,
+		"changeFog": true,
+		"fogColors": {"red": 0.84, "green": 0.91, "blue": 0.97, "alpha": 1.0},
+		"sunSkyTint": true,
+		"inThickFog": true,
+		"maxAlpha": 0.9
+	},
+	"conditions": {
+		"worlds": ["minecraft:overworld"],
+		"dimensions": ["my_datapack:custom_world"],
+		"weather": ["rain", "thunder"],
+		"biomes": ["plains", "forest", "river"],
+		"xRanges": [{"min": -100.0, "max": 100.0}],
+		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+		"zRanges": [{"min": -150.0, "max": 150.0}],
+		"loop": {
+			"days": 8,
+			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+		},
+		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
+	},
+	"decorations": {
+		"blend": {"type" : "add"},
+		"sun": "minecraft:textures/environment/sun.png",
+		"moon": "minecraft:textures/environment/moon_phases.png",
+		"showSun": true,
+		"showMoon": true,
+		"showStars": true,
+		"rotation": {
+			"rotationSpeedX": 0.5,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, 0.0, 90.0]
+		}
+	}
+}
+```
+
+</details>
+
+{% file src=".gitbook/assets/template_monocolor.zip" %}
 
 <details>
 
@@ -571,6 +573,74 @@ It is worth knowing, that it is possible to specify unique rotation and blending
 ```
 
 </details>
+
+{% file src=".gitbook/assets/template_square-textured.zip" %}
+
+<details>
+
+<summary>single-sprite-square-textured</summary>
+
+```
+{
+	"schemaVersion": 2,
+	"type": "single-sprite-square-textured",
+	"texture": "fabricskyboxes:sky/skybox.png",
+	"blend": {"type" : "alpha"},
+	"properties": {
+		"priority": 1,
+		"fade": {
+			"startFadeIn": 1000,
+			"endFadeIn": 2000,
+			"startFadeOut": 3000,
+			"endFadeOut": 4000,
+			"alwaysOn": false
+			},
+		"rotation": {
+			"rotationSpeedZ": 0.866,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, -180.0, 0.0]
+		},
+		"transitionInDuration": 200,
+		"transitionOutDuration": 300,
+		"changeFog": true,
+		"fogColors": {"red": 0.84, "green": 0.91, "blue": 0.97, "alpha": 1.0},
+		"sunSkyTint": true,
+		"inThickFog": true,
+		"maxAlpha": 0.9
+	},
+	"conditions": {
+		"worlds": ["minecraft:overworld"],
+		"dimensions": ["my_datapack:custom_world"],
+		"weather": ["rain", "thunder"],
+		"biomes": ["plains", "forest", "river"],
+		"xRanges": [{"min": -100.0, "max": 100.0}],
+		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
+		"zRanges": [{"min": -150.0, "max": 150.0}],
+		"loop": {
+			"days": 8,
+			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
+		},
+		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
+	},
+	"decorations": {
+		"blend": {"type" : "screen"},
+		"sun": "minecraft:textures/environment/sun.png",
+		"moon": "minecraft:textures/environment/moon_phases.png",
+		"showSun": true,
+		"showMoon": true,
+		"showStars": true,
+		"rotation": {
+			"rotationSpeedY": 0.5,
+			"static": [0.0, 0.0, 0.0],
+			"axis": [0.0, 0.0, 90.0]
+		}
+	}
+}
+```
+
+</details>
+
+{% file src=".gitbook/assets/template_single-sprite-square-textured.zip" %}
 
 <details>
 
@@ -662,69 +732,7 @@ It is worth knowing, that it is possible to specify unique rotation and blending
 
 </details>
 
-<details>
-
-<summary>single-sprite-square-textured</summary>
-
-```
-{
-	"schemaVersion": 2,
-	"type": "single-sprite-square-textured",
-	"texture": "fabricskyboxes:sky/skybox.png",
-	"blend": {"type" : "alpha"},
-	"properties": {
-		"priority": 1,
-		"fade": {
-			"startFadeIn": 1000,
-			"endFadeIn": 2000,
-			"startFadeOut": 3000,
-			"endFadeOut": 4000,
-			"alwaysOn": false
-			},
-		"rotation": {
-			"rotationSpeedZ": 0.866,
-			"static": [0.0, 0.0, 0.0],
-			"axis": [0.0, -180.0, 0.0]
-		},
-		"transitionInDuration": 200,
-		"transitionOutDuration": 300,
-		"changeFog": true,
-		"fogColors": {"red": 0.84, "green": 0.91, "blue": 0.97, "alpha": 1.0},
-		"sunSkyTint": true,
-		"inThickFog": true,
-		"maxAlpha": 0.9
-	},
-	"conditions": {
-		"worlds": ["minecraft:overworld"],
-		"dimensions": ["my_datapack:custom_world"],
-		"weather": ["rain", "thunder"],
-		"biomes": ["plains", "forest", "river"],
-		"xRanges": [{"min": -100.0, "max": 100.0}],
-		"yRanges": [{"min": -128.0, "max": 150.0}, {"min": 200.0, "max": 320.0}],
-		"zRanges": [{"min": -150.0, "max": 150.0}],
-		"loop": {
-			"days": 8,
-			"ranges": [{"min": 0, "max": 4}, {"min": 5, "max": 8}]
-		},
-		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
-	},
-	"decorations": {
-		"blend": {"type" : "screen"},
-		"sun": "minecraft:textures/environment/sun.png",
-		"moon": "minecraft:textures/environment/moon_phases.png",
-		"showSun": true,
-		"showMoon": true,
-		"showStars": true,
-		"rotation": {
-			"rotationSpeedY": 0.5,
-			"static": [0.0, 0.0, 0.0],
-			"axis": [0.0, 0.0, 90.0]
-		}
-	}
-}
-```
-
-</details>
+{% file src=".gitbook/assets/template_animated-square-textured.zip" %}
 
 <details>
 
@@ -795,16 +803,31 @@ It is worth knowing, that it is possible to specify unique rotation and blending
 
 </details>
 
+{% file src=".gitbook/assets/template_single-sprite-animated-square-textured.zip" %}
+
 <details>
 
-<summary>monocolor</summary>
+<summary>multi-texture</summary>
 
 ```
 {
 	"schemaVersion": 2,
-	"type": "monocolor",
-	"color": {"red": 0.84, "green": 0.91, "blue": 0.72, "alpha": 1.0},
-	"blend": {"type" : "add"},
+	"type": "multi-texture",
+	"animations": [
+		{
+			"texture": "fabricskyboxes:sky/animation.png",
+			"uvRanges": {
+				"minU": 0.416666666,
+				"minV": 0.5,
+				"maxU": 0.583333333,
+				"maxV": 0.75
+			},
+			"gridColumns": 2,
+			"gridRows": 3,
+			"duration": 500
+		}
+	],
+	"blend": {"type" : "alpha"},
 	"properties": {
 		"priority": 1,
 		"fade": {
@@ -815,7 +838,7 @@ It is worth knowing, that it is possible to specify unique rotation and blending
 			"alwaysOn": false
 			},
 		"rotation": {
-			"rotationSpeedY": 0.0,
+			"rotationSpeedZ": 0.866,
 			"static": [0.0, 0.0, 0.0],
 			"axis": [0.0, -180.0, 0.0]
 		},
@@ -842,14 +865,14 @@ It is worth knowing, that it is possible to specify unique rotation and blending
 		"effects": ["minecraft:jump_boost", "minecraft:speed", "minecraft:slowness"]
 	},
 	"decorations": {
-		"blend": {"type" : "add"},
+		"blend": {"type" : "screen"},
 		"sun": "minecraft:textures/environment/sun.png",
 		"moon": "minecraft:textures/environment/moon_phases.png",
 		"showSun": true,
 		"showMoon": true,
 		"showStars": true,
 		"rotation": {
-			"rotationSpeedX": 0.5,
+			"rotationSpeedY": 0.5,
 			"static": [0.0, 0.0, 0.0],
 			"axis": [0.0, 0.0, 90.0]
 		}
@@ -859,12 +882,4 @@ It is worth knowing, that it is possible to specify unique rotation and blending
 
 </details>
 
-{% file src=".gitbook/assets/template_square.zip" %}
-
-{% file src=".gitbook/assets/template_square_anim.zip" %}
-
-{% file src=".gitbook/assets/template_single_sprite.zip" %}
-
-{% file src=".gitbook/assets/template_single_sprite_anim.zip" %}
-
-{% file src=".gitbook/assets/template_monocolor.zip" %}
+{% file src=".gitbook/assets/template_multi-texture.zip" %}
