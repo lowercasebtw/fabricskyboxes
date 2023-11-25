@@ -6,11 +6,13 @@ layout: editorial
 
 This specification defines a format outlining a set of rules for custom sky rendering. These rules can be organized into 11 groups. Please refer to the side panel for the table of contents.
 
+To start writing your configuration for your skybox, create a text file, and save it as a `.json`. The format starts with a `{`  and ends with a `}`. In between you can start adding your parameters from the 11 groups, called `objects`. Each object is separated by a `,` and can be be arranged in any order.
+
 Throughout the document, you will find examples. Additionally, at the bottom of the page, you'll find comprehensive examples of various skybox types, demonstrating the structure of a complete file. Template files are also provided to assist you in starting your own pack quickly.
 
 ## 1. Schema version
 
-The current version is 2, but this may change in the future. The mod isn't yet stable since we are in the `0.x` phase.
+The current version is 2, but this may change in the future. The mod isn't yet stable since we are in the `0.x` phase. This object is required.
 
 ```json
 "schemaVersion": 2
@@ -18,7 +20,7 @@ The current version is 2, but this may change in the future. The mod isn't yet s
 
 ## 2. Type
 
-There are three main types of skyboxes: monocolor skyboxes, textured skyboxes, and vanilla skyboxes.
+There are three main types of skyboxes: monocolor skyboxes, textured skyboxes, and vanilla skyboxes. One of the 3 types is required.
 
 ### 2.1 Monocolor skyboxes
 
