@@ -6,9 +6,9 @@ layout: editorial
 
 This specification defines a format outlining a set of rules for custom sky rendering. These rules can be organized into 11 groups. Please refer to the side panel for the table of contents.
 
-To start writing your configuration for your skybox, create a text file, and save it as a `.json`. The format starts with a `{`  and ends with a `}`. In between you can start adding your parameters from the 11 groups, called `objects`. Each object is separated by a `,` and can be be arranged in any order.
+To start writing your configuration for your skybox, create a text file, and save it as a `.json`. The format starts with a `{`  and ends with a `}`. In between you can start adding your parameters from these 11 groups, called `objects`. Each object is separated by a `,` and can be be arranged in any order.
 
-Throughout the document, you will find examples. Additionally, at the bottom of the page, you'll find comprehensive examples of various skybox types, demonstrating the structure of a complete file. Template files are also provided to assist you in starting your own pack quickly.
+Throughout the document, you will find examples. Additionally, at the bottom of the page, you'll find examples of various skybox types, demonstrating the structure of a complete file. Template files are also provided to assist you in starting your own pack quickly.
 
 ## 1. Schema version
 
@@ -46,7 +46,7 @@ Example for `single-sprite-(animated-)square-textured` skybox
 
 <figure><img src=".gitbook/assets/single-sprite.png" alt=""><figcaption></figcaption></figure>
 
-Here's an example of an animation texture used for the `multi-texture` skybox type. Frames should be ordered from top to bottom, then left to right as seen below. Each frame can have any size and aspect ratio. However, the combined size of the texture should not exceed 8192x8192 pixels. Only very recent GPUs can handle textures up to 16384x16384 pixels.
+Here's an example of an animation texture used for the `multi-texture` skybox type. Frames should be ordered from top to bottom, then left to right as seen below. Each frame can be of any size and aspect ratio. However, the combined size of the texture should not exceed 8192x8192 pixels. Only very recent GPUs can handle textures up to 16384x16384 pixels.
 
 <figure><img src=".gitbook/assets/multi-texture.png" alt=""><figcaption></figcaption></figure>
 
@@ -60,9 +60,9 @@ Here's an example of an animation texture used for the `multi-texture` skybox ty
 
 ## 3. Color
 
-This is exclusive to and is a requirement when using the `monocolor` type of skybox.
+This is exclusive to- and is a requirement when using the `monocolor` type of skybox.
 
-<table><thead><tr><th width="126" align="center">Name</th><th align="center">Description</th><th width="108" align="center">Required</th><th width="100" align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>red</code></td><td align="center">Specifies the amount of red color to be used. Must be a value between 0 and 1.</td><td align="center">✅</td><td align="center">-</td></tr><tr><td align="center"><code>green</code></td><td align="center">Specifies the amount of green color to be used. Must be a value between 0 and 1.</td><td align="center">✅</td><td align="center">-</td></tr><tr><td align="center"><code>blue</code></td><td align="center">Specifies the amount of blue color to be used. Must be a value between 0 and 1.</td><td align="center">✅</td><td align="center">-</td></tr><tr><td align="center"><code>alpha</code></td><td align="center">Specifies the amount of alpha transparency to be used. Must be a value between 0 and 1.</td><td align="center">❌</td><td align="center"><code>1.0</code></td></tr></tbody></table>
+<table><thead><tr><th width="126" align="center">Name</th><th align="center">Description</th><th width="108" align="center">Required</th><th width="100" align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>red</code></td><td align="center">Specifies the amount of red color to be used. Must be a value between 0 and 1.</td><td align="center">✔️</td><td align="center">-</td></tr><tr><td align="center"><code>green</code></td><td align="center">Specifies the amount of green color to be used. Must be a value between 0 and 1.</td><td align="center">✔️</td><td align="center">-</td></tr><tr><td align="center"><code>blue</code></td><td align="center">Specifies the amount of blue color to be used. Must be a value between 0 and 1.</td><td align="center">✔️</td><td align="center">-</td></tr><tr><td align="center"><code>alpha</code></td><td align="center">Specifies the amount of alpha transparency to be used. Must be a value between 0 and 1.</td><td align="center">❌</td><td align="center"><code>1.0</code></td></tr></tbody></table>
 
 ```json
 "color": {"red": 0.84, "green": 0.91, "blue": 0.72, "alpha": 1.0}
@@ -70,7 +70,7 @@ This is exclusive to and is a requirement when using the `monocolor` type of sky
 
 ## 4. Texture
 
-This is exclusive to and is a requirement for the two **non**-animated skybox types.
+This is exclusive to- and is a requirement for the two **non**-animated skybox types.
 
 <table><thead><tr><th width="139" align="center">Name</th><th align="center">Description</th></tr></thead><tbody><tr><td align="center"><code>texture</code></td><td align="center">Used for the <code>single-sprite-square-textured</code> skybox type. Specifies the directory for the texture file.</td></tr><tr><td align="center"><code>textures</code></td><td align="center">Used for the <code>square-textured</code> skybox type. Specifies the directory for the texture files to be used for the <code>top</code>, <code>bottom</code>, <code>east</code>, <code>west</code>, <code>north</code> and <code>south</code> sides of the skybox.</td></tr></tbody></table>
 
@@ -93,7 +93,7 @@ OR
 
 ## 5. Animations
 
-This is exclusive to and is a requirement for the `multi-texture` skybox type. You can incorporate as many animations as needed.&#x20;
+This is exclusive to- and is a requirement for the `multi-texture` skybox type. You can incorporate as many animations as needed.&#x20;
 
 The animation texture will cycle through within the designated animation area, determined by the UV ranges. The number of steps in the cycle is defined by the number of rows and columns on the animation texture.
 
@@ -138,7 +138,7 @@ Specifies a UV range object for defining texture coordinates. All fields are req
 
 <table><thead><tr><th width="257" align="center">Name</th><th align="center">Description</th></tr></thead><tbody><tr><td align="center"><code>minU</code></td><td align="center">Specifies the minimum U coordinate</td></tr><tr><td align="center"><code>minV</code></td><td align="center">Specifies the minimum V coordinate</td></tr><tr><td align="center"><code>maxU</code></td><td align="center">Specifies the maximum U coordinate</td></tr><tr><td align="center"><code>maxV</code></td><td align="center">Specifies the maximum V coordinate</td></tr></tbody></table>
 
-Presently, only the 3:2 aspect ratio skybox template is supported, as shown in the example below. Importantly, the aspect ratio of your animated area does not necessarily need to match the aspect ratio of the frames in your animation texture. Consequently, your frames will be stretched to fit the animation area, even if the aspect ratios do not align.
+The UV map uses the 3:2 aspect ratio skybox template, as shown in the example below. It is worth noting, that the aspect ratio of your animated area does not necessarily need to match the aspect ratio of the frames in your animation texture. This means, that your frames will be stretched to fit the animation area, even if the aspect ratios do not match. As an example, if your frame is a perfect square, but your animated area is a rectangle, your frame will appear stretched.
 
 <figure><img src=".gitbook/assets/UV example.png" alt=""><figcaption></figcaption></figure>
 
@@ -157,7 +157,7 @@ Overrides the default duration of each frame that is set by `duration`, allowing
 
 This is exclusive to and a requirement for the two animated skybox types. Depending on the chosen skybox type, you will need to specify the textures differently.&#x20;
 
-Below are the steps for `animated-square-textured` skyboxes, using a 3-frame animation as an example.
+Below is an example for `animated-square-textured` skyboxes, using a 3-frame animation as an example.
 
 ```json
 "animationTextures": [
@@ -200,7 +200,7 @@ And for the `single-sprite-animated-square-textured` skybox type.
 
 ## 7. FPS
 
-This is exclusive to and a requirement for the two animated skybox types.
+This is exclusive to- and a requirement for the two animated skybox types.
 
 <table><thead><tr><th width="220" align="center">Name</th><th align="center">Description</th></tr></thead><tbody><tr><td align="center"><code>fps</code></td><td align="center">Specifies the number of frames to be rendered per second.</td></tr></tbody></table>
 
@@ -210,7 +210,7 @@ This is exclusive to and a requirement for the two animated skybox types.
 
 ## 8. Blend
 
-Specifies how the skybox should blend with the previously rendered sky layer, with the vanilla skybox being the first layer. All fields in this specification are optional.
+Specifies how the skybox should blend with the previously rendered sky layer, the vanilla skybox being the first layer. All fields are optional.
 
 In FabricSkyboxes, the blending of textured skyboxes is achieved using `glBlendFunc`. The provided blending types serve as presets, utilizing the same equations outlined below for the custom type. For `decorations`, the blending used aligns with the vanilla game's approach, particularly for the sun and moon blending.
 
@@ -247,7 +247,7 @@ More information on custom blend can be found in the [blend documentation](https
 
 Specifies common properties used by all types of skyboxes.
 
-<table><thead><tr><th width="260" align="center">Name</th><th align="center">Description</th><th width="109" align="center">Required</th><th align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>priority</code></td><td align="center">Specifies the order which skybox will be rendered. If there are multiple skyboxes with identical priority, those skyboxes are not re-ordered therefore being dependant of Vanilla's alphabetical namespaced identifier's loading.</td><td align="center">❌</td><td align="center"><code>0</code></td></tr><tr><td align="center"><code>fade</code></td><td align="center">Specifies the time of day in ticks that the skybox should start and end fading in and out.</td><td align="center">✔️</td><td align="center">-</td></tr><tr><td align="center"><code>rotation</code></td><td align="center">Specifies the rotation speed and angles of the skybox.</td><td align="center">❌</td><td align="center"><code>[0,0,0]</code> for <code>static</code>/<code>axis</code>, <code>0</code> for <code>rotationSpeedX/Y/Z</code>, <code>true</code> for <code>skyboxRotation</code></td></tr><tr><td align="center"><code>transitionInDuration</code></td><td align="center">Specifies the duration in ticks that skybox will fade in when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).</td><td align="center">❌</td><td align="center"><code>20</code></td></tr><tr><td align="center"><code>transitionOutDuration</code></td><td align="center">Specifies the duration in ticks that skybox will fade out when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).</td><td align="center">❌</td><td align="center"><code>20</code></td></tr><tr><td align="center"><code>changeFog</code></td><td align="center">Specifies whether the skybox should change the fog color.</td><td align="center">❌</td><td align="center"><code>false</code></td></tr><tr><td align="center"><code>fogColors</code></td><td align="center">Specifies the colors to be used for rendering fog. Only has an effect if changeFog is true.</td><td align="center">❌</td><td align="center"><code>0</code> for each value</td></tr><tr><td align="center"><code>sunSkyTint</code></td><td align="center">Specifies whether the skybox should disable sunrise/set sky color tinting.</td><td align="center">❌</td><td align="center"><code>true</code></td></tr><tr><td align="center"><code>inThickFog</code></td><td align="center">Specifies whether the skybox should be rendered in thick fog.</td><td align="center">❌</td><td align="center"><code>true</code></td></tr><tr><td align="center"><code>minAlpha</code></td><td align="center">Specifies the minimum value that the alpha can be. The value must be within 0 and 1.</td><td align="center">❌</td><td align="center"><code>0.0</code></td></tr><tr><td align="center"><code>maxAlpha</code></td><td align="center">Specifies the maximum value that the alpha can be. The value must be within 0 and 1.</td><td align="center">❌</td><td align="center"><code>1.0</code></td></tr></tbody></table>
+<table><thead><tr><th width="260" align="center">Name</th><th align="center">Description</th><th width="109" align="center">Required</th><th align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>priority</code></td><td align="center">Specifies the order which skybox will be rendered. If there are multiple skyboxes with identical priority, those skyboxes are not re-ordered therefore being dependant of Vanilla's alphabetical namespaced identifier's loading.</td><td align="center">❌</td><td align="center"><code>0</code></td></tr><tr><td align="center"><code>fade</code></td><td align="center">Specifies the time of day in ticks that the skybox should start and end fading in and out.</td><td align="center">✔️</td><td align="center">-</td></tr><tr><td align="center"><code>rotation</code></td><td align="center">Specifies the rotation speed and angles of the skybox.</td><td align="center">❌</td><td align="center"><code>[0,0,0]</code> for <code>static</code>/<code>axis</code>/<code>timeShift</code>, <code>0</code> for <code>rotationSpeedX/Y/Z</code>, <code>true</code> for <code>skyboxRotation</code></td></tr><tr><td align="center"><code>transitionInDuration</code></td><td align="center">Specifies the duration in ticks that skybox will fade in when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).</td><td align="center">❌</td><td align="center"><code>20</code></td></tr><tr><td align="center"><code>transitionOutDuration</code></td><td align="center">Specifies the duration in ticks that skybox will fade out when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).</td><td align="center">❌</td><td align="center"><code>20</code></td></tr><tr><td align="center"><code>changeFog</code></td><td align="center">Specifies whether the skybox should change the fog color.</td><td align="center">❌</td><td align="center"><code>false</code></td></tr><tr><td align="center"><code>fogColors</code></td><td align="center">Specifies the colors to be used for rendering fog. Only has an effect if changeFog is true.</td><td align="center">❌</td><td align="center"><code>0</code> for each RGB value</td></tr><tr><td align="center"><code>sunSkyTint</code></td><td align="center">Specifies whether the skybox should disable sunrise/set sky color tinting.</td><td align="center">❌</td><td align="center"><code>true</code></td></tr><tr><td align="center"><code>inThickFog</code></td><td align="center">Specifies whether the skybox should be rendered in thick fog.</td><td align="center">❌</td><td align="center"><code>true</code></td></tr><tr><td align="center"><code>minAlpha</code></td><td align="center">Specifies the minimum value that the alpha can be. The value must be within 0 and 1.</td><td align="center">❌</td><td align="center"><code>0.0</code></td></tr><tr><td align="center"><code>maxAlpha</code></td><td align="center">Specifies the maximum value that the alpha can be. The value must be within 0 and 1.</td><td align="center">❌</td><td align="center"><code>1.0</code></td></tr></tbody></table>
 
 ```json
 "properties": {
@@ -264,7 +264,7 @@ Specifies common properties used by all types of skyboxes.
     "static": [0.0, 0.0, 0.0],
     "axis": [0.0, -180.0, 0.0],
     "timeShift": [0, 0, 0],
-    "skyboxRotation": "true"
+    "skyboxRotation": true
   },
   "transitionInDuration": 200,
   "transitionOutDuration": 300,
@@ -277,31 +277,31 @@ Specifies common properties used by all types of skyboxes.
 }
 ```
 
-As you can see, `fade`, `rotation` (and its `static` and `axis` components) have multiple object within, so let's take a look at those in more detail. For `fogColors`, refer to [Color](./#3.-color) for the specification.
+As you can see, `fade`, `rotation` (and its `static`, `axis` and `timeShift` components) have multiple object within, so let's take a look at those in more detail. For `fogColors`, refer to [Color](./#3.-color) for the specification.
 
 ### 9.1 Fade object
 
 Stores a list of four integers which specify the time in ticks to start and end fading the skybox in and out.
 
-<table><thead><tr><th align="center">Name</th><th align="center">Description</th><th width="108" align="center">Required</th><th width="100" align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>startFadeIn</code></td><td align="center">The times in ticks when a skybox will start to fade in.</td><td align="center">✔️ | ❌<br></td><td align="center">-</td></tr><tr><td align="center"><code>endFadeIn</code></td><td align="center">The times in ticks when a skybox will end fading in.</td><td align="center">✔️ | ❌</td><td align="center">-</td></tr><tr><td align="center"><code>startFadeOut</code></td><td align="center">The times in ticks when a skybox will start to fade out.</td><td align="center">✔️ | ❌</td><td align="center">-</td></tr><tr><td align="center"><code>endFadeOut</code></td><td align="center">The times in ticks when a skybox will end fading out.</td><td align="center">✔️ | ❌</td><td align="center">-</td></tr><tr><td align="center"><code>alwaysOn</code></td><td align="center">Whether the skybox should always be at full visibility.</td><td align="center">❌ | ✔️</td><td align="center"><code>false</code></td></tr></tbody></table>
+<table><thead><tr><th width="253" align="center">Name</th><th align="center">Description</th><th width="100" align="center">Required</th><th width="100" align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>startFadeIn</code></td><td align="center">The time in ticks when a skybox will start to fade in.</td><td align="center">✔️ | ❌</td><td align="center">-</td></tr><tr><td align="center"><code>endFadeIn</code></td><td align="center">The time in ticks when a skybox will end fading in.</td><td align="center">✔️ | ❌</td><td align="center">-</td></tr><tr><td align="center"><code>startFadeOut</code></td><td align="center">The time in ticks when a skybox will start to fade out.</td><td align="center">✔️ | ❌</td><td align="center">-</td></tr><tr><td align="center"><code>endFadeOut</code></td><td align="center">The time in ticks when a skybox will end fading out.</td><td align="center">✔️ | ❌</td><td align="center">-</td></tr><tr><td align="center"><code>alwaysOn</code></td><td align="center">Whether the skybox should always be at full visibility.</td><td align="center">❌ | ✔️</td><td align="center"><code>false</code></td></tr></tbody></table>
 
 `Fade` and `alwaysOn` can be use exclusively.
 
-Conversion table
+Conversion table:
 
 <table><thead><tr><th width="154" align="center">Time in Ticks</th><th width="143" align="center">Clock Time</th></tr></thead><tbody><tr><td align="center">0</td><td align="center">6 AM</td></tr><tr><td align="center">6000</td><td align="center">12 AM</td></tr><tr><td align="center">12000</td><td align="center">6 PM</td></tr><tr><td align="center">24000</td><td align="center">12 PM</td></tr></tbody></table>
 
 ### 9.2 Rotation Object
 
-Specifies the speed, static- and axis of rotation for a skybox. This object is used by both [Properties](./#8.-properties) and [Decorations](./#10.-decorations). Properties only affects the skybox rotation, and Decorations only affect the sun, moon and stars rotation. All fields are optional.
+Specifies the speed, static- and axis of rotation for a skybox as well as its timeshift. This object is used by both [Properties](./#8.-properties) and [Decorations](./#10.-decorations). Properties only affects the skybox rotation, and Decorations only affect the sun, moon and stars rotation. All fields are optional.
 
 <table><thead><tr><th width="230" align="center">Name</th><th width="336" align="center">Description</th><th align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>static</code></td><td align="center">Specifies the static rotation in degrees</td><td align="center"><code>[0,0,0]</code></td></tr><tr><td align="center"><code>axis</code></td><td align="center">Specifies the axis rotation in degrees</td><td align="center"><code>[0,0,0]</code></td></tr><tr><td align="center"><code>timeShift</code></td><td align="center">Specifies the time shifted for rotation</td><td align="center"><p><code>[0,0,0]</code></p><p>(integers only)</p></td></tr><tr><td align="center"><code>rotationSpeedX/Y/Z</code></td><td align="center">Specifies the speed of the skybox rotation around the X, Y or Z axis, in rotations per 24000 ticks</td><td align="center"><code>0</code></td></tr><tr><td align="center"><code>skyboxRotation</code></td><td align="center">During sunset/rise, the rotation speed for the sun/moon will slow down/speed up. This object can toggle this behavior.</td><td align="center"><code>true</code> for <code>properties</code>, <code>false</code> for <code>decorations</code></td></tr></tbody></table>
 
-Static rotation should be envisioned as the initial or 'default' rotation of the skybox, before any active rotation is applied. The axis refers to the actual axis around which the skybox will visibly revolve. The speed parameter determines how many full rotations the sky makes in a single in-game day.
+`Static` is a mapping option, which allows you to reorient your skybox's default position. For example, you can flip your skybox upside down using `static`. The `axis` refers to the actual axis, which the skybox will visibly revolve around. The speed parameter determines how many full rotations the sky makes in a single in-game day.
 
 `timeShift` facilitates synchronization between the skyboxes utilized by both FabricSkyBoxes and OptiFine. By default, FabricSkyBoxes initiates rotation at 0 tick time, whereas OptiFine begins at 18000 tick time.
 
-`skyboxRotation` becomes noticeable when the time is set to 12000 or 0. During sunrise and sunset, the sun/moon will be slightly above the horizon. This represents the default behavior for decorations when skyboxRotation is set to false. If set to true, the sun/moon will align exactly with the horizon line at times 12000 and 0. This adjustment ensures that the rotation parameters function similarly for both the skyboxes and the sun/moon, enhancing the reliability of rotation configuration.
+`skyboxRotation` becomes noticeable when the time is set to 12000 or 0. During sunrise and sunset, the sun/moon will be slightly above the horizon. This represents the default behavior for decorations when skyboxRotation is set to `false`. If set to `true`, the sun/moon will align exactly with the horizon line at times 12000 and 0. This adjustment ensures that the rotation parameters function similarly for both the skyboxes and the sun/moon, enhancing the reliability of rotation configuration.
 
 ### 9.3 Float vector
 
@@ -313,7 +313,7 @@ To get a better understanding on how to define these degrees for static and axis
 
 Additionally, a Blender tool has been developed courtesy of @UsernameGeri, allowing real-time visualization and adjustment of both static rotation and axis, providing insights into their impact on the skybox's rotation. This tool is compatible with both FabricSkyBoxes and OptiFine.
 
-Comprehensive instructions on utilizing the tool are documented within the blend file. Basic proficiency in Blender, encompassing simple actions like camera movement and navigation within the interface, is all that's required to effectively utilize this tool. Mastery of these fundamental skills can be acquired through brief tutorials available on platforms like YouTube, typically taking less than 10 minutes to grasp.
+Instructions for the tool are documented within the blend file. Only the most basic Blender skills are required to utilize this tool, such as navigating the interface and selecting and rotating objects.
 
 {% file src=".gitbook/assets/skybox rotation.blend" %}
 
@@ -323,7 +323,9 @@ Blender is a free, open source software. Download at [https://www.blender.org/](
 
 Specifies when and where a skybox should render. All fields are optional.
 
-<table><thead><tr><th width="154" align="center">Name</th><th align="center">Description</th></tr></thead><tbody><tr><td align="center"><code>worlds</code></td><td align="center">Specifies a list of worlds sky effects that the skybox should be rendered in.</td></tr><tr><td align="center"><code>dimensions</code></td><td align="center">Specifies a list of dimension that the skybox should be rendered in.</td></tr><tr><td align="center"><code>weather</code></td><td align="center">Specifies a list of weather conditions that the skybox should be rendered in. Valid entries are <code>clear</code>, <code>rain</code>, <code>biome_rain</code>, <code>thunder</code> and <code>snow</code>.</td></tr><tr><td align="center"><code>biomes</code></td><td align="center">Specifies a list of biomes that the skybox should be rendered in.</td></tr><tr><td align="center"><code>xRanges</code></td><td align="center">Specifies a list of coordinates that the skybox should be rendered between.</td></tr><tr><td align="center"><code>yRanges</code></td><td align="center">Specifies a list of coordinates that the skybox should be rendered between.</td></tr><tr><td align="center"><code>zRanges</code></td><td align="center">Specifies a list of coordinates that the skybox should be rendered between.</td></tr><tr><td align="center"><code>loop</code></td><td align="center">Specifies the loop object that the skybox should be rendered between.</td></tr><tr><td align="center"><code>effects</code></td><td align="center">Specifies a list of player status effects during which the skybox should be rendered.</td></tr></tbody></table>
+<table><thead><tr><th width="154" align="center">Name</th><th align="center">Description</th></tr></thead><tbody><tr><td align="center"><code>worlds</code></td><td align="center">Specifies a list of worlds sky effects that the skybox should be rendered in.</td></tr><tr><td align="center"><code>dimensions</code></td><td align="center">Specifies a list of dimension that the skybox should be rendered in.</td></tr><tr><td align="center"><code>weather</code></td><td align="center">Specifies a list of weather conditions that the skybox should be rendered in. Valid entries are <code>clear</code>, <code>rain</code>, <code>rain_biome</code>, <code>thunder</code> and <code>snow</code>.</td></tr><tr><td align="center"><code>biomes</code></td><td align="center">Specifies a list of biomes that the skybox should be rendered in.</td></tr><tr><td align="center"><code>xRanges</code></td><td align="center">Specifies a list of coordinates that the skybox should be rendered between.</td></tr><tr><td align="center"><code>yRanges</code></td><td align="center">Specifies a list of coordinates that the skybox should be rendered between.</td></tr><tr><td align="center"><code>zRanges</code></td><td align="center">Specifies a list of coordinates that the skybox should be rendered between.</td></tr><tr><td align="center"><code>loop</code></td><td align="center">Specifies the loop object that the skybox should be rendered between.</td></tr><tr><td align="center"><code>effects</code></td><td align="center">Specifies a list of player status effects during which the skybox should be rendered.</td></tr></tbody></table>
+
+The difference between `rain` and `rain_biome` will be apparent in a desert for example. Here, when it rains in the world, a sky using `rain_biome` will not be visible, whereas one using `rain` will be. This is to allow to differentiate between biomes where it actually rains, and where it doesn't during weather.
 
 ```json
 "conditions": {
@@ -409,7 +411,7 @@ See also [MinMax Entry Object](./#9.1-minmax-entry-object) for examples on the i
 
 ## 11. Decorations
 
-Stores all specifications for the stars, sun and moon configuration. For optimum results, the moon texture should mimic the vanilla moon texture. The Default value stores the overworld sun and moon textures and sets all enabled to true. All fields are optional.
+Stores all specifications for the stars, sun and moon configuration. For optimal results, the moon texture should use the same layout as the vanilla moon texture. The Default value stores the overworld sun and moon textures and sets all enabled to true. All fields are optional.
 
 <table><thead><tr><th width="155" align="center">Name</th><th align="center">Description</th><th align="center">Default</th></tr></thead><tbody><tr><td align="center"><code>blend</code></td><td align="center">Specifies the type of the blend or the decorations only. Valid types are: <code>add</code>, <code>subtract</code>, <code>multiply</code>, <code>screen</code>, <code>replace</code>, <code>alpha</code>, <code>dodge</code>, <code>burn</code>, <code>darken</code>, <code>lighten</code>, <code>decorations</code> and <code>disable</code>.</td><td align="center"><code>decorations</code></td></tr><tr><td align="center"><code>sun</code></td><td align="center">Specifies the location of the texture to be used for rendering the sun.</td><td align="center">Default sun texture (<code>minecraft:textures/environment/sun.png</code>)</td></tr><tr><td align="center"><code>moon</code></td><td align="center">Specifies the location of the texture to be used for rendering the moon.</td><td align="center">Default moon texture (<code>minecraft:textures/environment/moon_phases.png</code>)</td></tr><tr><td align="center"><code>showSun</code></td><td align="center">Specifies whether the sun should be rendered.</td><td align="center"><code>true</code></td></tr><tr><td align="center"><code>showMoon</code></td><td align="center">Specifies whether the moon should be rendered.</td><td align="center"><code>true</code></td></tr><tr><td align="center"><code>showStars</code></td><td align="center">Specifies whether stars should be rendered.</td><td align="center"><code>true</code></td></tr><tr><td align="center"><code>rotation</code></td><td align="center">Specifies the rotation of the decorations.</td><td align="center"><code>[0,0,0]</code> for <code>static</code>/<code>axis</code>/<code>timeShift</code>, <code>0</code> for <code>rotationSpeedX/Y/Z</code>, <code>false</code> for <code>skyboxRotation</code></td></tr></tbody></table>
 
@@ -435,7 +437,7 @@ Stores all specifications for the stars, sun and moon configuration. For optimum
 
 Rotation in Decorations only affects the sun, moon and stars, and not the skybox. To see how to implement the rotation, check [Rotation Object](./#8.2-rotation-object) and [Float Vector](./#8.2.1-float-vector).
 
-It is worth knowing, that it is possible to specify unique rotation and blending for the sun, moon and stars all individually, if they are set to show `true` in 3 separate json files, and the other 2 decorations are set to show `false`. And you can also add multiple suns and moon with different blending and/or rotation, if you assign them to multiple different sky layers.
+It is worth knowing, that it is possible to specify unique rotation and blending mode for the sun, moon and stars all individually, if they are set to show `true` in 3 separate json files, and the other 2 decorations are set to show `false`. You can also add multiple suns and moon with different blending and/or rotation, if you assign them to multiple different sky layers.
 
 ## Examples and templates
 
