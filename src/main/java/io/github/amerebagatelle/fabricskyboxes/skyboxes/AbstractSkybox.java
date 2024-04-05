@@ -155,7 +155,7 @@ public abstract class AbstractSkybox implements FSBSkybox {
 
         } else {
             if (camera.getFocusedEntity() instanceof LivingEntity livingEntity) {
-                return this.conditions.getEffects().stream().noneMatch(identifier -> client.world.getRegistryManager().get(RegistryKeys.STATUS_EFFECT).get(identifier) != null && livingEntity.hasStatusEffect(client.world.getRegistryManager().get(RegistryKeys.STATUS_EFFECT).get(identifier)));
+                return this.conditions.getEffects().stream().noneMatch(identifier -> client.world.getRegistryManager().get(RegistryKeys.STATUS_EFFECT).get(identifier) != null && livingEntity.hasStatusEffect(client.world.getRegistryManager().get(RegistryKeys.STATUS_EFFECT).getEntry(client.world.getRegistryManager().get(RegistryKeys.STATUS_EFFECT).get(identifier))));
             }
         }
         return true;
@@ -230,7 +230,7 @@ public abstract class AbstractSkybox implements FSBSkybox {
 
     public abstract SkyboxType<? extends Skybox> getType();
 
-    public void renderDecorations(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f matrix4f, float tickDelta, BufferBuilder bufferBuilder, float alpha) {
+    public void renderDecorations(WorldRendererAccess worldRendererAccess, MatrixStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
         RenderSystem.enableBlend();
         Vector3f rotationStatic = this.decorations.getRotation().getStatic();
         Vector3f rotationAxis = this.decorations.getRotation().getAxis();
@@ -239,38 +239,38 @@ public abstract class AbstractSkybox implements FSBSkybox {
 
         // Custom Blender
         this.decorations.getBlend().applyBlendFunc(alpha);
-        matrices.push();
+        matrixStack.push();
 
         // axis rotation
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotationAxis.x()));
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotationAxis.y()));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotationAxis.z()));
+        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotationAxis.x()));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotationAxis.y()));
+        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotationAxis.z()));
 
         // Vanilla rotation
-        //matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
+        //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
         // Iris Compat
-        //matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));
-        //matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(world.getSkyAngle(tickDelta) * 360.0F * this.decorations.getRotation().getRotationSpeed()));
+        //matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));
+        //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(world.getSkyAngle(tickDelta) * 360.0F * this.decorations.getRotation().getRotationSpeed()));
 
         // Custom rotation
         double timeRotationX = Utils.calculateRotation(this.decorations.getRotation().getRotationSpeedX(), this.decorations.getRotation().getTimeShift().x(), this.decorations.getRotation().getSkyboxRotation(), world);
         double timeRotationY = Utils.calculateRotation(this.decorations.getRotation().getRotationSpeedY(), this.decorations.getRotation().getTimeShift().y(), this.decorations.getRotation().getSkyboxRotation(), world);
         double timeRotationZ = Utils.calculateRotation(this.decorations.getRotation().getRotationSpeedZ(), this.decorations.getRotation().getTimeShift().z(), this.decorations.getRotation().getSkyboxRotation(), world);
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float) timeRotationX));
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) timeRotationY));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) timeRotationZ));
+        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float) timeRotationX));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) timeRotationY));
+        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) timeRotationZ));
 
         // axis rotation
-        matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(rotationAxis.z()));
-        matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(rotationAxis.y()));
-        matrices.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(rotationAxis.x()));
+        matrixStack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(rotationAxis.z()));
+        matrixStack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(rotationAxis.y()));
+        matrixStack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(rotationAxis.x()));
 
         // static rotation
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotationStatic.x()));
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotationStatic.y()));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotationStatic.z()));
+        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotationStatic.x()));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotationStatic.y()));
+        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotationStatic.z()));
 
-        Matrix4f matrix4f2 = matrices.peek().getPositionMatrix();
+        Matrix4f matrix4f2 = matrixStack.peek().getPositionMatrix();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         // Sun
         if (this.decorations.isSunEnabled()) {
@@ -302,16 +302,17 @@ public abstract class AbstractSkybox implements FSBSkybox {
         // Stars
         if (this.decorations.isStarsEnabled()) {
             float i = 1.0F - world.getRainGradient(tickDelta);
-            float brightness = world.method_23787(tickDelta) * i;
+            float brightness = world.getStarBrightness(tickDelta) * i;
             if (brightness > 0.0F) {
                 RenderSystem.setShaderColor(brightness, brightness, brightness, brightness);
                 BackgroundRenderer.clearFog();
                 worldRendererAccess.getStarsBuffer().bind();
-                worldRendererAccess.getStarsBuffer().draw(matrices.peek().getPositionMatrix(), matrix4f, GameRenderer.getPositionProgram());
+                worldRendererAccess.getStarsBuffer().draw(matrixStack.peek().getPositionMatrix(), projectionMatrix, GameRenderer.getPositionProgram());
                 VertexBuffer.unbind();
+                fogCallback.run();
             }
         }
-        matrices.pop();
+        matrixStack.pop();
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();

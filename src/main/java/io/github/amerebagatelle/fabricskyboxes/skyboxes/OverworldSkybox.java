@@ -37,7 +37,8 @@ public class OverworldSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog) {
+    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+        fogCallback.run();
         MinecraftClient client = MinecraftClient.getInstance();
         ClientWorld world = client.world;
         assert client.world != null;
@@ -96,7 +97,7 @@ public class OverworldSkybox extends AbstractSkybox {
         }
 
 
-        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha);
+        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
         // Dark Sky
         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);

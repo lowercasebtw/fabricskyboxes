@@ -31,7 +31,7 @@ public class EndSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog) {
+    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
         MinecraftClient client = MinecraftClient.getInstance();
         assert client.world != null;
 
@@ -74,7 +74,7 @@ public class EndSkybox extends AbstractSkybox {
         }
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
-        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha);
+        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();

@@ -37,7 +37,7 @@ public class MonoColorSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog) {
+    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
         if (this.alpha > 0) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
@@ -72,7 +72,7 @@ public class MonoColorSkybox extends AbstractSkybox {
             }
             BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
-            this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha);
+            this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);

@@ -44,11 +44,11 @@ public class AnimatedSquareTexturedSkybox extends SquareTexturedSkybox {
     }
 
     @Override
-    public void renderSkybox(WorldRendererAccess worldRendererAccess, MatrixStack matrices, float tickDelta, Camera camera, boolean thickFog) {
+    public void renderSkybox(WorldRendererAccess worldRendererAccess, MatrixStack matrices, float tickDelta, Camera camera, boolean thickFog, Runnable runnable) {
         if (this.lastTime == 0L) this.lastTime = System.currentTimeMillis();
         this.textures = this.getAnimationTextures().get(this.count);
 
-        super.renderSkybox(worldRendererAccess, matrices, tickDelta, camera, thickFog);
+        super.renderSkybox(worldRendererAccess, matrices, tickDelta, camera, thickFog, runnable);
 
         if (System.currentTimeMillis() >= (this.lastTime + this.frameTimeMillis)) {
             if (this.count < this.getAnimationTextures().size()) {
