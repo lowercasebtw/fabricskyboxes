@@ -99,7 +99,7 @@ public class SkyboxGenerationTest {
         if (!Files.exists(path)) {
             Files.createFile(path);
         }
-        String jsonString = gson.toJson(codec.encodeStart(JsonOps.INSTANCE, input).getOrThrow(false, System.err::println));
+        String jsonString = gson.toJson(codec.encodeStart(JsonOps.INSTANCE, input).getOrThrow(IllegalStateException::new));
         Files.writeString(path, jsonString + "\n");
     }
 }
