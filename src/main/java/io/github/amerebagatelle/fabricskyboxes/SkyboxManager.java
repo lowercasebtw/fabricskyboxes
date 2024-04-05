@@ -46,7 +46,7 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
         Metadata metadata;
 
         try {
-            metadata = Metadata.CODEC.decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow(IllegalStateException::new).getFirst();
+            metadata = Metadata.CODEC.decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow().getFirst();
         } catch (RuntimeException e) {
             FabricSkyBoxesClient.getLogger().warn("Skipping invalid skybox " + id.toString(), e);
             FabricSkyBoxesClient.getLogger().warn(objectWrapper.toString());
@@ -62,7 +62,7 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
             //noinspection ConstantConditions
             type.getDeserializer().getDeserializer().accept(objectWrapper, skybox);
         } else {
-            skybox = type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow(IllegalStateException::new).getFirst();
+            skybox = type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow().getFirst();
         }
         return skybox;
     }
