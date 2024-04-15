@@ -52,10 +52,6 @@ public class MultiTextureSkybox extends TexturedSkybox {
 
     @Override
     public void renderSkybox(WorldRendererAccess worldRendererAccess, MatrixStack matrices, float tickDelta, Camera camera, boolean thickFog, Runnable runnable) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
-
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         for (int i = 0; i < 6; ++i) {
             // 0 = bottom
             // 1 = north
@@ -85,6 +81,11 @@ public class MultiTextureSkybox extends TexturedSkybox {
 
             // animations
             for (Animation animation : this.animations) {
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder bufferBuilder = tessellator.getBuffer();
+
+                bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+
                 animation.tick();
                 UVRange intersect = Utils.findUVIntersection(faceUVRange, animation.getUvRanges()); // todo: cache this intersections so we don't waste gpu cycles
                 if (intersect != null && animation.getCurrentFrame() != null) {
@@ -99,11 +100,11 @@ public class MultiTextureSkybox extends TexturedSkybox {
                     bufferBuilder.vertex(matrix4f, intersectionOnCurrentTexture.getMaxU(), -this.quadSize, intersectionOnCurrentTexture.getMaxV()).texture(intersectionOnCurrentFrame.getMaxU(), intersectionOnCurrentFrame.getMaxV()).next();
                     bufferBuilder.vertex(matrix4f, intersectionOnCurrentTexture.getMaxU(), -this.quadSize, intersectionOnCurrentTexture.getMinV()).texture(intersectionOnCurrentFrame.getMaxU(), intersectionOnCurrentFrame.getMinV()).next();
                 }
+                BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
             }
 
             matrices.pop();
         }
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
 
     public List<Animation> getAnimations() {
