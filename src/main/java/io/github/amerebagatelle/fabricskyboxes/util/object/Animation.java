@@ -74,8 +74,7 @@ public class Animation {
             // Current Frame
             this.index = (this.index + 1) % (this.gridRows * this.gridColumns);
             this.currentFrame = this.calculateNextFrameUVRange(this.index);
-
-            this.nextTime = Util.getEpochTimeMs() + this.frameDuration.getOrDefault(String.valueOf((this.index + 1) % (this.gridRows * this.gridColumns)), this.duration);
+            this.nextTime = Util.getEpochTimeMs() + this.frameDuration.getOrDefault(String.valueOf(this.index + 1), this.duration);
         }
     }
 
