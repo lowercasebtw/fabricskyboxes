@@ -2,6 +2,7 @@ package io.github.amerebagatelle.fabricskyboxes.skyboxes.textured;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.amerebagatelle.fabricskyboxes.api.skyboxes.Skybox;
 import io.github.amerebagatelle.fabricskyboxes.mixin.skybox.WorldRendererAccess;
 import io.github.amerebagatelle.fabricskyboxes.skyboxes.AbstractSkybox;
 import io.github.amerebagatelle.fabricskyboxes.skyboxes.SkyboxType;
@@ -38,16 +39,16 @@ public class AnimatedSquareTexturedSkybox extends SquareTexturedSkybox {
     }
 
     @Override
-    public SkyboxType<? extends AbstractSkybox> getType() {
+    public SkyboxType<? extends Skybox> getType() {
         return SkyboxType.ANIMATED_SQUARE_TEXTURED_SKYBOX;
     }
 
     @Override
-    public void renderSkybox(WorldRendererAccess worldRendererAccess, MatrixStack matrices, float tickDelta, Camera camera, boolean thickFog) {
+    public void renderSkybox(WorldRendererAccess worldRendererAccess, MatrixStack matrices, float tickDelta, Camera camera, boolean thickFog, Runnable runnable) {
         if (this.lastTime == 0L) this.lastTime = System.currentTimeMillis();
         this.textures = this.getAnimationTextures().get(this.count);
 
-        super.renderSkybox(worldRendererAccess, matrices, tickDelta, camera, thickFog);
+        super.renderSkybox(worldRendererAccess, matrices, tickDelta, camera, thickFog, runnable);
 
         if (System.currentTimeMillis() >= (this.lastTime + this.frameTimeMillis)) {
             if (this.count < this.getAnimationTextures().size()) {

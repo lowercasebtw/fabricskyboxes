@@ -24,13 +24,12 @@ public interface Skybox {
      * This will be process if {@link Skybox#isActive()}
      *
      * @param worldRendererAccess Access to the worldRenderer as skyboxes often require it.
-     * @param matrices            The current MatrixStack.
      * @param tickDelta           The current tick delta.
      * @param camera              The player camera.
      * @param thickFog            Is using thick fog.
+     * @param fogCallback         The fogCallback to run.
      */
-    void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Camera camera, boolean thickFog);
-
+    void render(WorldRendererAccess worldRendererAccess, MatrixStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback);
 
     /**
      * The main thread for a skybox

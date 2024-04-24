@@ -1,0 +1,8 @@
+{
+  "category.fabricskyboxes": "FabricSkyboxes",
+  "key.fabricskyboxes.toggle": "Alternar FabricSkyboxes",
+  "fabricskyboxes.message.enabled" : "¡FabricSkyboxes habilitado!",
+  "fabricskyboxes.message.disabled" : "¡FabricSkyboxes deshabilitado!",
+  "key.fabricskyboxes.toggle.debug_hud": "Alternar HUD de depuración",
+  "key.fabricskyboxes.toggle.debug_screen": "Alternar pantalla de depuración"
+}

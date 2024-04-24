@@ -3,6 +3,7 @@ package io.github.amerebagatelle.fabricskyboxes.skyboxes;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.amerebagatelle.fabricskyboxes.api.skyboxes.Skybox;
 import io.github.amerebagatelle.fabricskyboxes.mixin.skybox.WorldRendererAccess;
 import io.github.amerebagatelle.fabricskyboxes.util.object.*;
 import net.minecraft.client.render.*;
@@ -31,12 +32,12 @@ public class MonoColorSkybox extends AbstractSkybox {
     }
 
     @Override
-    public SkyboxType<? extends AbstractSkybox> getType() {
+    public SkyboxType<? extends Skybox> getType() {
         return SkyboxType.MONO_COLOR_SKYBOX;
     }
 
     @Override
-    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog) {
+    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
         if (this.alpha > 0) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
@@ -71,7 +72,7 @@ public class MonoColorSkybox extends AbstractSkybox {
             }
             BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
-            this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha);
+            this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);

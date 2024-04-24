@@ -16,7 +16,7 @@ public class Animation {
             Utils.getClampedInteger(1, Integer.MAX_VALUE).fieldOf("gridRows").forGetter(Animation::getGridRows),
             Utils.getClampedInteger(1, Integer.MAX_VALUE).fieldOf("duration").forGetter(Animation::getDuration),
             Codec.BOOL.optionalFieldOf("interpolate", true).forGetter(Animation::isInterpolate),
-            Codec.unboundedMap(Codec.INT, Codec.INT).optionalFieldOf("frameDuration", new HashMap<>()).forGetter(Animation::getFrameDuration)
+            Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("frameDuration", new HashMap<>()).forGetter(Animation::getFrameDuration)
     ).apply(instance, Animation::new));
 
     private final Texture texture;
@@ -25,13 +25,13 @@ public class Animation {
     private final int gridColumns;
     private final int duration;
     private final boolean interpolate;
-    private final Map<Integer, Integer> frameDuration;
+    private final Map<String, Integer> frameDuration;
 
     private UVRange currentFrame;
     private int index;
     private long nextTime;
 
-    public Animation(Texture texture, UVRange uvRange, int gridColumns, int gridRows, int duration, boolean interpolate, Map<Integer, Integer> frameDuration) {
+    public Animation(Texture texture, UVRange uvRange, int gridColumns, int gridRows, int duration, boolean interpolate, Map<String, Integer> frameDuration) {
         this.texture = texture;
         this.uvRange = uvRange;
         this.gridColumns = gridColumns;
@@ -65,7 +65,7 @@ public class Animation {
         return interpolate;
     }
 
-    public Map<Integer, Integer> getFrameDuration() {
+    public Map<String, Integer> getFrameDuration() {
         return frameDuration;
     }
 
@@ -74,14 +74,14 @@ public class Animation {
             // Current Frame
             this.index = (this.index + 1) % (this.gridRows * this.gridColumns);
             this.currentFrame = this.calculateNextFrameUVRange(this.index);
-
-            this.nextTime = Util.getEpochTimeMs() + this.frameDuration.getOrDefault((this.index + 1) % (this.gridRows * this.gridColumns), this.duration);
+            this.nextTime = Util.getEpochTimeMs() + this.frameDuration.getOrDefault(String.valueOf(this.index + 1), this.duration);
         }
     }
 
     public UVRange getCurrentFrame() {
         return currentFrame;
     }
+
     private UVRange calculateNextFrameUVRange(int nextFrameIndex) {
         float frameWidth = 1.0F / this.gridColumns;
         float frameHeight = 1.0F / this.gridRows;

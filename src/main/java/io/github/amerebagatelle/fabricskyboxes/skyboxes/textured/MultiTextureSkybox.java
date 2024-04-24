@@ -3,6 +3,7 @@ package io.github.amerebagatelle.fabricskyboxes.skyboxes.textured;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.amerebagatelle.fabricskyboxes.api.skyboxes.Skybox;
 import io.github.amerebagatelle.fabricskyboxes.mixin.skybox.WorldRendererAccess;
 import io.github.amerebagatelle.fabricskyboxes.skyboxes.AbstractSkybox;
 import io.github.amerebagatelle.fabricskyboxes.skyboxes.SkyboxType;
@@ -45,16 +46,12 @@ public class MultiTextureSkybox extends TexturedSkybox {
     }
 
     @Override
-    public SkyboxType<? extends AbstractSkybox> getType() {
+    public SkyboxType<? extends Skybox> getType() {
         return SkyboxType.MULTI_TEXTURE_SKYBOX;
     }
 
     @Override
-    public void renderSkybox(WorldRendererAccess worldRendererAccess, MatrixStack matrices, float tickDelta, Camera camera, boolean thickFog) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
-
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+    public void renderSkybox(WorldRendererAccess worldRendererAccess, MatrixStack matrices, float tickDelta, Camera camera, boolean thickFog, Runnable runnable) {
         for (int i = 0; i < 6; ++i) {
             // 0 = bottom
             // 1 = north
@@ -84,6 +81,11 @@ public class MultiTextureSkybox extends TexturedSkybox {
 
             // animations
             for (Animation animation : this.animations) {
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder bufferBuilder = tessellator.getBuffer();
+
+                bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+
                 animation.tick();
                 UVRange intersect = Utils.findUVIntersection(faceUVRange, animation.getUvRanges()); // todo: cache this intersections so we don't waste gpu cycles
                 if (intersect != null && animation.getCurrentFrame() != null) {
@@ -98,11 +100,11 @@ public class MultiTextureSkybox extends TexturedSkybox {
                     bufferBuilder.vertex(matrix4f, intersectionOnCurrentTexture.getMaxU(), -this.quadSize, intersectionOnCurrentTexture.getMaxV()).texture(intersectionOnCurrentFrame.getMaxU(), intersectionOnCurrentFrame.getMaxV()).next();
                     bufferBuilder.vertex(matrix4f, intersectionOnCurrentTexture.getMaxU(), -this.quadSize, intersectionOnCurrentTexture.getMinV()).texture(intersectionOnCurrentFrame.getMaxU(), intersectionOnCurrentFrame.getMinV()).next();
                 }
+                BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
             }
 
             matrices.pop();
         }
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
 
     public List<Animation> getAnimations() {

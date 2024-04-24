@@ -7,7 +7,6 @@ import com.mojang.serialization.JsonOps;
 import io.github.amerebagatelle.fabricskyboxes.api.FabricSkyBoxesApi;
 import io.github.amerebagatelle.fabricskyboxes.api.skyboxes.Skybox;
 import io.github.amerebagatelle.fabricskyboxes.mixin.skybox.WorldRendererAccess;
-import io.github.amerebagatelle.fabricskyboxes.skyboxes.AbstractSkybox;
 import io.github.amerebagatelle.fabricskyboxes.skyboxes.SkyboxType;
 import io.github.amerebagatelle.fabricskyboxes.util.JsonObjectWrapper;
 import io.github.amerebagatelle.fabricskyboxes.util.object.internal.Metadata;
@@ -42,19 +41,19 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
     private Skybox currentSkybox = null;
     private boolean enabled = true;
 
-    public static AbstractSkybox parseSkyboxJson(Identifier id, JsonObjectWrapper objectWrapper) {
-        AbstractSkybox skybox;
+    public static Skybox parseSkyboxJson(Identifier id, JsonObjectWrapper objectWrapper) {
+        Skybox skybox;
         Metadata metadata;
 
         try {
-            metadata = Metadata.CODEC.decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow(false, System.err::println).getFirst();
+            metadata = Metadata.CODEC.decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow().getFirst();
         } catch (RuntimeException e) {
             FabricSkyBoxesClient.getLogger().warn("Skipping invalid skybox " + id.toString(), e);
             FabricSkyBoxesClient.getLogger().warn(objectWrapper.toString());
             return null;
         }
 
-        SkyboxType<? extends AbstractSkybox> type = SkyboxType.REGISTRY.get(metadata.getType());
+        SkyboxType<? extends Skybox> type = SkyboxType.REGISTRY.get(metadata.getType());
         Preconditions.checkNotNull(type, "Unknown skybox type: " + metadata.getType().getPath().replace('_', '-'));
         if (metadata.getSchemaVersion() == 1) {
             Preconditions.checkArgument(type.isLegacySupported(), "Unsupported schema version '1' for skybox type " + type.getName());
@@ -63,7 +62,7 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
             //noinspection ConstantConditions
             type.getDeserializer().getDeserializer().accept(objectWrapper, skybox);
         } else {
-            skybox = type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow(false, System.err::println).getFirst();
+            skybox = type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow().getFirst();
         }
         return skybox;
     }
@@ -126,10 +125,10 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
     }
 
     @Internal
-    public void renderSkyboxes(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Camera camera, boolean thickFog) {
+    public void renderSkyboxes(WorldRendererAccess worldRendererAccess, MatrixStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
         this.activeSkyboxes.forEach(skybox -> {
             this.currentSkybox = skybox;
-            skybox.render(worldRendererAccess, matrices, matrix4f, tickDelta, camera, thickFog);
+            skybox.render(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, camera, thickFog, fogCallback);
         });
     }
 

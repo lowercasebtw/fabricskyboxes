@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.fabricskyboxes.SkyboxManager;
+import io.github.amerebagatelle.fabricskyboxes.api.skyboxes.Skybox;
 import io.github.amerebagatelle.fabricskyboxes.mixin.skybox.WorldRendererAccess;
 import io.github.amerebagatelle.fabricskyboxes.util.object.Conditions;
 import io.github.amerebagatelle.fabricskyboxes.util.object.Decorations;
@@ -31,12 +32,13 @@ public class OverworldSkybox extends AbstractSkybox {
     }
 
     @Override
-    public SkyboxType<? extends AbstractSkybox> getType() {
-        return SkyboxType.MONO_COLOR_SKYBOX;
+    public SkyboxType<? extends Skybox> getType() {
+        return SkyboxType.OVERWORLD_SKYBOX;
     }
 
     @Override
-    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog) {
+    public void render(WorldRendererAccess worldRendererAccess, MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+        fogCallback.run();
         MinecraftClient client = MinecraftClient.getInstance();
         ClientWorld world = client.world;
         assert client.world != null;
@@ -95,7 +97,7 @@ public class OverworldSkybox extends AbstractSkybox {
         }
 
 
-        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha);
+        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
         // Dark Sky
         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
