@@ -23,16 +23,16 @@ public class MultiTexturedSkybox extends TexturedSkybox<MultiTexturedSkybox> {
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.DEFAULT).forGetter(AbstractSkybox::getConditions),
             Decorations.CODEC.optionalFieldOf("decorations", Decorations.DEFAULT).forGetter(AbstractSkybox::getDecorations),
             Blend.CODEC.optionalFieldOf("blend", Blend.DEFAULT).forGetter(TexturedSkybox::getBlend),
-            Animation.CODEC.listOf().optionalFieldOf("animations", new ArrayList<>()).forGetter(MultiTexturedSkybox::getAnimations)
+            AnimatableTexture.CODEC.listOf().optionalFieldOf("animatableTextures", new ArrayList<>()).forGetter(MultiTexturedSkybox::getAnimations)
     ).apply(instance, MultiTexturedSkybox::new));
-    protected final List<Animation> animations;
+    protected final List<AnimatableTexture> animatableTextures;
 
     private final float quadSize = 100F;
     private final UVRange quad = new UVRange(-this.quadSize, -this.quadSize, this.quadSize, this.quadSize);
 
-    public MultiTexturedSkybox(Properties properties, Conditions conditions, Decorations decorations, Blend blend, List<Animation> animations) {
+    public MultiTexturedSkybox(Properties properties, Conditions conditions, Decorations decorations, Blend blend, List<AnimatableTexture> animatableTextures) {
         super(properties, conditions, decorations, blend);
-        this.animations = animations;
+        this.animatableTextures = animatableTextures;
     }
 
     @Override
@@ -76,20 +76,20 @@ public class MultiTexturedSkybox extends TexturedSkybox<MultiTexturedSkybox> {
             Matrix4f matrix4f = matrices.last().pose();
 
             // animations
-            for (Animation animation : this.animations) {
+            for (AnimatableTexture animatableTexture : this.animatableTextures) {
                 Tesselator tessellator = Tesselator.getInstance();
                 BufferBuilder bufferBuilder = tessellator.getBuilder();
 
                 bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-                animation.tick();
-                UVRange intersect = Utils.findUVIntersection(faceUVRange, animation.getUvRanges()); // todo: cache this intersections so we don't waste gpu cycles
-                if (intersect != null && animation.getCurrentFrame() != null) {
+                animatableTexture.tick();
+                UVRange intersect = Utils.findUVIntersection(faceUVRange, animatableTexture.getUvRange()); // todo: cache this intersections so we don't waste gpu cycles
+                if (intersect != null && animatableTexture.getCurrentFrame() != null) {
                     UVRange intersectionOnCurrentTexture = Utils.mapUVRanges(faceUVRange, this.quad, intersect);
-                    UVRange intersectionOnCurrentFrame = Utils.mapUVRanges(animation.getUvRanges(), animation.getCurrentFrame(), intersect);
+                    UVRange intersectionOnCurrentFrame = Utils.mapUVRanges(animatableTexture.getUvRange(), animatableTexture.getCurrentFrame(), intersect);
 
                     // Render the quad at the calculated position
-                    RenderSystem.setShaderTexture(0, animation.getTexture().getTextureId());
+                    RenderSystem.setShaderTexture(0, animatableTexture.getTexture().getTextureId());
 
                     bufferBuilder.vertex(matrix4f, intersectionOnCurrentTexture.getMinU(), -this.quadSize, intersectionOnCurrentTexture.getMinV()).uv(intersectionOnCurrentFrame.getMinU(), intersectionOnCurrentFrame.getMinV()).endVertex();
                     bufferBuilder.vertex(matrix4f, intersectionOnCurrentTexture.getMinU(), -this.quadSize, intersectionOnCurrentTexture.getMaxV()).uv(intersectionOnCurrentFrame.getMinU(), intersectionOnCurrentFrame.getMaxV()).endVertex();
@@ -103,7 +103,7 @@ public class MultiTexturedSkybox extends TexturedSkybox<MultiTexturedSkybox> {
         }
     }
 
-    public List<Animation> getAnimations() {
-        return animations;
+    public List<AnimatableTexture> getAnimations() {
+        return animatableTextures;
     }
 }

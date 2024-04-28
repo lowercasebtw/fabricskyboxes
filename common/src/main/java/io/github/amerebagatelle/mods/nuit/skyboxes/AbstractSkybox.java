@@ -80,14 +80,8 @@ public abstract class AbstractSkybox<T extends Skybox> implements NuitSkybox {
         if (this.properties.getFade().isAlwaysOn()) {
             this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
         } else {
-
-            if (this.properties.getFade().isAdvanced()) {
-                Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
-
-                fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, keyFrames.getA(), keyFrames.getA(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
-            } else {
-                fadeAlpha = Utils.calculateFadeAlphaValue(1f, 0f, currentTime, this.properties.getFade().getStartFadeIn(), this.properties.getFade().getEndFadeIn(), this.properties.getFade().getStartFadeOut(), this.properties.getFade().getEndFadeOut());
-            }
+            Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
+            fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, keyFrames.getA(), keyFrames.getA(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
 
             if (this.lastTime == currentTime - 1 || this.lastTime == currentTime) { // Check if time is ticking or if time is same (doDaylightCycle gamerule)
                 this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);

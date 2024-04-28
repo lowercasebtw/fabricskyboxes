@@ -9,30 +9,30 @@ import net.minecraft.client.Minecraft;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Animation {
-    public static final Codec<Animation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Texture.CODEC.fieldOf("texture").forGetter(Animation::getTexture),
-            UVRange.CODEC.fieldOf("uvRanges").forGetter(Animation::getUvRanges),
-            CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).fieldOf("gridColumns").forGetter(Animation::getGridColumns),
-            CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).fieldOf("gridRows").forGetter(Animation::getGridRows),
-            CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).fieldOf("duration").forGetter(Animation::getDuration),
-            Codec.BOOL.optionalFieldOf("interpolate", true).forGetter(Animation::isInterpolate),
-            Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("frameDuration", new HashMap<>()).forGetter(Animation::getFrameDuration)
-    ).apply(instance, Animation::new));
+public class AnimatableTexture {
+    public static final Codec<AnimatableTexture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Texture.CODEC.fieldOf("texture").forGetter(AnimatableTexture::getTexture),
+            UVRange.CODEC.optionalFieldOf("uvRange", new UVRange(0, 0, 1, 1)).forGetter(AnimatableTexture::getUvRange),
+            CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("gridColumns", 1).forGetter(AnimatableTexture::getGridColumns),
+            CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("gridRows", 1).forGetter(AnimatableTexture::getGridRows),
+            CodecUtils.getClampedLong(1, Integer.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(AnimatableTexture::getDuration),
+            Codec.BOOL.optionalFieldOf("interpolate", true).forGetter(AnimatableTexture::isInterpolate),
+            Codec.unboundedMap(Codec.STRING, Codec.LONG).optionalFieldOf("frameDuration", new HashMap<>()).forGetter(AnimatableTexture::getFrameDuration)
+    ).apply(instance, AnimatableTexture::new));
 
     private final Texture texture;
     private final UVRange uvRange;
     private final int gridRows;
     private final int gridColumns;
-    private final int duration;
+    private final long duration;
     private final boolean interpolate;
-    private final Map<String, Integer> frameDuration;
+    private final Map<String, Long> frameDuration;
 
     private UVRange currentFrame;
     private int index;
     private long nextTime;
 
-    public Animation(Texture texture, UVRange uvRange, int gridColumns, int gridRows, int duration, boolean interpolate, Map<String, Integer> frameDuration) {
+    public AnimatableTexture(Texture texture, UVRange uvRange, int gridColumns, int gridRows, long duration, boolean interpolate, Map<String, Long> frameDuration) {
         this.texture = texture;
         this.uvRange = uvRange;
         this.gridColumns = gridColumns;
@@ -46,7 +46,7 @@ public class Animation {
         return texture;
     }
 
-    public UVRange getUvRanges() {
+    public UVRange getUvRange() {
         return uvRange;
     }
 
@@ -58,7 +58,7 @@ public class Animation {
         return gridRows;
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 
@@ -66,7 +66,7 @@ public class Animation {
         return interpolate;
     }
 
-    public Map<String, Integer> getFrameDuration() {
+    public Map<String, Long> getFrameDuration() {
         return frameDuration;
     }
 

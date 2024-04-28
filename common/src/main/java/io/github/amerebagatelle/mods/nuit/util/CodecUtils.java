@@ -6,6 +6,14 @@ import net.minecraft.util.Mth;
 import java.util.function.Function;
 
 public class CodecUtils {
+
+    public static Codec<Long> getClampedLong(long min, long max) {
+        if (min > max) {
+            throw new UnsupportedOperationException("Maximum value was lesser than than the minimum value");
+        }
+        return Codec.LONG.xmap(f -> Mth.clamp(f, min, max), Function.identity());
+    }
+
     public static Codec<Integer> getClampedInteger(int min, int max) {
         if (min > max) {
             throw new UnsupportedOperationException("Maximum value was lesser than than the minimum value");

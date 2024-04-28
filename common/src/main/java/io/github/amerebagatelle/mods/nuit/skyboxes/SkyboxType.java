@@ -24,7 +24,7 @@ public class SkyboxType<T extends Skybox> {
 
     // Vanilla skyboxes
     public static final RegistrySupplier<SkyboxType<OverworldSkybox>> OVERWORLD_SKYBOX;
-    public static final RegistrySupplier<SkyboxType<EndSkybox>>END_SKYBOX;
+    public static final RegistrySupplier<SkyboxType<EndSkybox>> END_SKYBOX;
 
     // FSB skyboxes
     public static final RegistrySupplier<SkyboxType<MonoColorSkybox>> MONO_COLOR_SKYBOX;
@@ -56,6 +56,7 @@ public class SkyboxType<T extends Skybox> {
 
     private final BiMap<Integer, Codec<T>> codecBiMap;
     private final String name;
+
     private SkyboxType(BiMap<Integer, Codec<T>> codecBiMap, String name) {
         this.codecBiMap = codecBiMap;
         this.name = name;

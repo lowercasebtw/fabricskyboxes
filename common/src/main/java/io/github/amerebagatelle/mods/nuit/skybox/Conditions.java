@@ -40,6 +40,7 @@ public class Conditions {
         this.yRanges = yRanges;
         this.zRanges = zRanges;
     }
+
     public List<ResourceLocation> getBiomes() {
         return this.biomes;
     }

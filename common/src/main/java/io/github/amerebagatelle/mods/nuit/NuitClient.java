@@ -14,37 +14,37 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class NuitClient {
-	public static final String MOD_ID = "nuit";
+    public static final String MOD_ID = "nuit";
 
-	private static Logger LOGGER;
-	private static NuitConfig CONFIG;
+    private static Logger LOGGER;
+    private static NuitConfig CONFIG;
 
-	public static void init() {
-		SkyboxType.initRegistry();
-		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, new SkyboxResourceListener());
-		SkyboxManager.getInstance().setEnabled(config().generalSettings.enable);
-		ClientTickEvent.CLIENT_LEVEL_POST.register(SkyboxManager.getInstance());
-		ClientTickEvent.CLIENT_POST.register(config().getKeyBinding());
-		SkyboxDebugScreen screen = new SkyboxDebugScreen(Component.nullToEmpty("Skybox Debug Screen"));
-		ClientGuiEvent.RENDER_HUD.register(screen);
-	}
+    public static void init() {
+        SkyboxType.initRegistry();
+        ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, new SkyboxResourceListener());
+        SkyboxManager.getInstance().setEnabled(config().generalSettings.enable);
+        ClientTickEvent.CLIENT_LEVEL_POST.register(SkyboxManager.getInstance());
+        ClientTickEvent.CLIENT_POST.register(config().getKeyBinding());
+        SkyboxDebugScreen screen = new SkyboxDebugScreen(Component.nullToEmpty("Skybox Debug Screen"));
+        ClientGuiEvent.RENDER_HUD.register(screen);
+    }
 
-	public static Logger getLogger() {
-		if (LOGGER == null) {
-			LOGGER = LogManager.getLogger("Nuit");
-		}
-		return LOGGER;
-	}
+    public static Logger getLogger() {
+        if (LOGGER == null) {
+            LOGGER = LogManager.getLogger("Nuit");
+        }
+        return LOGGER;
+    }
 
-	public static NuitConfig config() {
-		if (CONFIG == null) {
-			CONFIG = loadConfig();
-		}
+    public static NuitConfig config() {
+        if (CONFIG == null) {
+            CONFIG = loadConfig();
+        }
 
-		return CONFIG;
-	}
+        return CONFIG;
+    }
 
-	private static NuitConfig loadConfig() {
-		return NuitConfig.load(Platform.getConfigFolder().resolve("fabricskyboxes-config.json").toFile());
-	}
+    private static NuitConfig loadConfig() {
+        return NuitConfig.load(Platform.getConfigFolder().resolve("nuit-config.json").toFile());
+    }
 }

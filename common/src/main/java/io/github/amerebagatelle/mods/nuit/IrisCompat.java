@@ -16,7 +16,8 @@ public class IrisCompat {
             apiInstance = api.cast(api.getDeclaredMethod("getInstance").invoke(null));
             handle = MethodHandles.lookup().findVirtual(api, "getSunPathRotation", MethodType.methodType(float.class));
             isIrisPresent = true;
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                 InvocationTargetException e) {
             isIrisPresent = false;
         }
     }

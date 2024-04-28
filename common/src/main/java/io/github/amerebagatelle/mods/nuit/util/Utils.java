@@ -166,9 +166,9 @@ public class Utils {
     /**
      * Calculates the interpolated alpha value between two keyframes.
      *
-     * @param currentTime         The current time.
-     * @param currentKeyFrame     The timestamp of the current keyframe.
-     * @param nextKeyFrame        The timestamp of the next keyframe.
+     * @param currentTime          The current time.
+     * @param currentKeyFrame      The timestamp of the current keyframe.
+     * @param nextKeyFrame         The timestamp of the next keyframe.
      * @param currentKeyFrameValue The alpha value at the current keyframe.
      * @param nextKeyFrameValue    The alpha value at the next keyframe.
      * @return The interpolated alpha value based on the current time and keyframes.

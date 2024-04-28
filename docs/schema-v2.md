@@ -33,7 +33,7 @@ This specification defines a format for a set of rules for the purpose of custom
     - [Namespaced Id](#namespaced-id)
     - [Blend Object](#blend-object)
     - [Blender Object](#blender-object)
-    - [Animation Object](#animation-object)
+    - [Animation Object](#animatableTexture-object)
     - [UV Range Object](#uv-range-object)
 - [Full Example](#full-example)
 
@@ -128,16 +128,17 @@ The basic structure of a nuit skybox file may look something like this:
     /* integer (optional) */
     "fade": // fade object (optional)
     {
-      "startFadeIn": 0,
-      /* fade-in start time in ticks (int, optional) */
-      "endFadeIn": 0,
-      /* fade-in end time in ticks (int, optional) */
-      "startFadeOut": 0,
-      /* fade-out start time in ticks (int, optional) */
-      "endFadeOut": 0,
-      /* fade-out end time in ticks (int, optional) */
-      "alwaysOn": true
+      "alwaysOn": true,
       /* always show skybox (bool, optional) */
+      "duration": 24000,
+      /* duration of fade cycle in ticks (long, optional) */
+      "keyFrames": {
+        "1000": 0.0,
+        "2000": 1.0,
+        "3000": 1.0,
+        "4000": 0.0
+      },
+      /* keyframes for fade (map of long to float, optional) */
     },
     "maxAlpha": 0,
     /* max alpha value (0-1 float, optional) */
@@ -221,56 +222,15 @@ The basic structure of a nuit skybox file may look something like this:
       /* alpha state (boolean, optional) */
     }
   },
-  "textures": // textures object (square-textured type only)
-  {
-    "north": "",
-    /* texture to use for north direction (string, optional) */
-    "south": "",
-    /* texture to use for south direction (string, optional) */
-    "east": "",
-    /* texture to use for east direction (string, optional) */
-    "west": "",
-    /* texture to use for west direction (string, optional) */
-    "top": "",
-    /* texture to use for top direction (string, optional) */
-    "bottom": "",
-    /* texture to use for bottom direction (string, optional) */
-  },
   "texture": "",
-  /* path to single-sprite texture (string, single-sprite-square-textured type only) */
-  "fps": 0,
-  /* frames per second for animation (float, animated-square-textured, single-sprite-animated-square-textured types only) */
-  "animationTextures": // textures to use for animation (animated-square-textured type only)
-  [
-    {
-      // textures for first frame
-      "north": "",
-      /* texture to use for north direction (string, optional) */
-      "south": "",
-      /* texture to use for south direction (string, optional) */
-      "east": "",
-      /* texture to use for east direction (string, optional) */
-      "west": "",
-      /* texture to use for west direction (string, optional) */
-      "top": "",
-      /* texture to use for top direction (string, optional) */
-      "bottom": "",
-      /* texture to use for bottom direction (string, optional) */
-    }
-    // ...
-  ],
-  "animationTextures": // textures to use for animation (single-sprite-animated-square-textured type only)
-  [
-    /* single sprite texture for first frame (string) */
-    // ...
-  ],
-  "animations": [
-    // animation objects for animation (multi-texture)
+  /* path to single-sprite texture (string, square-textured type only) */
+  "animatableTextures": [
+    // animatableTexture objects for animatableTexture (multi-texture)
     {
       "texture": "",
-      // animation sprite sheet texture (string)
+      // animatableTexture sprite sheet texture (string)
       "uvRange": {
-        // uv range for animation (uv-range-object)
+        // uv range for animatableTexture (uv-range-object)
         "minU": 0.25,
         "minV": 0.25,
         "maxU": 0.50,
@@ -299,7 +259,7 @@ illustrate the general structure of a skybox file and gives basic descriptions o
 
 | Version |    Date    |
 |:-------:|:----------:|
-|    2    | 10/14/2020 |
+|    1    | 04/28/2024 |
 
 ## Skyboxes
 
@@ -307,13 +267,10 @@ illustrate the general structure of a skybox file and gives basic descriptions o
 
 There currently exist 5 types of skyboxes:
 
-|                   |  Monocolor  |            Textured             |            Animated Textured             |
-|:------------------|:-----------:|:-------------------------------:|:----------------------------------------:|
-| **Normal**        | `monocolor` |        `square-textured`        |        `animated-square-textured`        |
-| **Single Sprite** |      -      | `single-sprite-square-textured` | `single-sprite-animated-square-textured` |
-
-Normal textured skyboxes require 6 image files (1 for each direction), and are recommended. Single sprite textured
-skyboxes only require 1 image file which follows the optifine specification, but they are sometimes buggy.
+| Type        |                                                  |
+|:------------|:------------------------------------------------:|
+| **Vanilla** |                `overworld`, `end`                |
+| **Nuit**    | `monocolor`, `square-textured`, `multi-textured` |
 
 ### Shared Data
 
@@ -363,9 +320,9 @@ Only the `square-textured` skybox type uses these fields
 
 Only the `multi-texture` skybox type uses these fields
 
-|     Name     |                    Datatype                     |                   Description                    | Required | Default value |
-|:------------:|:-----------------------------------------------:|:------------------------------------------------:|:--------:|:-------------:|
-| `animations` | Array of [Animation objects](#animation-object) | Specifies a list of animation objects to be used |   :x:    |       -       |
+|         Name         |                         Datatype                         |                       Description                        | Required | Default value |
+|:--------------------:|:--------------------------------------------------------:|:--------------------------------------------------------:|:--------:|:-------------:|
+| `animatableTextures` | Array of [Animation objects](#animatable-texture-object) | Specifies a list of animatableTexture objects to be used |   :x:    |       -       |
 
 ## Data types
 
@@ -395,10 +352,14 @@ Specifies common properties used by all types of skyboxes.
 {
   "priority": 1,
   "fade": {
-    "startFadeIn": 1000,
-    "endFadeIn": 2000,
-    "startFadeOut": 3000,
-    "endFadeOut": 4000
+    "alwaysOn": false,
+    "duration": 24000,
+    "keyFrames": {
+      "1000": 0.0,
+      "2000": 1.0,
+      "3000": 1.0,
+      "4000": 0.0
+    }
   },
   "maxAlpha": 0.5,
   "transitionInDuration": 20,
@@ -437,16 +398,16 @@ Specifies when and where a skybox should render. All fields are optional.
 
 **Specification**
 
-|     Name     |                    Datatype                     |                                 Description                                  |             Default value             |
-|:------------:|:-----------------------------------------------:|:----------------------------------------------------------------------------:|:-------------------------------------:|
-|   `biomes`   |    Array of [Namespaced Ids](#namespaced-id)    |       Specifies a list of biomes that the skybox should be rendered in       |       Empty Array (all biomes)        |
-|   `worlds`   |    Array of [Namespaced Ids](#namespaced-id)    | Specifies a list of worlds sky effects that the skybox should be rendered in |       Empty Array (all worlds)        |
-| `dimensions` |    Array of [Namespaced Ids](#namespaced-id)    |     Specifies a list of dimension that the skybox should be rendered in      |     Empty Array (all dimensions)      |
-|  `effects`   |    Array of [Namespaced Ids](#namespaced-id)    |      Specifies a list of effects that the skybox should be rendered in       |     Empty Array (default effects)     |
-|  `weather`   |          Array of [Weathers](#weather)          | Specifies a list of weather conditions that the skybox should be rendered in |   Empty Array (vanilla conditions)    |
-|  `xRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  |    Empty Array (all x coordinates)    |
-|  `yRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  |    Empty Array (all y coordinates)    |
-|  `zRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  |    Empty Array (all z coordinates)    |
+|     Name     |                    Datatype                     |                                 Description                                  |          Default value           |
+|:------------:|:-----------------------------------------------:|:----------------------------------------------------------------------------:|:--------------------------------:|
+|   `biomes`   |    Array of [Namespaced Ids](#namespaced-id)    |       Specifies a list of biomes that the skybox should be rendered in       |     Empty Array (all biomes)     |
+|   `worlds`   |    Array of [Namespaced Ids](#namespaced-id)    | Specifies a list of worlds sky effects that the skybox should be rendered in |     Empty Array (all worlds)     |
+| `dimensions` |    Array of [Namespaced Ids](#namespaced-id)    |     Specifies a list of dimension that the skybox should be rendered in      |   Empty Array (all dimensions)   |
+|  `effects`   |    Array of [Namespaced Ids](#namespaced-id)    |      Specifies a list of effects that the skybox should be rendered in       |  Empty Array (default effects)   |
+|  `weather`   |          Array of [Weathers](#weather)          | Specifies a list of weather conditions that the skybox should be rendered in | Empty Array (vanilla conditions) |
+|  `xRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  | Empty Array (all x coordinates)  |
+|  `yRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  | Empty Array (all y coordinates)  |
+|  `zRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  | Empty Array (all z coordinates)  |
 
 **Example**
 
@@ -584,13 +545,11 @@ Stores a list of four integers which specify the time in ticks to start and end 
 
 **Specification**
 
-|      Name      | Datatype |                       Description                       | Required | Default |
-|:--------------:|:--------:|:-------------------------------------------------------:|:--------:|:-------:|
-| `startFadeIn`  | Integer  | The times in ticks when a skybox will start to fade in  |   :x:    |    0    |
-|  `endFadeIn`   | Integer  |   The times in ticks when a skybox will end fading in   |   :x:    |    0    |
-| `startFadeOut` | Integer  | The times in ticks when a skybox will start to fade out |   :x:    |    0    |
-|  `endFadeOut`  | Integer  |  The times in ticks when a skybox will end fading out   |   :x:    |    0    |
-|   `alwaysOn`   | Boolean  | Whether the skybox should always be at full visibility  |   :x:    |  false  |
+|    Name     |                Datatype                |                      Description                       | Required |                          Default                           |
+|:-----------:|:--------------------------------------:|:------------------------------------------------------:|:--------:|:----------------------------------------------------------:|
+| `alwaysOn`  |                Boolean                 | Whether the skybox should always be at full visibility |   :x:    | If `keyFrames` is empty, defaults to true; otherwise false |
+| `duration`  |                  Long                  |        The duration of the fade cycle in ticks         |   :x:    |                           24000                            |
+| `keyFrames` | [Map Object](#map-object)<Long, Float> |  Keys the fade alpha value to ticks in the fade cycle  |   :x:    |                             -                              |
 
 **Conversion Table**
 
@@ -605,10 +564,14 @@ Stores a list of four integers which specify the time in ticks to start and end 
 
 ```json
 {
-  "startFadeIn": 1000,
-  "endFadeIn": 2000,
-  "startFadeOut": 3000,
-  "endFadeOut": 4000
+  "alwaysOn": false,
+  "duration": 24000,
+  "keyFrames": {
+    "1000": 0.0,
+    "2000": 1.0,
+    "3000": 1.0,
+    "4000": 0.0
+  }
 }
 ```
 
@@ -838,20 +801,20 @@ More information on custom blend can be found in the [blend documentation](blend
 }
 ```
 
-### Animation Object
+### Animatable Texture Object
 
-Specifies an animation object.
+Specifies an animatableTexture object.
 
 **Specification**
 
-|      Name       |                  Datatype                   |                                  Description                                  |      Required      | Default Value |
-|:---------------:|:-------------------------------------------:|:-----------------------------------------------------------------------------:|:------------------:|:-------------:|
-|    `texture`    |       [Namespaced Id](#namespaced-id)       | Specifies the location of the texture to be used when rendering the animation | :white_check_mark: |       -       |
-|    `uvRange`    |     [UV Range Object](#uv-range-object)     |          Specifies the location in UV range to render the animation           | :white_check_mark: |       -       |
-|  `gridColumns`  |                   Integer                   |           Specifies the amount of columns the animation texture has           | :white_check_mark: |       -       |
-|   `gridRows`    |                   Integer                   |            Specifies the amount of rows the animation texture has             | :white_check_mark: |       -       |
-|   `duration`    |                   Integer                   |    Specifies the default duration of each animation frame in milliseconds     | :white_check_mark: |       -       |
-| `frameDuration` | [Map Object](#map-object)<Integer, Integer> |              Specifies the specific duration per animation frame              |        :x:         |       -       |
+|      Name       |                 Datatype                 |                                      Description                                      |      Required      |    Default Value     |
+|:---------------:|:----------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------:|:--------------------:|
+|    `texture`    |     [Namespaced Id](#namespaced-id)      | Specifies the location of the texture to be used when rendering the animatableTexture | :white_check_mark: |          -           |
+|    `uvRange`    |   [UV Range Object](#uv-range-object)    |     Specifies the location in UV range of the sky to render the animatableTexture     |        :x:         | Entire skybox region |
+|  `gridColumns`  |                 Integer                  |           Specifies the amount of columns the animatableTexture texture has           |        :x:         |          1           |
+|   `gridRows`    |                 Integer                  |            Specifies the amount of rows the animatableTexture texture has             |        :x:         |          1           |
+|   `duration`    |                   Long                   |    Specifies the default duration of each animatableTexture frame in milliseconds     |        :x:         |        24000         |
+| `frameDuration` | [Map Object](#map-object)<Integer, Long> |              Specifies the specific duration per animatableTexture frame              |        :x:         |          -           |
 
 **Example**
 
@@ -909,11 +872,14 @@ Here is a full skybox file for example purposes:
   "properties": {
     "priority": 1,
     "fade": {
-      "startFadeIn": 1000,
-      "endFadeIn": 2000,
-      "startFadeOut": 11000,
-      "endFadeOut": 13000,
-      "alwaysOn": true
+      "alwaysOn": true,
+      "duration": 24000,
+      "keyFrames": {
+        "1000": 0.0,
+        "2000": 1.0,
+        "3000": 1.0,
+        "4000": 0.0
+      }
     },
     "maxAlpha": 1.0,
     "transitionInDuration": 20,
