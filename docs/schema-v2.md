@@ -1,6 +1,6 @@
 # Skybox specification
 
-**Schema Version 2 (DRAFT)**
+**Schema Version 1 (DRAFT)**
 
 This specification defines a format for a set of rules for the purpose of custom sky rendering.
 
@@ -18,10 +18,6 @@ This specification defines a format for a set of rules for the purpose of custom
     - [`end`](#end-skybox)
     - [Textured](#textured-skyboxes)
     - [`square-textured`](#square-textured-skybox)
-    - [`single-sprite-square-textured`](#single-sprite-square-textured-skybox)
-    - [Animated](#animated-skyboxes)
-    - [`animated-square-textured`](#animated-square-textured-skybox)
-    - [`single-sprite-animated-square-textured`](#single-sprite-animated-square-textured-skybox)
     - [`multi-texture`](#multi-texture-skybox)
 - [Data Types](#data-types)
     - [Properties Object](#properties-object)
@@ -35,17 +31,15 @@ This specification defines a format for a set of rules for the purpose of custom
     - [Rotation Object](#rotation-object)
     - [Weather](#weather)
     - [Namespaced Id](#namespaced-id)
-    - [Textures Object](#textures-object)
     - [Blend Object](#blend-object)
     - [Blender Object](#blender-object)
-    - [Loop Object](#loop-object)
     - [Animation Object](#animation-object)
-    - [UV Ranges Object](#uv-ranges-object)
+    - [UV Range Object](#uv-range-object)
 - [Full Example](#full-example)
 
 # Structure
 
-The basic structure of a fabricskyboxes skybox file may look something like this:
+The basic structure of a nuit skybox file may look something like this:
 
 ```json5
 {
@@ -70,15 +64,8 @@ The basic structure of a fabricskyboxes skybox file may look something like this
     /* x ranges (MinMax array, optional) */
     "yRanges": [],
     /* y ranges (MinMax array, optional) */
-    "zRanges": [],
+    "zRanges": []
     /* z ranges (MinMax array, optional) */
-    "loop": // loop object (optional)
-    {
-      "days": 0,
-      /* days to loop (double, optional)*/
-      "range": []
-      /* day ranges (MinMax array, optional)*/
-    }
   },
   "decorations": // decorations object (optional)
   {
@@ -282,8 +269,8 @@ The basic structure of a fabricskyboxes skybox file may look something like this
     {
       "texture": "",
       // animation sprite sheet texture (string)
-      "uvRanges": {
-        // uv ranges for animation (uv-ranges-object)
+      "uvRange": {
+        // uv range for animation (uv-range-object)
         "minU": 0.25,
         "minV": 0.25,
         "maxU": 0.50,
@@ -368,41 +355,9 @@ All `-textured` (non-`monocolor`) skybox types use these fields
 
 Only the `square-textured` skybox type uses these fields
 
-|    Name    |              Datatype               |                     Description                      |      Required      | Default value |
-|:----------:|:-----------------------------------:|:----------------------------------------------------:|:------------------:|:-------------:|
-| `textures` | [Textures object](#textures-object) | Specifies the textures to be used for each direction | :white_check_mark: |       -       |
-
-### Single sprite Square Textured skybox
-
-Only the `single-sprite-square-textured` skybox type uses these fields
-
 |   Name    |            Datatype             |                   Description                    |      Required      | Default value |
 |:---------:|:-------------------------------:|:------------------------------------------------:|:------------------:|:-------------:|
 | `texture` | [Namespaced Id](#namespaced-id) | Specifies the location of the texture to be used | :white_check_mark: |       -       |
-
-### Animated skyboxes
-
-Animated skybox types (`animated-square-textured` and `single-sprite-animated-square-textured`) use these fields
-
-| Name  |    Datatype    |                       Description                        |      Required      | Default value |
-|:-----:|:--------------:|:--------------------------------------------------------:|:------------------:|:-------------:|
-| `fps` | Floating Point | Specifies the number of frames to be rendered per second | :white_check_mark: |       -       |
-
-### Animated Square Textured skybox
-
-Only the `animated-square-textured` skybox type uses these fields
-
-|        Name         |                   Datatype                    |                         Description                          |      Required      | Default value |
-|:-------------------:|:---------------------------------------------:|:------------------------------------------------------------:|:------------------:|:-------------:|
-| `animationTextures` | Array of [Textures objects](#textures-object) | Specifies the list of textures to be used for each direction | :white_check_mark: |       -       |
-
-### Single sprite Animated Square Textured skybox
-
-Only the `single-sprite-animated-square-textured` skybox type uses these fields
-
-|        Name         |                 Datatype                  |                     Description                      |      Required      | Default value |
-|:-------------------:|:-----------------------------------------:|:----------------------------------------------------:|:------------------:|:-------------:|
-| `animationTextures` | Array of [Namespaced Ids](#namespaced-id) | Specifies a list of locations to textures to be used | :white_check_mark: |       -       |
 
 ### Multi Texture Skybox
 
@@ -492,7 +447,6 @@ Specifies when and where a skybox should render. All fields are optional.
 |  `xRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  |    Empty Array (all x coordinates)    |
 |  `yRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  |    Empty Array (all y coordinates)    |
 |  `zRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  |    Empty Array (all z coordinates)    |
-|    `loop`    |           [Loop Object](#loop-object)           |     Specifies the loop object that the skybox should be rendered between     | Default Loop Object which is disabled |
 
 **Example**
 
@@ -539,16 +493,7 @@ Specifies when and where a skybox should render. All fields are optional.
       "min": -100.0,
       "max": 100.0
     }
-  ],
-  "loop": {
-    "days": 8,
-    "ranges": [
-      {
-        "min": 1,
-        "max": 7
-      }
-    ]
-  }
+  ]
 }
 ```
 
@@ -804,40 +749,12 @@ Does not contain any fields. The value must be one of `clear`, `rain`, `thunder`
 ### Namespaced Id
 
 Specifies the location of a file as a string in the format `namespace:path`. The string `namespace:path` translates
-to `assets/namespace/path` (at least in the scenarios present in FabricSkyboxes). More info can be found on
+to `assets/namespace/path` (at least in the scenarios present in Nuit). More info can be found on
 the [Minecraft Wiki](https://minecraft.wiki/w/Resource_location).
 
 **Specification**
 
 Does not contain any fields. The value must consist of a valid namespace and path, separated by a colon (`:`)
-
-### Textures Object
-
-Specifies a texture for each of the six cardinal directions.
-
-**Specification**
-
-|   Name   |            Datatype             |                                   Description                                    |
-|:--------:|:-------------------------------:|:--------------------------------------------------------------------------------:|
-| `north`  | [Namespaced Id](#namespaced-id) | Specifies the location of the texture to be used when rendering the skybox north |
-| `south`  | [Namespaced Id](#namespaced-id) | Specifies the location of the texture to be used when rendering the skybox south |
-|  `east`  | [Namespaced Id](#namespaced-id) | Specifies the location of the texture to be used when rendering the skybox east  |
-|  `west`  | [Namespaced Id](#namespaced-id) | Specifies the location of the texture to be used when rendering the skybox west  |
-|  `top`   | [Namespaced Id](#namespaced-id) |  Specifies the location of the texture to be used when rendering the skybox up   |
-| `bottom` | [Namespaced Id](#namespaced-id) | Specifies the location of the texture to be used when rendering the skybox down  |
-
-**Example**
-
-```json
-{
-  "north": "minecraft:textures/block/blue_ice.png",
-  "south": "minecraft:textures/block/blue_ice.png",
-  "east": "minecraft:textures/block/dark_oak_log.png",
-  "west": "minecraft:textures/block/dark_oak_log.png",
-  "top": "minecraft:textures/block/diamond_ore.png",
-  "bottom": "minecraft:textures/block/diamond_ore.png"
-}
-```
 
 ### Blend Object
 
@@ -921,35 +838,6 @@ More information on custom blend can be found in the [blend documentation](blend
 }
 ```
 
-### Loop Object
-
-Specifies the loop condition.
-
-**Specification**
-
-|   Name   |                    Datatype                     |                   Description                    | Required |        Default         |
-|:--------:|:-----------------------------------------------:|:------------------------------------------------:|:--------:|:----------------------:|
-|  `days`  |                     Double                      |      Specifies the number of days to loop.       |   :x:    |           7            |
-| `ranges` | Array of [MinMax Entries](#minmax-entry-object) | Specifies the days where the skybox is rendered. |   :x:    | Empty Array (all days) |
-
-**Example**
-
-```json
-{
-  "days": 30.0,
-  "ranges": [
-    {
-      "min": 0,
-      "max": 7
-    },
-    {
-      "min": 14,
-      "max": 21
-    }
-  ]
-}
-```
-
 ### Animation Object
 
 Specifies an animation object.
@@ -959,7 +847,7 @@ Specifies an animation object.
 |      Name       |                  Datatype                   |                                  Description                                  |      Required      | Default Value |
 |:---------------:|:-------------------------------------------:|:-----------------------------------------------------------------------------:|:------------------:|:-------------:|
 |    `texture`    |       [Namespaced Id](#namespaced-id)       | Specifies the location of the texture to be used when rendering the animation | :white_check_mark: |       -       |
-|   `uvRanges`    |    [UV Ranges Object](#uv-ranges-object)    |          Specifies the location in UV ranges to render the animation          | :white_check_mark: |       -       |
+|    `uvRange`    |     [UV Range Object](#uv-range-object)     |          Specifies the location in UV range to render the animation           | :white_check_mark: |       -       |
 |  `gridColumns`  |                   Integer                   |           Specifies the amount of columns the animation texture has           | :white_check_mark: |       -       |
 |   `gridRows`    |                   Integer                   |            Specifies the amount of rows the animation texture has             | :white_check_mark: |       -       |
 |   `duration`    |                   Integer                   |    Specifies the default duration of each animation frame in milliseconds     | :white_check_mark: |       -       |
@@ -969,8 +857,8 @@ Specifies an animation object.
 
 ```json
 {
-  "texture": "fabricskyboxes:/sky/anim_texture.png",
-  "uvRanges": {
+  "texture": "Nuit:/sky/anim_texture.png",
+  "uvRange": {
     "minU": 0.25,
     "minV": 0.25,
     "maxU": 0.50,
@@ -986,7 +874,7 @@ Specifies an animation object.
 }
 ```
 
-### UV Ranges Object
+### UV Range Object
 
 Specifies a UV range object for defining texture coordinates.
 
@@ -1068,11 +956,7 @@ Here is a full skybox file for example purposes:
     "weather": [],
     "xRanges": [],
     "yRanges": [],
-    "zRanges": [],
-    "loop": {
-      "days": 1.0,
-      "ranges": []
-    }
+    "zRanges": []
   },
   "decorations": {
     "sun": "minecraft:textures/environment/sun.png",
@@ -1106,14 +990,6 @@ Here is a full skybox file for example purposes:
   },
   "blend": {
     "type": "add"
-  },
-  "textures": {
-    "north": "minecraft:textures/block/blue_ice.png",
-    "south": "minecraft:textures/block/blue_ice.png",
-    "east": "minecraft:textures/block/dark_oak_log.png",
-    "west": "minecraft:textures/block/dark_oak_log.png",
-    "top": "minecraft:textures/block/diamond_ore.png",
-    "bottom": "minecraft:textures/block/diamond_ore.png"
   }
 }
 ```

@@ -1,8 +1,8 @@
-# FabricSkyBoxes Code of Conduct
+# Nuit Code of Conduct
 
 ## Introduction
 
-As a contributor or user of FabricSkyBoxes, you are required to abide by this Code of Conduct to ensure a welcoming and respectful environment for everyone involved. The Code of Conduct applies to all interactions and communication related to the mod, including but not limited to forums, GitHub discussions, in-game chat, and social media.
+As a contributor or user of Nuit, you are required to abide by this Code of Conduct to ensure a welcoming and respectful environment for everyone involved. The Code of Conduct applies to all interactions and communication related to the mod, including but not limited to forums, GitHub discussions, in-game chat, and social media.
 
 ## 1. Be Respectful and Inclusive
 
@@ -38,4 +38,4 @@ Violation of this Code of Conduct may result in appropriate actions taken by the
 
 ## Conclusion
 
-By contributing to or using FabricSkyBoxes, you agree to uphold this Code of Conduct. Let's work together to maintain a friendly, supportive, and inclusive environment for all users and contributors.
+By contributing to or using Nuit, you agree to uphold this Code of Conduct. Let's work together to maintain a friendly, supportive, and inclusive environment for all users and contributors.

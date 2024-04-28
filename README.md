@@ -1,11 +1,11 @@
 <div align="center">
 
-# FabricSkyboxes
+# Nuit
 
 #### Implements custom skyboxes, like OptiFine! (With a different format)
 
 ![](https://cdn.modrinth.com/data/YBz7DOs8/images/49eab46d1e74e8f781404a8f773a1a09dedda5aa.png)
-_Screenshot taken with the [Awesome Skies](https://github.com/heymanMC/Awesome-Skies) resource pack, a pack made to run **only** under FSB_ (Credit: [heyman](https://github.com/heymanMC))
+_Screenshot taken with the [Awesome Skies](https://github.com/heymanMC/Awesome-Skies) resource pack, a pack made to run **only** under Nuit_ (Credit: [heyman](https://github.com/heymanMC))
 
 </div>
 
@@ -15,13 +15,13 @@ This mod's purpose is to allow the specification of custom skyboxes, with any te
 
 ## Usage
 
-### FSB skybox format
+### Nuit skybox format
 
 The documentation on this format can be found [here](docs).
 
 ### OptiFine skybox format
 
-It is **out of the scope** of this mod to support the OptiFine format by itself. [FSB-Interop](https://modrinth.com/mod/fabricskyboxes-interop) is designed as an add-on to FabricSkyboxes to achieve compatibility with the OptiFine format. Alternatively, [MCPP++](https://modrinth.com/mod/mcpppp) can be used following these [instructions](https://github.com/supsm/MCPPPP#use).
+It is **out of the scope** of this mod to support the OptiFine format by itself. [FSB-Interop](https://modrinth.com/mod/fabricskyboxes-interop) is designed as an add-on to Nuit to achieve compatibility with the OptiFine format. Alternatively, [MCPP++](https://modrinth.com/mod/mcpppp) can be used following these [instructions](https://github.com/supsm/MCPPPP#use).
 
 ## Suggestions / Support
 

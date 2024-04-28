@@ -6,17 +6,17 @@ and [glBlendEquation](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/
 textured sky boxes. To get a better understanding of the blending functions and equations, you can use
 an [Online Visualize Blending Tool](https://www.andersriggelsen.dk/glblendfunc.php).
 
-In FabricSkyboxes, you must specify an integer value corresponding to the `sourceFactor` and `destinationFactor`
+In Nuit, you must specify an integer value corresponding to the `sourceFactor` and `destinationFactor`
 from `glBlendFunc`, and `equation` from `glBlendEquation`, respectively. A table of supported enums and their
 corresponding integer values is provided below.
 If `separateFunction` is enabled, you must also fill `sourceFactorAlpha` and `destinationFactorAlpha`
 from `glBlendFuncSeparate`.
 
-Here's an example of how to achieve the burn blend effect in FabricSkyboxes:
+Here's an example of how to achieve the burn blend effect in Nuit:
 
 #### Burn Blend Mode
 
-In the `"blend"` property of FabricSkyboxes, specify the following JSON:
+In the `"blend"` property of Nuit, specify the following JSON:
 
 ```json
 {
@@ -41,7 +41,7 @@ glBlendEquation(ADD);
 setShaderColor(RED,GREEN,BLUE,ALPHA);  // The `redAlphaEnabled`, `greenAlphaEnabled`, `blueAlphaEnabled`, and `alphaEnabled` values will determine whether the internal alpha state or a predetermined value of 1.0 will be used for the corresponding parameters.
 ```
 
-Note that unlike in normal OpenGL, FabricSkyboxes does not support enums. You must specify an integer value.
+Note that unlike in normal OpenGL, Nuit does not support enums. You must specify an integer value.
 
 #### Example decorations blender
 
