@@ -50,25 +50,20 @@ public class MultiTexturedSkybox extends TexturedSkybox<MultiTexturedSkybox> {
             // 4 = east
             // 5 = west
             // List of UV ranges for each face of the cube
-            UVRange faceUVRange = new UVRange(0, 0, 1.0F / 3.0F, 1.0F / 2.0F);
+            UVRange faceUVRange = Utils.TEXTURE_FACES[i];
             matrices.pushPose();
 
             if (i == 1) {
-                faceUVRange = new UVRange(1.0F / 3.0F, 1.0F / 2.0F, 2.0F / 3.0F, 1);
                 matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
             } else if (i == 2) {
-                faceUVRange = new UVRange(2.0F / 3.0F, 0, 1, 1.0F / 2.0F);
                 matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
                 matrices.mulPose(Axis.YP.rotationDegrees(180.0F));
             } else if (i == 3) {
-                faceUVRange = new UVRange(1.0F / 3.0F, 0, 2.0F / 3.0F, 1.0F / 2.0F);
                 matrices.mulPose(Axis.XP.rotationDegrees(180.0F));
             } else if (i == 4) {
-                faceUVRange = new UVRange(2.0F / 3.0F, 1.0F / 2.0F, 1, 1);
                 matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
                 matrices.mulPose(Axis.YP.rotationDegrees(-90.0F));
             } else if (i == 5) {
-                faceUVRange = new UVRange(0, 1.0F / 2.0F, 1.0F / 3.0F, 1);
                 matrices.mulPose(Axis.ZP.rotationDegrees(-90.0F));
                 matrices.mulPose(Axis.YP.rotationDegrees(90.0F));
             }

@@ -51,9 +51,8 @@ public class SkyboxManager implements NuitApi, ClientTickEvent.ClientLevel {
         }
 
         SkyboxType<? extends Skybox> type = SkyboxType.REGISTRY.get(metadata.getType());
-        //Preconditions.checkNotNull(type, "Unknown skybox type: " + metadata.getType().getPath().replace('_', '-'));
         if (type == null) {
-            NuitClient.getLogger().warn("Unknown skybox type: {}", metadata.getType().getPath().replace('_', '-'));
+            NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", id.toString(), metadata.getType().getPath().replace('_', '-'));
             return null;
         }
         return type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst();
@@ -141,7 +140,6 @@ public class SkyboxManager implements NuitApi, ClientTickEvent.ClientLevel {
         return this.activeSkyboxes;
     }
 
-    //todo: implement this
     @Override
     public void tick(net.minecraft.client.multiplayer.ClientLevel client) {
         StreamSupport

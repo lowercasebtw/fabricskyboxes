@@ -81,7 +81,7 @@ public abstract class AbstractSkybox<T extends Skybox> implements NuitSkybox {
             this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
         } else {
             Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
-            fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, keyFrames.getA(), keyFrames.getA(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
+            fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
 
             if (this.lastTime == currentTime - 1 || this.lastTime == currentTime) { // Check if time is ticking or if time is same (doDaylightCycle gamerule)
                 this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);

@@ -17,6 +17,15 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Utils {
+    public static final UVRange[] TEXTURE_FACES = new UVRange[] {
+            new UVRange(0, 0, 1.0F / 3.0F, 1.0F / 2.0F), // bottom
+            new UVRange(1.0F / 3.0F, 1.0F / 2.0F, 2.0F / 3.0F, 1), // north
+            new UVRange(2.0F / 3.0F, 0, 1, 1.0F / 2.0F), // south
+            new UVRange(1.0F / 3.0F, 0, 2.0F / 3.0F, 1.0F / 2.0F), // top
+            new UVRange(2.0F / 3.0F, 1.0F / 2.0F, 1, 1), // east
+            new UVRange(0, 1.0F / 2.0F, 1.0F / 3.0F, 1) // west
+    };
+
 
     /**
      * Maps input intersection to output intersection, does so by taking in input and output UV ranges and then mapping the input intersection to the output intersection.

@@ -3,6 +3,7 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
+import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class Fade {
     }
 
     private Map<Long, Float> parseKeyFrames(Map<String, Float> keyFramesParsed) {
-        Map<Long, Float> parsedKeyFrames = new LinkedHashMap<>();
+        Map<Long, Float> parsedKeyFrames = new Long2FloatArrayMap();
         for (Map.Entry<String, Float> entry : keyFramesParsed.entrySet()) {
             try {
                 long keyFrame = Long.parseLong(entry.getKey());

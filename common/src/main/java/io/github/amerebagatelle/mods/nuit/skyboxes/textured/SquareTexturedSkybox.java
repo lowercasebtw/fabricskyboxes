@@ -10,6 +10,7 @@ import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.*;
 import io.github.amerebagatelle.mods.nuit.skyboxes.AbstractSkybox;
 import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
+import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
 import org.joml.Matrix4f;
 
@@ -43,32 +44,27 @@ public class SquareTexturedSkybox extends TexturedSkybox<SquareTexturedSkybox> {
         BufferBuilder bufferBuilder = tessellator.getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         RenderSystem.setShaderTexture(0, this.texture.getTextureId());
-        for (int i = 0; i < 6; ++i) {
+        for (int face = 0; face < 6; face++) {
             // 0 = bottom
             // 1 = north
             // 2 = south
             // 3 = top
             // 4 = east
             // 5 = west
-            UVRange tex = this.texture.withUV(0, 0, 1.0F / 3.0F, 1.0F / 2.0F);
+            UVRange tex = Utils.TEXTURE_FACES[face];
             matrices.pushPose();
 
-            if (i == 1) {
-                tex = this.texture.withUV(1.0F / 3.0F, 1.0F / 2.0F, 2.0F / 3.0F, 1);
+            if (face == 1) {
                 matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
-            } else if (i == 2) {
-                tex = this.texture.withUV(2.0F / 3.0F, 0, 1, 1.0F / 2.0F);
+            } else if (face == 2) {
                 matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
                 matrices.mulPose(Axis.YP.rotationDegrees(180.0F));
-            } else if (i == 3) {
-                tex = this.texture.withUV(1.0F / 3.0F, 0, 2.0F / 3.0F, 1.0F / 2.0F);
+            } else if (face == 3) {
                 matrices.mulPose(Axis.XP.rotationDegrees(180.0F));
-            } else if (i == 4) {
-                tex = this.texture.withUV(2.0F / 3.0F, 1.0F / 2.0F, 1, 1);
+            } else if (face == 4) {
                 matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
                 matrices.mulPose(Axis.YP.rotationDegrees(-90.0F));
-            } else if (i == 5) {
-                tex = this.texture.withUV(0, 1.0F / 2.0F, 1.0F / 3.0F, 1);
+            } else if (face == 5) {
                 matrices.mulPose(Axis.ZP.rotationDegrees(-90.0F));
                 matrices.mulPose(Axis.YP.rotationDegrees(90.0F));
             }
