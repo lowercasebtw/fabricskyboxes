@@ -1,14 +1,9 @@
-name: Manual Publish
+name: Publish
 
 on:
-  workflow_dispatch:
-    inputs:
-      title:
-        description: 'Enter a title'
-        required: true
-      tag:
-        description: 'Enter a tag'
-        required: true
+  release:
+    types:
+      - published
 
 jobs:
   build:
@@ -44,12 +39,10 @@ jobs:
           curseforge-id: 408209
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-tag: '${{ github.event.inputs.tag }}+${{ matrix.platform }}'
-          github-generate-changelog: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          name: '[${{matrix.name}}] ${{ github.event.inputs.title }}'
-          version: '${{ github.event.inputs.tag }}+${{ matrix.platform }}'
+          name: '[${{matrix.name}}] ${{ github.event.release.name }}'
+          version: '${{ github.event.release.tag_name }}+${{ matrix.platform }}'
           version-type: release
 
           loaders: ${{ matrix.platform }}
