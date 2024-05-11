@@ -5,7 +5,7 @@ import com.google.common.collect.Iterables;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.event.events.client.ClientTickEvent;
+import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class SkyboxManager implements NuitApi, ClientTickEvent.ClientLevel {
+public class SkyboxManager implements NuitApi {
     private static final SkyboxManager INSTANCE = new SkyboxManager();
     private final Map<ResourceLocation, Skybox> skyboxMap = new Object2ObjectLinkedOpenHashMap<>();
     /**
@@ -50,7 +50,7 @@ public class SkyboxManager implements NuitApi, ClientTickEvent.ClientLevel {
             return null;
         }
 
-        SkyboxType<? extends Skybox> type = SkyboxType.REGISTRY.get(metadata.getType());
+        SkyboxType<? extends Skybox> type = NuitPlatformHelper.INSTANCE.getSkyboxTypeRegistry().get(metadata.getType());
         if (type == null) {
             NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", id.toString(), metadata.getType().getPath().replace('_', '-'));
             return null;
@@ -65,6 +65,7 @@ public class SkyboxManager implements NuitApi, ClientTickEvent.ClientLevel {
     public void addSkybox(ResourceLocation identifier, JsonObject jsonObject) {
         Skybox skybox = SkyboxManager.parseSkyboxJson(identifier, jsonObject);
         if (skybox != null) {
+            NuitClient.getLogger().info("Adding skybox {}", identifier.toString());
             this.addSkybox(identifier, skybox);
         }
     }
@@ -140,7 +141,6 @@ public class SkyboxManager implements NuitApi, ClientTickEvent.ClientLevel {
         return this.activeSkyboxes;
     }
 
-    @Override
     public void tick(net.minecraft.client.multiplayer.ClientLevel client) {
         StreamSupport
                 .stream(Iterables.concat(this.skyboxMap.values(), this.permanentSkyboxMap.values()).spliterator(), false)

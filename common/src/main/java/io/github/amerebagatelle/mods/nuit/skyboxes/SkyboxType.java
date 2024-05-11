@@ -4,15 +4,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.mojang.serialization.Codec;
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.skyboxes.textured.MultiTexturedSkybox;
 import io.github.amerebagatelle.mods.nuit.skyboxes.textured.SquareTexturedSkybox;
 import io.github.amerebagatelle.mods.nuit.skyboxes.vanilla.EndSkybox;
 import io.github.amerebagatelle.mods.nuit.skyboxes.vanilla.OverworldSkybox;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
@@ -20,16 +19,16 @@ import java.util.function.Function;
 
 public class SkyboxType<T extends Skybox> {
     public static final Codec<ResourceLocation> SKYBOX_ID_CODEC;
-    public static final Registrar<SkyboxType<? extends Skybox>> REGISTRY = RegistrarManager.get(NuitClient.MOD_ID).<SkyboxType<? extends Skybox>>builder(new ResourceLocation(NuitClient.MOD_ID, "skybox_type")).syncToClients().build();
+    public static final ResourceKey<Registry<SkyboxType<? extends Skybox>>> SKYBOX_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(NuitClient.MOD_ID, "skybox_type"));
 
     // Vanilla skyboxes
-    public static final RegistrySupplier<SkyboxType<OverworldSkybox>> OVERWORLD_SKYBOX;
-    public static final RegistrySupplier<SkyboxType<EndSkybox>> END_SKYBOX;
+    public static final SkyboxType<OverworldSkybox> OVERWORLD;
+    public static final SkyboxType<EndSkybox> END;
 
     // FSB skyboxes
-    public static final RegistrySupplier<SkyboxType<MonoColorSkybox>> MONO_COLOR_SKYBOX;
-    public static final RegistrySupplier<SkyboxType<SquareTexturedSkybox>> SQUARE_TEXTURED_SKYBOX;
-    public static final RegistrySupplier<SkyboxType<MultiTexturedSkybox>> MULTI_TEXTURE_SKYBOX;
+    public static final SkyboxType<MonoColorSkybox> MONO_COLOR_SKYBOX;
+    public static final SkyboxType<SquareTexturedSkybox> SQUARE_TEXTURED_SKYBOX;
+    public static final SkyboxType<MultiTexturedSkybox> MULTI_TEXTURED_SKYBOX;
 
     static {
         SKYBOX_ID_CODEC = Codec.STRING.xmap((s) -> {
@@ -44,14 +43,15 @@ public class SkyboxType<T extends Skybox> {
             return id.toString().replace('_', '-');
         });
 
+
         // Vanilla skyboxes
-        OVERWORLD_SKYBOX = register(SkyboxType.Builder.create(OverworldSkybox.class, "overworld").add(1, OverworldSkybox.CODEC).build());
-        END_SKYBOX = register(SkyboxType.Builder.create(EndSkybox.class, "end").add(1, EndSkybox.CODEC).build());
+        OVERWORLD = SkyboxType.Builder.create(OverworldSkybox.class, "overworld").add(1, OverworldSkybox.CODEC).build();
+        END = SkyboxType.Builder.create(EndSkybox.class, "end").add(1, EndSkybox.CODEC).build();
 
         // FSB skyboxes
-        MONO_COLOR_SKYBOX = register(SkyboxType.Builder.create(MonoColorSkybox.class, "monocolor").add(1, MonoColorSkybox.CODEC).build());
-        SQUARE_TEXTURED_SKYBOX = register(SkyboxType.Builder.create(SquareTexturedSkybox.class, "square-textured").add(1, SquareTexturedSkybox.CODEC).build());
-        MULTI_TEXTURE_SKYBOX = register(SkyboxType.Builder.create(MultiTexturedSkybox.class, "multi-textured").add(1, MultiTexturedSkybox.CODEC).build());
+        MONO_COLOR_SKYBOX = SkyboxType.Builder.create(MonoColorSkybox.class, "monocolor").add(1, MonoColorSkybox.CODEC).build();
+        SQUARE_TEXTURED_SKYBOX = SkyboxType.Builder.create(SquareTexturedSkybox.class, "square-textured").add(1, SquareTexturedSkybox.CODEC).build();
+        MULTI_TEXTURED_SKYBOX = SkyboxType.Builder.create(MultiTexturedSkybox.class, "multi-textured").add(1, MultiTexturedSkybox.CODEC).build();
     }
 
     private final BiMap<Integer, Codec<T>> codecBiMap;
@@ -62,22 +62,12 @@ public class SkyboxType<T extends Skybox> {
         this.name = name;
     }
 
-    public static void initRegistry() {
-        if (REGISTRY == null) {
-            System.err.println("[Nuit] Registry not loaded?");
-        }
-    }
-
-    private static <T extends Skybox> RegistrySupplier<SkyboxType<T>> register(SkyboxType<T> type) {
-        return REGISTRY.register(type.createId(NuitClient.MOD_ID), () -> type);
-    }
-
     public String getName() {
         return this.name;
     }
 
-    public ResourceLocation createId(String namespace) {
-        return this.createIdFactory().apply(namespace);
+    public ResourceLocation createId(/*String namespace*/) {
+        return this.createIdFactory().apply(/*namespace*/ NuitClient.MOD_ID);
     }
 
 
@@ -116,10 +106,6 @@ public class SkyboxType<T extends Skybox> {
 
         public SkyboxType<T> build() {
             return new SkyboxType<>(this.builder.build(), this.name);
-        }
-
-        public SkyboxType<T> buildAndRegister(String namespace) {
-            return REGISTRY.register(new ResourceLocation(namespace, this.name.replace('-', '_')), this::build).get();
         }
     }
 }

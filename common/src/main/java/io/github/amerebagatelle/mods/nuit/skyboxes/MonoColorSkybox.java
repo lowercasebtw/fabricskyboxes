@@ -5,14 +5,13 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import org.joml.Matrix4f;
 
-public class MonoColorSkybox extends AbstractSkybox<MonoColorSkybox> {
+public class MonoColorSkybox extends AbstractSkybox {
     public static Codec<MonoColorSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.DEFAULT).forGetter(AbstractSkybox::getConditions),
@@ -27,11 +26,6 @@ public class MonoColorSkybox extends AbstractSkybox<MonoColorSkybox> {
         super(properties, conditions, decorations);
         this.color = color;
         this.blend = blend;
-    }
-
-    @Override
-    public RegistrySupplier<SkyboxType<MonoColorSkybox>> getType() {
-        return SkyboxType.MONO_COLOR_SKYBOX;
     }
 
     @Override

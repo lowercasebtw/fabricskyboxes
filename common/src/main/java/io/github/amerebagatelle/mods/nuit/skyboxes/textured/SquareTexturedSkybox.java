@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.*;
 import io.github.amerebagatelle.mods.nuit.skyboxes.AbstractSkybox;
@@ -14,7 +13,7 @@ import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
 import org.joml.Matrix4f;
 
-public class SquareTexturedSkybox extends TexturedSkybox<SquareTexturedSkybox> {
+public class SquareTexturedSkybox extends TexturedSkybox {
     public static Codec<SquareTexturedSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.DEFAULT).forGetter(AbstractSkybox::getConditions),
@@ -27,11 +26,6 @@ public class SquareTexturedSkybox extends TexturedSkybox<SquareTexturedSkybox> {
     public SquareTexturedSkybox(Properties properties, Conditions conditions, Decorations decorations, Blend blend, Texture texture) {
         super(properties, conditions, decorations, blend);
         this.texture = texture;
-    }
-
-    @Override
-    public RegistrySupplier<SkyboxType<SquareTexturedSkybox>> getType() {
-        return SkyboxType.SQUARE_TEXTURED_SKYBOX;
     }
 
     public Texture getTexture() {

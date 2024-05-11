@@ -20,7 +20,7 @@ import org.joml.Vector3f;
 
 import java.util.Objects;
 
-public abstract class TexturedSkybox<T extends Skybox> extends AbstractSkybox<T> implements RotatableSkybox {
+public abstract class TexturedSkybox extends AbstractSkybox implements RotatableSkybox {
     public Rotation rotation;
     public Blend blend;
 

@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.Conditions;
@@ -23,7 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-public class OverworldSkybox extends AbstractSkybox<OverworldSkybox> {
+public class OverworldSkybox extends AbstractSkybox {
     public static Codec<OverworldSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.DEFAULT).forGetter(AbstractSkybox::getConditions),
@@ -32,11 +31,6 @@ public class OverworldSkybox extends AbstractSkybox<OverworldSkybox> {
 
     public OverworldSkybox(Properties properties, Conditions conditions, Decorations decorations) {
         super(properties, conditions, decorations);
-    }
-
-    @Override
-    public RegistrySupplier<SkyboxType<OverworldSkybox>> getType() {
-        return SkyboxType.OVERWORLD_SKYBOX;
     }
 
     @Override

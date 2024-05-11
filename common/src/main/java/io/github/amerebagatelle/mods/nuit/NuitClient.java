@@ -1,15 +1,8 @@
 package io.github.amerebagatelle.mods.nuit;
 
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.platform.Platform;
-import dev.architectury.registry.ReloadListenerRegistry;
+import io.github.amerebagatelle.mods.nuit.api.NuitApi;
+import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.config.NuitConfig;
-import io.github.amerebagatelle.mods.nuit.resource.SkyboxResourceListener;
-import io.github.amerebagatelle.mods.nuit.screen.SkyboxDebugScreen;
-import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.packs.PackType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,13 +13,7 @@ public class NuitClient {
     private static NuitConfig CONFIG;
 
     public static void init() {
-        SkyboxType.initRegistry();
-        ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, new SkyboxResourceListener());
-        SkyboxManager.getInstance().setEnabled(config().generalSettings.enable);
-        ClientTickEvent.CLIENT_LEVEL_POST.register(SkyboxManager.getInstance());
-        ClientTickEvent.CLIENT_POST.register(config().getKeyBinding());
-        SkyboxDebugScreen screen = new SkyboxDebugScreen(Component.nullToEmpty("Skybox Debug Screen"));
-        ClientGuiEvent.RENDER_HUD.register(screen);
+        NuitApi.getInstance().setEnabled(config().generalSettings.enable);
     }
 
     public static Logger getLogger() {
@@ -45,6 +32,6 @@ public class NuitClient {
     }
 
     private static NuitConfig loadConfig() {
-        return NuitConfig.load(Platform.getConfigFolder().resolve("nuit-config.json").toFile());
+        return NuitConfig.load(NuitPlatformHelper.INSTANCE.getConfigDir().resolve("nuit-config.json").toFile());
     }
 }

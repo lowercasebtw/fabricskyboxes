@@ -3,7 +3,6 @@ package io.github.amerebagatelle.mods.nuit.skyboxes;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
@@ -36,7 +35,7 @@ import java.util.Objects;
  * have a default constructor as it is required when checking
  * the type of the skybox.
  */
-public abstract class AbstractSkybox<T extends Skybox> implements NuitSkybox {
+public abstract class AbstractSkybox implements NuitSkybox {
 
     /**
      * The current alpha for the skybox. Expects all skyboxes extending this to accommodate this.
@@ -214,8 +213,6 @@ public abstract class AbstractSkybox<T extends Skybox> implements NuitSkybox {
             return true;
         }
     }
-
-    public abstract RegistrySupplier<SkyboxType<T>> getType();
 
     public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
         RenderSystem.enableBlend();

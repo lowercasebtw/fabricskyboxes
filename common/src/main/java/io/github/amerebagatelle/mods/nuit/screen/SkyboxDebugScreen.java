@@ -1,6 +1,5 @@
 package io.github.amerebagatelle.mods.nuit.screen;
 
-import dev.architectury.event.events.client.ClientGuiEvent;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
@@ -13,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 
-public class SkyboxDebugScreen extends Screen implements ClientGuiEvent.RenderHud {
+public class SkyboxDebugScreen extends Screen {
     public SkyboxDebugScreen(Component title) {
         super(title);
     }
@@ -28,10 +27,10 @@ public class SkyboxDebugScreen extends Screen implements ClientGuiEvent.RenderHu
         this.renderHud(context, delta);
     }
 
-    @Override
     public void renderHud(GuiGraphics drawContext, float tickDelta) {
         if (NuitClient.config().generalSettings.debugHud || Minecraft.getInstance().screen == this) {
-            int yPadding = 2;
+            int yPadding = 16;
+            drawContext.drawString(Minecraft.getInstance().font, "Skybox Debug Screen", 2, 2, 0xffffffff, false);
             for (Map.Entry<ResourceLocation, Skybox> identifierSkyboxEntry : SkyboxManager.getInstance().getSkyboxMap().entrySet()) {
                 Skybox activeSkybox = identifierSkyboxEntry.getValue();
                 if (activeSkybox instanceof NuitSkybox nuitSkybox && nuitSkybox.isActive()) {

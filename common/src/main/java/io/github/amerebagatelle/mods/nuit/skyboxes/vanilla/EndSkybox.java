@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.Conditions;
 import io.github.amerebagatelle.mods.nuit.skybox.Decorations;
@@ -17,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.joml.Matrix4f;
 
-public class EndSkybox extends AbstractSkybox<EndSkybox> {
+public class EndSkybox extends AbstractSkybox {
     public static Codec<EndSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.DEFAULT).forGetter(AbstractSkybox::getConditions),
@@ -26,11 +25,6 @@ public class EndSkybox extends AbstractSkybox<EndSkybox> {
 
     public EndSkybox(Properties properties, Conditions conditions, Decorations decorations) {
         super(properties, conditions, decorations);
-    }
-
-    @Override
-    public RegistrySupplier<SkyboxType<EndSkybox>> getType() {
-        return SkyboxType.END_SKYBOX;
     }
 
     @Override

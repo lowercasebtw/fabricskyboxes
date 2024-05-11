@@ -8,6 +8,8 @@ pluginManagement {
     }
 }
 
+rootProject.name = 'nuit'
+
 include("common")
 include("fabric")
 include("neoforge")
