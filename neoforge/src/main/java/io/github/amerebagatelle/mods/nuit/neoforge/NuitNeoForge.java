@@ -12,13 +12,13 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 @Mod(NuitClient.MOD_ID)
 public final class NuitNeoForge {
     public static final Registry<SkyboxType<? extends Skybox>> REGISTRY = new RegistryBuilder<>(SkyboxType.SKYBOX_TYPE_REGISTRY_KEY).create();
+    public final SkyboxDebugScreen screen = new SkyboxDebugScreen(Component.nullToEmpty("Skybox Debug Screen"));
 
     public NuitNeoForge(IEventBus bus) {
         bus.addListener(this::registerSkyTypeRegistry);
@@ -47,22 +48,16 @@ public final class NuitNeoForge {
     }
 
     @SubscribeEvent
-    public void registerClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) {
-            return;
-        }
+    public void registerClientTick(ClientTickEvent.Post event) {
         NuitClient.config().getKeyBinding().tick(Minecraft.getInstance());
     }
 
     @SubscribeEvent
-    public void registerWorldTick(TickEvent.LevelTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.LEVEL || event.side != LogicalSide.CLIENT) {
-            return;
+    public void registerWorldTick(LevelTickEvent.Post event) {
+        if (event.getLevel() instanceof ClientLevel level) {
+            SkyboxManager.getInstance().tick(level);
         }
-        SkyboxManager.getInstance().tick((ClientLevel) event.level);
     }
-
-    SkyboxDebugScreen screen = new SkyboxDebugScreen(Component.nullToEmpty("Skybox Debug Screen"));
 
     @SubscribeEvent
     public void registerHudRender(RenderGuiLayerEvent.Post event) {
@@ -76,13 +71,8 @@ public final class NuitNeoForge {
 
     @SubscribeEvent
     public void registerSkyTypes(RegisterEvent event) {
-        //todo: we can probably create an event for this
         event.register(SkyboxType.SKYBOX_TYPE_REGISTRY_KEY, registry -> {
-            registry.register(SkyboxType.OVERWORLD.createId(), SkyboxType.OVERWORLD);
-            registry.register(SkyboxType.END.createId(), SkyboxType.END);
-            registry.register(SkyboxType.MONO_COLOR_SKYBOX.createId(), SkyboxType.MONO_COLOR_SKYBOX);
-            registry.register(SkyboxType.SQUARE_TEXTURED_SKYBOX.createId(), SkyboxType.SQUARE_TEXTURED_SKYBOX);
-            registry.register(SkyboxType.MULTI_TEXTURED_SKYBOX.createId(), SkyboxType.MULTI_TEXTURED_SKYBOX);
+            SkyboxType.register(skyboxType -> registry.register(skyboxType.createId(), skyboxType));
         });
     }
 

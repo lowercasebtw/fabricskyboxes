@@ -10,7 +10,6 @@ import io.github.amerebagatelle.mods.nuit.skybox.Conditions;
 import io.github.amerebagatelle.mods.nuit.skybox.Decorations;
 import io.github.amerebagatelle.mods.nuit.skybox.Properties;
 import io.github.amerebagatelle.mods.nuit.skyboxes.AbstractSkybox;
-import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;

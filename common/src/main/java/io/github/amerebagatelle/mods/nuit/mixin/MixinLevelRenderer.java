@@ -3,7 +3,6 @@ package io.github.amerebagatelle.mods.nuit.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.SkyboxManager;
-import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.world.level.material.FogType;

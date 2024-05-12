@@ -53,7 +53,7 @@ public class MixinFogRenderer {
         }
     }
 
-    @Redirect(method = "levelFogColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogColor(FFF)V"))
+    @Redirect(method = "levelFogColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogColor(FFF)V"), remap = false)
     private static void redirectSetShaderFogColor(float red, float green, float blue) {
         if (modifyDensity) {
             RenderSystem.setShaderFogColor(red, green, blue, density);

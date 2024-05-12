@@ -79,11 +79,6 @@ public class NuitConfig {
         public final KeyMapping toggleFabricSkyBoxes = new KeyMapping("key.nuit.toggle", InputConstants.Type.KEYSYM, -1, "category.nuit");
         public final KeyMapping toggleSkyboxDebugHud = new KeyMapping("key.nuit.toggle.debug_hud", InputConstants.Type.KEYSYM, -1, "category.nuit");
 
-        public KeyBindingImpl() {
-            //KeyMappingRegistry.register(this.toggleFabricSkyBoxes);
-            //KeyMappingRegistry.register(this.toggleSkyboxDebugHud);
-        }
-
         public void tick(Minecraft client) {
             while (this.toggleFabricSkyBoxes.consumeClick()) {
                 NuitClient.config().generalSettings.enable = !NuitClient.config().generalSettings.enable;

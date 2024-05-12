@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Axis;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.RotatableSkybox;
-import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.*;
 import io.github.amerebagatelle.mods.nuit.skyboxes.AbstractSkybox;

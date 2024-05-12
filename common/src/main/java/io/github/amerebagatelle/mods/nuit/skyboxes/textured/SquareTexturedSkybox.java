@@ -8,7 +8,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.*;
 import io.github.amerebagatelle.mods.nuit.skyboxes.AbstractSkybox;
-import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
 import org.joml.Matrix4f;

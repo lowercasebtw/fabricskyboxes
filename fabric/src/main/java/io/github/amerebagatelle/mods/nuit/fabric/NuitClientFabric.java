@@ -26,7 +26,7 @@ public class NuitClientFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        this.register();
+        SkyboxType.register(skyboxType -> Registry.register(REGISTRY, skyboxType.createId(), skyboxType));
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
@@ -47,14 +47,5 @@ public class NuitClientFabric implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(NuitClient.config().getKeyBinding().toggleSkyboxDebugHud);
         NuitClient.init();
 
-    }
-
-    //todo: same as neoforge event
-    public void register() {
-        Registry.register(REGISTRY, SkyboxType.OVERWORLD.createId(), SkyboxType.OVERWORLD);
-        Registry.register(REGISTRY, SkyboxType.END.createId(), SkyboxType.END);
-        Registry.register(REGISTRY, SkyboxType.MONO_COLOR_SKYBOX.createId(), SkyboxType.MONO_COLOR_SKYBOX);
-        Registry.register(REGISTRY, SkyboxType.SQUARE_TEXTURED_SKYBOX.createId(), SkyboxType.SQUARE_TEXTURED_SKYBOX);
-        Registry.register(REGISTRY, SkyboxType.MULTI_TEXTURED_SKYBOX.createId(), SkyboxType.MULTI_TEXTURED_SKYBOX);
     }
 }

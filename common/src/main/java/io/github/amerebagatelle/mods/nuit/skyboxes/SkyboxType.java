@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SkyboxType<T extends Skybox> {
@@ -56,18 +57,25 @@ public class SkyboxType<T extends Skybox> {
 
     private final BiMap<Integer, Codec<T>> codecBiMap;
     private final String name;
-
     private SkyboxType(BiMap<Integer, Codec<T>> codecBiMap, String name) {
         this.codecBiMap = codecBiMap;
         this.name = name;
+    }
+
+    public static void register(Consumer<SkyboxType<?>> function) {
+        function.accept(OVERWORLD);
+        function.accept(END);
+        function.accept(MONO_COLOR_SKYBOX);
+        function.accept(SQUARE_TEXTURED_SKYBOX);
+        function.accept(MULTI_TEXTURED_SKYBOX);
     }
 
     public String getName() {
         return this.name;
     }
 
-    public ResourceLocation createId(/*String namespace*/) {
-        return this.createIdFactory().apply(/*namespace*/ NuitClient.MOD_ID);
+    public ResourceLocation createId() {
+        return this.createIdFactory().apply(NuitClient.MOD_ID);
     }
 
 
