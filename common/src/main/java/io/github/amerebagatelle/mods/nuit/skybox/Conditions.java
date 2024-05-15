@@ -20,7 +20,7 @@ public class Conditions {
             MinMaxEntry.CODEC.listOf().optionalFieldOf("yRanges", ImmutableList.of()).forGetter(Conditions::getYRanges),
             MinMaxEntry.CODEC.listOf().optionalFieldOf("zRanges", ImmutableList.of()).forGetter(Conditions::getZRanges)
     ).apply(instance, Conditions::new));
-    public static final Conditions DEFAULT = new Builder().build();
+    public static final Conditions DEFAULT = new Conditions(List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of());
     private final List<ResourceLocation> biomes;
     private final List<ResourceLocation> worlds;
     private final List<ResourceLocation> dimensions;
@@ -71,84 +71,5 @@ public class Conditions {
 
     public List<MinMaxEntry> getZRanges() {
         return this.zRanges;
-    }
-
-    public static class Builder {
-        private final List<ResourceLocation> biomes = Lists.newArrayList();
-        private final List<ResourceLocation> worlds = Lists.newArrayList();
-        private final List<ResourceLocation> dimensions = Lists.newArrayList();
-        private final List<ResourceLocation> effects = Lists.newArrayList();
-        private final List<Weather> weathers = Lists.newArrayList();
-        private final List<MinMaxEntry> yRanges = Lists.newArrayList();
-        private final List<MinMaxEntry> zRanges = Lists.newArrayList();
-        private final List<MinMaxEntry> xRanges = Lists.newArrayList();
-
-        public Builder biomes(Collection<ResourceLocation> biomeIds) {
-            this.biomes.addAll(biomeIds);
-            return this;
-        }
-
-        public Builder worlds(Collection<ResourceLocation> worldIds) {
-            this.worlds.addAll(worldIds);
-            return this;
-        }
-
-        public Builder dimensions(Collection<ResourceLocation> dimensionIds) {
-            this.dimensions.addAll(dimensionIds);
-            return this;
-        }
-
-        public Builder effects(Collection<ResourceLocation> effectIds) {
-            this.effects.addAll(effectIds);
-            return this;
-        }
-
-        public Builder weather(Collection<Weather> weathers) {
-            this.weathers.addAll(weathers);
-            return this;
-        }
-
-        public Builder yRanges(Collection<MinMaxEntry> heights) {
-            this.yRanges.addAll(heights);
-            return this;
-        }
-
-        public Builder zRanges(Collection<MinMaxEntry> zRanges) {
-            this.zRanges.addAll(zRanges);
-            return this;
-        }
-
-        public Builder xRanges(Collection<MinMaxEntry> xRanges) {
-            this.xRanges.addAll(xRanges);
-            return this;
-        }
-
-        public Builder biomes(ResourceLocation... biomeIds) {
-            return this.biomes(Lists.newArrayList(biomeIds));
-        }
-
-        public Builder worlds(ResourceLocation... worldIds) {
-            return this.worlds(Lists.newArrayList(worldIds));
-        }
-
-        public Builder weather(Weather... weathers) {
-            return this.weather(Lists.newArrayList(weathers));
-        }
-
-        public Builder xRanges(MinMaxEntry... xRanges) {
-            return this.xRanges(Lists.newArrayList(xRanges));
-        }
-
-        public Builder yRanges(MinMaxEntry... yRanges) {
-            return this.yRanges(Lists.newArrayList(yRanges));
-        }
-
-        public Builder zRanges(MinMaxEntry... zRanges) {
-            return this.zRanges(Lists.newArrayList(zRanges));
-        }
-
-        public Conditions build() {
-            return new Conditions(this.biomes, this.worlds, this.dimensions, this.effects, this.weathers, this.xRanges, this.yRanges, this.zRanges);
-        }
     }
 }
