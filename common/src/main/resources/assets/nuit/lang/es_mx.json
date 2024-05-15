@@ -1,8 +1,8 @@
 {
-  "category.nuit": "FabricSkyboxes",
-  "key.nuit.toggle": "Alternar FabricSkyboxes",
-  "nuit.message.enabled": "¡FabricSkyboxes habilitado!",
-  "nuit.message.disabled": "¡FabricSkyboxes deshabilitado!",
+  "category.nuit": "Nuit",
+  "key.nuit.toggle": "Alternar Nuit",
+  "nuit.message.enabled": "¡Nuit habilitado!",
+  "nuit.message.disabled": "¡Nuit deshabilitado!",
   "key.nuit.toggle.debug_hud": "Alternar HUD de depuración",
-  "key.fabricskyboxes.toggle.debug_screen": "Alternar pantalla de depuración"
+  "key.nuit.toggle.debug_screen": "Alternar pantalla de depuración"
 }

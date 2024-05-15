@@ -20,5 +20,8 @@ When submitting a pull request, please include a brief description of the change
 issues that your pull request addresses. Additionally, ensure that your code is well-documented, especially in cases
 where it might not be immediately obvious, and that it follows our code style guidelines.
 
+Please keep pull requests to one topic.  If you notice another issue to fix or feature to add while developing, please 
+create a separate request for it.  This helps the maintainers to review your code.
+
 We value your contributions and appreciate your efforts in helping us maintain a high-quality codebase. Thank you for
 contributing to our project!

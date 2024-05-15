@@ -43,7 +43,7 @@ public final class NuitNeoForge {
 
     @SubscribeEvent
     public void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(NuitClient.config().getKeyBinding().toggleFabricSkyBoxes);
+        event.register(NuitClient.config().getKeyBinding().toggleNuit);
         event.register(NuitClient.config().getKeyBinding().toggleSkyboxDebugHud);
     }
 

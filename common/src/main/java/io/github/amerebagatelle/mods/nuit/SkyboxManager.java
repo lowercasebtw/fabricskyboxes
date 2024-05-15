@@ -127,7 +127,7 @@ public class SkyboxManager implements NuitApi {
         // Add the skyboxes to a activeSkyboxes container so that they can be ordered
         for (Skybox skybox : Iterables.concat(skyboxMap.values(), this.permanentSkyboxMap.values())) {
             if (!this.activeSkyboxes.contains(skybox) && skybox.isActive()) {
-                activeSkyboxes.add(skybox);
+                this.activeSkyboxes.add(skybox);
             }
         }
         this.activeSkyboxes.sort(Comparator.comparingInt(Skybox::getPriority));
