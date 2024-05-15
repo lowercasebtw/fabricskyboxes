@@ -22,11 +22,9 @@ public class SkyboxType<T extends Skybox> {
     public static final Codec<ResourceLocation> SKYBOX_ID_CODEC;
     public static final ResourceKey<Registry<SkyboxType<? extends Skybox>>> SKYBOX_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(NuitClient.MOD_ID, "skybox_type"));
 
-    // Vanilla skyboxes
     public static final SkyboxType<OverworldSkybox> OVERWORLD;
     public static final SkyboxType<EndSkybox> END;
 
-    // FSB skyboxes
     public static final SkyboxType<MonoColorSkybox> MONO_COLOR_SKYBOX;
     public static final SkyboxType<SquareTexturedSkybox> SQUARE_TEXTURED_SKYBOX;
     public static final SkyboxType<MultiTexturedSkybox> MULTI_TEXTURED_SKYBOX;
@@ -45,18 +43,21 @@ public class SkyboxType<T extends Skybox> {
         });
 
 
-        // Vanilla skyboxes
-        OVERWORLD = SkyboxType.Builder.create(OverworldSkybox.class, "overworld").add(1, OverworldSkybox.CODEC).build();
-        END = SkyboxType.Builder.create(EndSkybox.class, "end").add(1, EndSkybox.CODEC).build();
+        OVERWORLD = new SkyboxType<>("overworld", 1, OverworldSkybox.CODEC);
+        END = new SkyboxType<>("end", 1, EndSkybox.CODEC);
 
-        // FSB skyboxes
-        MONO_COLOR_SKYBOX = SkyboxType.Builder.create(MonoColorSkybox.class, "monocolor").add(1, MonoColorSkybox.CODEC).build();
-        SQUARE_TEXTURED_SKYBOX = SkyboxType.Builder.create(SquareTexturedSkybox.class, "square-textured").add(1, SquareTexturedSkybox.CODEC).build();
-        MULTI_TEXTURED_SKYBOX = SkyboxType.Builder.create(MultiTexturedSkybox.class, "multi-textured").add(1, MultiTexturedSkybox.CODEC).build();
+        MONO_COLOR_SKYBOX = new SkyboxType<>("monocolor", 1, MonoColorSkybox.CODEC);
+        SQUARE_TEXTURED_SKYBOX = new SkyboxType<>("square-textured", 1, SquareTexturedSkybox.CODEC);
+        MULTI_TEXTURED_SKYBOX = new SkyboxType<>("multi-textured", 1, MultiTexturedSkybox.CODEC);
     }
 
     private final BiMap<Integer, Codec<T>> codecBiMap;
     private final String name;
+
+    public SkyboxType(String name, int schemaVersion, Codec<T> codec) {
+        this(ImmutableBiMap.<Integer, Codec<T>>builder().put(schemaVersion, codec).build(), name);
+    }
+
     private SkyboxType(BiMap<Integer, Codec<T>> codecBiMap, String name) {
         this.codecBiMap = codecBiMap;
         this.name = name;
@@ -78,42 +79,11 @@ public class SkyboxType<T extends Skybox> {
         return this.createIdFactory().apply(NuitClient.MOD_ID);
     }
 
-
     public Function<String, ResourceLocation> createIdFactory() {
         return (ns) -> new ResourceLocation(ns, this.getName().replace('-', '_'));
     }
 
     public Codec<T> getCodec(int schemaVersion) {
         return Objects.requireNonNull(this.codecBiMap.get(schemaVersion), String.format("Unsupported schema version '%d' for skybox type %s", schemaVersion, this.name));
-    }
-
-    public static class Builder<T extends Skybox> {
-        private final ImmutableBiMap.Builder<Integer, Codec<T>> builder = ImmutableBiMap.builder();
-        private String name;
-
-        private Builder() {
-        }
-
-        public static <S extends Skybox> Builder<S> create(@SuppressWarnings("unused") Class<S> clazz, String name) {
-            Builder<S> builder = new Builder<>();
-            builder.name = name;
-            return builder;
-        }
-
-        public static <S extends Skybox> Builder<S> create(String name) {
-            Builder<S> builder = new Builder<>();
-            builder.name = name;
-            return builder;
-        }
-
-        public Builder<T> add(int schemaVersion, Codec<T> codec) {
-            Preconditions.checkNotNull(codec, "codec was null");
-            this.builder.put(schemaVersion, codec);
-            return this;
-        }
-
-        public SkyboxType<T> build() {
-            return new SkyboxType<>(this.builder.build(), this.name);
-        }
     }
 }

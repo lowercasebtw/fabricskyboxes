@@ -18,10 +18,8 @@ public class SkyboxResourceListener {
     public void readFiles(ResourceManager resourceManager) {
         NuitApi skyboxManager = NuitApi.getInstance();
 
-        // clear registered skyboxes on reload
         skyboxManager.clearSkyboxes();
 
-        // load new skyboxes
         Map<ResourceLocation, Resource> resources = resourceManager.listResources("sky", identifier -> identifier.getPath().endsWith(".json"));
 
         resources.forEach((identifier, resource) -> {

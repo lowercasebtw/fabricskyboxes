@@ -24,10 +24,10 @@ public class SkyboxDebugScreen extends Screen {
 
     @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        this.renderHud(context, delta);
+        this.renderHud(context);
     }
 
-    public void renderHud(GuiGraphics drawContext, float tickDelta) {
+    public void renderHud(GuiGraphics drawContext) {
         if (NuitClient.config().generalSettings.debugHud || Minecraft.getInstance().screen == this) {
             int yPadding = 16;
             drawContext.drawString(Minecraft.getInstance().font, "Skybox Debug Screen", 2, 2, 0xffffffff, false);

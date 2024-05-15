@@ -22,10 +22,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinFogRenderer {
 
     @Unique
-    private static float density;
+    private static float nuit$density;
 
     @Unique
-    private static boolean modifyDensity;
+    private static boolean nuit$modifyDensity;
 
     @Shadow
     private static float fogRed;
@@ -46,17 +46,17 @@ public class MixinFogRenderer {
             fogRed = fogColor.getRed();
             fogBlue = fogColor.getGreen();
             fogGreen = fogColor.getBlue();
-            density = fogColor.getDensity();
-            modifyDensity = fogColor.isModifyDensity();
+            nuit$density = fogColor.getDensity();
+            nuit$modifyDensity = fogColor.isModifyDensity();
         } else {
-            modifyDensity = false;
+            nuit$modifyDensity = false;
         }
     }
 
     @Redirect(method = "levelFogColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogColor(FFF)V"), remap = false)
     private static void redirectSetShaderFogColor(float red, float green, float blue) {
-        if (modifyDensity) {
-            RenderSystem.setShaderFogColor(red, green, blue, density);
+        if (nuit$modifyDensity) {
+            RenderSystem.setShaderFogColor(red, green, blue, nuit$density);
         } else {
             RenderSystem.setShaderFogColor(red, green, blue);
         }

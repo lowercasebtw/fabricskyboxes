@@ -61,7 +61,7 @@ public final class NuitNeoForge {
 
     @SubscribeEvent
     public void registerHudRender(RenderGuiLayerEvent.Post event) {
-        screen.renderHud(event.getGuiGraphics(), event.getPartialTick());
+        screen.renderHud(event.getGuiGraphics());
     }
 
     @SubscribeEvent

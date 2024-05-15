@@ -13,6 +13,7 @@ import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.Metadata;
 import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
 import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.joml.Matrix4f;
@@ -35,7 +36,6 @@ public class SkyboxManager implements NuitApi {
      */
     private final Map<ResourceLocation, Skybox> permanentSkyboxMap = new Object2ObjectLinkedOpenHashMap<>();
     private final List<Skybox> activeSkyboxes = new LinkedList<>();
-    private final Predicate<? super Skybox> renderPredicate = (skybox) -> !this.activeSkyboxes.contains(skybox) && skybox.isActive();
     private Skybox currentSkybox = null;
     private boolean enabled = true;
 
@@ -74,27 +74,6 @@ public class SkyboxManager implements NuitApi {
         Preconditions.checkNotNull(identifier, "Identifier was null");
         Preconditions.checkNotNull(skybox, "Skybox was null");
         this.skyboxMap.put(identifier, skybox);
-        this.sortSkybox();
-    }
-
-    /**
-     * Sorts skyboxes by ascending order with priority field. Skyboxes with
-     * identical priority will not be re-ordered, this will largely come down to
-     * the alphabetical order that Minecraft resources load in.
-     * <p>
-     * Minecraft's resource loading order example:
-     * "fabricskyboxes:sky/overworld_sky1.json"
-     * "fabricskyboxes:sky/overworld_sky10.json"
-     * "fabricskyboxes:sky/overworld_sky11.json"
-     * "fabricskyboxes:sky/overworld_sky2.json"
-     */
-    private void sortSkybox() {
-        Map<ResourceLocation, Skybox> newSortedMap = this.skyboxMap.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.comparingInt(Skybox::getPriority)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (skybox, skybox2) -> skybox, Object2ObjectLinkedOpenHashMap::new));
-        this.skyboxMap.clear();
-        this.skyboxMap.putAll(newSortedMap);
     }
 
     /**
@@ -118,10 +97,10 @@ public class SkyboxManager implements NuitApi {
 
     @Internal
     public void renderSkyboxes(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
-        this.activeSkyboxes.forEach(skybox -> {
+        for (Skybox skybox : activeSkyboxes) {
             this.currentSkybox = skybox;
             skybox.render(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, camera, thickFog, fogCallback);
-        });
+        }
     }
 
     public boolean isEnabled() {
@@ -141,14 +120,19 @@ public class SkyboxManager implements NuitApi {
         return this.activeSkyboxes;
     }
 
-    public void tick(net.minecraft.client.multiplayer.ClientLevel client) {
-        StreamSupport
-                .stream(Iterables.concat(this.skyboxMap.values(), this.permanentSkyboxMap.values()).spliterator(), false)
-                .forEach(skybox -> skybox.tick(client));
+    public void tick(ClientLevel level) {
+        for(Skybox skybox : Iterables.concat(this.skyboxMap.values(), this.permanentSkyboxMap.values())) {
+            skybox.tick(level);
+        }
+
         this.activeSkyboxes.removeIf(skybox -> !skybox.isActive());
+
         // Add the skyboxes to a activeSkyboxes container so that they can be ordered
-        this.skyboxMap.values().stream().filter(this.renderPredicate).forEach(this.activeSkyboxes::add);
-        this.permanentSkyboxMap.values().stream().filter(this.renderPredicate).forEach(this.activeSkyboxes::add);
+        for (Skybox skybox : Iterables.concat(skyboxMap.values(), this.permanentSkyboxMap.values())) {
+           if(!this.activeSkyboxes.contains(skybox) && skybox.isActive()) {
+               activeSkyboxes.add(skybox);
+           }
+        }
         this.activeSkyboxes.sort(Comparator.comparingInt(Skybox::getPriority));
     }
 
@@ -156,4 +140,3 @@ public class SkyboxManager implements NuitApi {
         return skyboxMap;
     }
 }
-
