@@ -5,13 +5,13 @@ import com.google.common.collect.Iterables;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.JsonOps;
-import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
+import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.Metadata;
 import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
@@ -22,9 +22,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class SkyboxManager implements NuitApi {
     private static final SkyboxManager INSTANCE = new SkyboxManager();
@@ -121,7 +118,7 @@ public class SkyboxManager implements NuitApi {
     }
 
     public void tick(ClientLevel level) {
-        for(Skybox skybox : Iterables.concat(this.skyboxMap.values(), this.permanentSkyboxMap.values())) {
+        for (Skybox skybox : Iterables.concat(this.skyboxMap.values(), this.permanentSkyboxMap.values())) {
             skybox.tick(level);
         }
 
@@ -129,9 +126,9 @@ public class SkyboxManager implements NuitApi {
 
         // Add the skyboxes to a activeSkyboxes container so that they can be ordered
         for (Skybox skybox : Iterables.concat(skyboxMap.values(), this.permanentSkyboxMap.values())) {
-           if(!this.activeSkyboxes.contains(skybox) && skybox.isActive()) {
-               activeSkyboxes.add(skybox);
-           }
+            if (!this.activeSkyboxes.contains(skybox) && skybox.isActive()) {
+                activeSkyboxes.add(skybox);
+            }
         }
         this.activeSkyboxes.sort(Comparator.comparingInt(Skybox::getPriority));
     }

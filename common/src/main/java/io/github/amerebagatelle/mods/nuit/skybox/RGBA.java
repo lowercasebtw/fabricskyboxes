@@ -3,7 +3,6 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
-import io.github.amerebagatelle.mods.nuit.util.Utils;
 
 public class RGBA {
     public static final RGBA DEFAULT = new RGBA(.0F, .0F, .0F, .0F);

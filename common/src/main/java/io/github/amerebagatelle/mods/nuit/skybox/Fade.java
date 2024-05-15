@@ -2,7 +2,6 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.amerebagatelle.mods.nuit.util.Utils;
 import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
 
 import java.util.LinkedHashMap;

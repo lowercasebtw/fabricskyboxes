@@ -1,6 +1,5 @@
 package io.github.amerebagatelle.mods.nuit.skyboxes;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.mojang.serialization.Codec;
