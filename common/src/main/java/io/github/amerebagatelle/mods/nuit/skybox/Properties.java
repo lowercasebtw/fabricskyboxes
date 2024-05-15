@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Properties {
     public static final Codec<Properties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.optionalFieldOf("priority", 0).forGetter(Properties::getPriority),
+            Codec.INT.optionalFieldOf("layer", 0).forGetter(Properties::getLayer),
             Fade.CODEC.fieldOf("fade").forGetter(Properties::getFade),
             CodecUtils.getClampedFloat(0F, 1.0F).optionalFieldOf("minAlpha", 0F).forGetter(Properties::getMaxAlpha),
             CodecUtils.getClampedFloat(0F, 1.0F).optionalFieldOf("maxAlpha", 1.0F).forGetter(Properties::getMaxAlpha),
@@ -23,7 +23,7 @@ public class Properties {
 
     public static final Properties DEFAULT = new Properties(0, Fade.DEFAULT, 0F, 1F, 20, 20, false, false, RGBA.DEFAULT, true, true, Rotation.DEFAULT);
 
-    private final int priority;
+    private final int layer;
     private final Fade fade;
     private final float minAlpha;
     private final float maxAlpha;
@@ -36,8 +36,8 @@ public class Properties {
     private final boolean renderInThickFog;
     private final Rotation rotation;
 
-    public Properties(int priority, Fade fade, float minAlpha, float maxAlpha, int transitionInDuration, int transitionOutDuration, boolean changeFog, boolean changeFogDensity, RGBA fogColors, boolean renderSunSkyTint, boolean renderInThickFog, Rotation rotation) {
-        this.priority = priority;
+    public Properties(int layer, Fade fade, float minAlpha, float maxAlpha, int transitionInDuration, int transitionOutDuration, boolean changeFog, boolean changeFogDensity, RGBA fogColors, boolean renderSunSkyTint, boolean renderInThickFog, Rotation rotation) {
+        this.layer = layer;
         this.fade = fade;
         if (minAlpha > maxAlpha) {
             throw new IllegalStateException("Maximum alpha is lower than the minimum alpha:\n" + this);
@@ -54,8 +54,8 @@ public class Properties {
         this.rotation = rotation;
     }
 
-    public int getPriority() {
-        return priority;
+    public int getLayer() {
+        return layer;
     }
 
     public Fade getFade() {

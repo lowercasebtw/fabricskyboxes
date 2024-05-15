@@ -34,7 +34,7 @@ public class SkyboxDebugScreen extends Screen {
             for (Map.Entry<ResourceLocation, Skybox> identifierSkyboxEntry : SkyboxManager.getInstance().getSkyboxMap().entrySet()) {
                 Skybox activeSkybox = identifierSkyboxEntry.getValue();
                 if (activeSkybox instanceof NuitSkybox nuitSkybox && nuitSkybox.isActive()) {
-                    drawContext.drawString(Minecraft.getInstance().font, identifierSkyboxEntry.getKey() + " " + activeSkybox.getPriority() + " " + nuitSkybox.getAlpha(), 2, yPadding, 0xffffffff, false);
+                    drawContext.drawString(Minecraft.getInstance().font, identifierSkyboxEntry.getKey() + " " + activeSkybox.getLayer() + " " + nuitSkybox.getAlpha(), 2, yPadding, 0xffffffff, false);
                     yPadding += 14;
                 }
             }

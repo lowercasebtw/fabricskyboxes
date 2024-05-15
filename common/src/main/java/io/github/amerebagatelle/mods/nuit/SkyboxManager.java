@@ -130,7 +130,7 @@ public class SkyboxManager implements NuitApi {
                 this.activeSkyboxes.add(skybox);
             }
         }
-        this.activeSkyboxes.sort(Comparator.comparingInt(Skybox::getPriority));
+        this.activeSkyboxes.sort(Comparator.comparingInt(Skybox::getLayer));
     }
 
     public Map<ResourceLocation, Skybox> getSkyboxMap() {

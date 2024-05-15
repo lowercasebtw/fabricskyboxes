@@ -329,8 +329,8 @@ public abstract class AbstractSkybox implements NuitSkybox {
     }
 
     @Override
-    public int getPriority() {
-        return this.properties.getPriority();
+    public int getLayer() {
+        return this.properties.getLayer();
     }
 
     @Override
