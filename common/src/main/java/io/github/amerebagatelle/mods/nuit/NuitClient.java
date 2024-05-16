@@ -1,6 +1,5 @@
 package io.github.amerebagatelle.mods.nuit;
 
-import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.config.NuitConfig;
 import org.apache.logging.log4j.LogManager;
