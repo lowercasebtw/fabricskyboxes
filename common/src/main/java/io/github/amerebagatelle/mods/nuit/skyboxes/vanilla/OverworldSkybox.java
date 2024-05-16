@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.Conditions;
@@ -60,7 +61,7 @@ public class OverworldSkybox extends AbstractSkybox {
         float skyAngle = world.getTimeOfDay(tickDelta);
         float skyAngleRadian = world.getSunAngle(tickDelta);
 
-        if (NuitApi.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
             skyAngle = Mth.positiveModulo(world.getDayTime() / 24000F + 0.75F, 1);
             skyAngleRadian = skyAngle * (float) (Math.PI * 2);
         }
