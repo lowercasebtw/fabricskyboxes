@@ -28,20 +28,6 @@ public interface NuitApi {
     }
 
     /**
-     * Gets the state of the Nuit mod.
-     *
-     * @return Whether Nuit is enabled.
-     */
-    boolean isEnabled();
-
-    /**
-     * Allows mods to set the state of the Nuit.
-     *
-     * @param enabled State of the Nuit.
-     */
-    void setEnabled(boolean enabled);
-
-    /**
      * Allows mods to add new skyboxes at runtime.
      *
      * @param identifier Identifier for skybox.

@@ -13,7 +13,7 @@ public class NuitClient {
     private static NuitConfig CONFIG;
 
     public static void init() {
-        NuitApi.getInstance().setEnabled(config().generalSettings.enable);
+        SkyboxManager.getInstance().setEnabled(config().generalSettings.enable);
     }
 
     public static Logger getLogger() {

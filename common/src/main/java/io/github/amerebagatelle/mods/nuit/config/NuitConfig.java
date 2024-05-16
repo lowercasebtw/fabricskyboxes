@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
+import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -83,10 +84,10 @@ public class NuitConfig {
             while (this.toggleNuit.consumeClick()) {
                 NuitClient.config().generalSettings.enable = !NuitClient.config().generalSettings.enable;
                 NuitClient.config().save();
-                NuitApi.getInstance().setEnabled(NuitClient.config().generalSettings.enable);
+                SkyboxManager.getInstance().setEnabled(NuitClient.config().generalSettings.enable);
 
                 assert client.player != null;
-                if (NuitApi.getInstance().isEnabled()) {
+                if (SkyboxManager.getInstance().isEnabled()) {
                     client.player.displayClientMessage(Component.translatable("nuit.message.enabled"), false);
                 } else {
                     client.player.displayClientMessage(Component.translatable("nuit.message.disabled"), false);
