@@ -44,8 +44,8 @@ public class MixinFogRenderer {
         FogRGBA fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), new RGBA(fogRed, fogBlue, fogGreen));
         if (SkyboxManager.getInstance().isEnabled() && fogColor != null) {
             fogRed = fogColor.getRed();
-            fogBlue = fogColor.getGreen();
-            fogGreen = fogColor.getBlue();
+            fogBlue = fogColor.getBlue();
+            fogGreen = fogColor.getGreen();
             nuit$density = fogColor.getDensity();
             nuit$modifyDensity = fogColor.isModifyDensity();
         } else {
