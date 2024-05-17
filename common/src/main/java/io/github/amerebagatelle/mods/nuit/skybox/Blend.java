@@ -51,7 +51,7 @@ public class Blend {
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
                 };
-                case "alpha" -> blendFunc = (alpha) -> {
+                case "normal" -> blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
