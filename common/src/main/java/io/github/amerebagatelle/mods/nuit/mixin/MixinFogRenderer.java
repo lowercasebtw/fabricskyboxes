@@ -58,7 +58,7 @@ public class MixinFogRenderer {
         if (nuit$modifyDensity) {
             RenderSystem.setShaderFogColor(red, green, blue, nuit$density);
         } else {
-            RenderSystem.setShaderFogColor(red, green, blue, 0.0f);
+            RenderSystem.setShaderFogColor(red, green, blue);
         }
     }
 
