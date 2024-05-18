@@ -41,7 +41,7 @@ public class MixinFogRenderer {
      */
     @Inject(method = "setupColor", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/FogRenderer;biomeChangedTime:J", ordinal = 6))
     private static void modifyColors(Camera camera, float tickDelta, ClientLevel world, int i, float f, CallbackInfo ci) {
-        FogRGBA fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), new RGBA(fogRed, fogBlue, fogGreen));
+        FogRGBA fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), new RGBA(fogRed, fogGreen, fogBlue));
         if (SkyboxManager.getInstance().isEnabled() && fogColor != null) {
             fogRed = fogColor.getRed();
             fogBlue = fogColor.getBlue();
