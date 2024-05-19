@@ -337,4 +337,9 @@ public abstract class AbstractSkybox implements NuitSkybox {
     public boolean isActive() {
         return this.getAlpha() != 0F;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[layer=%s, alpha=%s, dimension=%s, world=%s, biomes=%s, xranges=%s, yranges=%s, zranges=%s, weather=%s, effects=%s]", getProperties().getPriority(), getAlpha(), checkDimensions(), checkWorlds(), checkBiomes(), checkXRanges(), checkYRanges(), checkZRanges(), checkWeather(), checkEffects());
+    }
 }

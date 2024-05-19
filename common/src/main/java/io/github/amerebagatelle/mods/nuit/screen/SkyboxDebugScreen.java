@@ -2,7 +2,6 @@ package io.github.amerebagatelle.mods.nuit.screen;
 
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.SkyboxManager;
-import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,8 +32,8 @@ public class SkyboxDebugScreen extends Screen {
             drawContext.drawString(Minecraft.getInstance().font, "Skybox Debug Screen", 2, 2, 0xffffffff, false);
             for (Map.Entry<ResourceLocation, Skybox> identifierSkyboxEntry : SkyboxManager.getInstance().getSkyboxMap().entrySet()) {
                 Skybox activeSkybox = identifierSkyboxEntry.getValue();
-                if (activeSkybox instanceof NuitSkybox nuitSkybox && nuitSkybox.isActive()) {
-                    drawContext.drawString(Minecraft.getInstance().font, identifierSkyboxEntry.getKey() + " " + activeSkybox.getPriority() + " " + nuitSkybox.getAlpha(), 2, yPadding, 0xffffffff, false);
+                if (activeSkybox.isActive()) {
+                    drawContext.drawString(Minecraft.getInstance().font, identifierSkyboxEntry.getKey() + activeSkybox.toString(), 2, yPadding, 0xffffffff, false);
                     yPadding += 14;
                 }
             }

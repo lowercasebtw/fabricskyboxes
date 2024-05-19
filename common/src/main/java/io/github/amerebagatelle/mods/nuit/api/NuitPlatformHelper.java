@@ -8,7 +8,7 @@ import net.minecraft.core.Registry;
 import java.nio.file.Path;
 
 public interface NuitPlatformHelper {
-    public static NuitPlatformHelper INSTANCE = Utils.loadService(NuitPlatformHelper.class);
+    NuitPlatformHelper INSTANCE = Utils.loadService(NuitPlatformHelper.class);
 
     Path getGameDir();
 
