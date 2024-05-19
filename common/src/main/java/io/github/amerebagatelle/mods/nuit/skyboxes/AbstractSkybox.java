@@ -72,7 +72,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
      */
     @Override
     public float updateAlpha() {
-        int currentTime = (int) (Objects.requireNonNull(Minecraft.getInstance().level).getDayTime() % 24000);
+        long currentTime = Objects.requireNonNull(Minecraft.getInstance().level).getDayTime() % this.properties.getFade().getDuration();
 
         boolean condition = this.checkConditions();
 
