@@ -11,6 +11,7 @@ import io.github.amerebagatelle.mods.nuit.skybox.Decorations;
 import io.github.amerebagatelle.mods.nuit.skybox.Properties;
 import io.github.amerebagatelle.mods.nuit.skybox.Weather;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
+import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.material.FogType;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -45,6 +47,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
     protected Conditions conditions = Conditions.DEFAULT;
     protected Decorations decorations = Decorations.DEFAULT;
 
+    private final Map<Long, Float> cachedFadeValues = new Long2FloatArrayMap((int) this.properties.getFade().getDuration());
 
     protected boolean unexpectedConditionTransition = false;
     protected long lastTime = -2;
@@ -80,8 +83,14 @@ public abstract class AbstractSkybox implements NuitSkybox {
         if (this.properties.getFade().isAlwaysOn()) {
             this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
         } else {
-            Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
-            fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
+            Float cachedFadeValue = this.cachedFadeValues.getOrDefault(currentTime, null);
+            if (cachedFadeValue != null) {
+                fadeAlpha = this.cachedFadeValues.get(currentTime);
+            } else {
+                Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
+                fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
+                this.cachedFadeValues.put(currentTime, fadeAlpha);
+            }
 
             if ((this.lastTime == currentTime - 1 || this.lastTime == currentTime) && !this.unexpectedConditionTransition) { // Check if time is ticking or if time is same (doDaylightCycle gamerule)
                 this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
@@ -94,9 +103,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
             }
         }
 
-        this.alpha = (fadeAlpha * this.conditionAlpha) * (this.properties.getMaxAlpha() - this.properties.getMinAlpha()) + this.properties.getMinAlpha();
-
-        this.alpha = Mth.clamp(this.alpha, this.properties.getMinAlpha(), this.properties.getMaxAlpha());
+        this.alpha = fadeAlpha * this.conditionAlpha;
         this.lastTime = currentTime;
 
         return this.alpha;

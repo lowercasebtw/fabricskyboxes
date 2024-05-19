@@ -245,7 +245,7 @@ public class Utils {
                 .map(nuitSkybox -> new FogRGBA(nuitSkybox.getProperties().getFogColors().getRed(),
                         nuitSkybox.getProperties().getFogColors().getGreen(),
                         nuitSkybox.getProperties().getFogColors().getBlue(),
-                        nuitSkybox.getAlpha() / nuitSkybox.getProperties().getMaxAlpha(),
+                        nuitSkybox.getAlpha(),
                         nuitSkybox.getProperties().isChangeFogDensity(),
                         nuitSkybox.getProperties().getFogColors().getAlpha()))
                 .toList(); // map RGB fog colors and A to skybox alpha
@@ -286,7 +286,7 @@ public class Utils {
                 .map(nuitSkybox -> new RGBA(nuitSkybox.getProperties().getFogColors().getRed(),
                         nuitSkybox.getProperties().getFogColors().getGreen(),
                         nuitSkybox.getProperties().getFogColors().getBlue(),
-                        nuitSkybox.getAlpha() / nuitSkybox.getProperties().getMaxAlpha()))
+                        nuitSkybox.getAlpha()))
                 .toList();
         if (activeColors.isEmpty()) {
             return null;

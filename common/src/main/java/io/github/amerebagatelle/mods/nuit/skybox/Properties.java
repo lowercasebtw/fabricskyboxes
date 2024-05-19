@@ -9,8 +9,6 @@ public class Properties {
     public static final Codec<Properties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.optionalFieldOf("priority", 0).forGetter(Properties::getPriority),
             Fade.CODEC.fieldOf("fade").forGetter(Properties::getFade),
-            CodecUtils.getClampedFloat(0F, 1.0F).optionalFieldOf("minAlpha", 0F).forGetter(Properties::getMaxAlpha),
-            CodecUtils.getClampedFloat(0F, 1.0F).optionalFieldOf("maxAlpha", 1.0F).forGetter(Properties::getMaxAlpha),
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("transitionInDuration", 20).forGetter(Properties::getTransitionInDuration),
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("transitionOutDuration", 20).forGetter(Properties::getTransitionOutDuration),
             Codec.BOOL.optionalFieldOf("changeFog", false).forGetter(Properties::isChangeFog),
@@ -21,12 +19,10 @@ public class Properties {
             Rotation.CODEC.optionalFieldOf("rotation", Rotation.DEFAULT).forGetter(Properties::getRotation)
     ).apply(instance, Properties::new));
 
-    public static final Properties DEFAULT = new Properties(0, Fade.DEFAULT, 0F, 1F, 20, 20, false, false, RGBA.DEFAULT, true, true, Rotation.DEFAULT);
+    public static final Properties DEFAULT = new Properties(0, Fade.DEFAULT, 20, 20, false, false, RGBA.DEFAULT, true, true, Rotation.DEFAULT);
 
     private final int priority;
     private final Fade fade;
-    private final float minAlpha;
-    private final float maxAlpha;
     private final int transitionInDuration;
     private final int transitionOutDuration;
     private final boolean changeFog;
@@ -36,14 +32,9 @@ public class Properties {
     private final boolean renderInThickFog;
     private final Rotation rotation;
 
-    public Properties(int priority, Fade fade, float minAlpha, float maxAlpha, int transitionInDuration, int transitionOutDuration, boolean changeFog, boolean changeFogDensity, RGBA fogColors, boolean renderSunSkyTint, boolean renderInThickFog, Rotation rotation) {
+    public Properties(int priority, Fade fade, int transitionInDuration, int transitionOutDuration, boolean changeFog, boolean changeFogDensity, RGBA fogColors, boolean renderSunSkyTint, boolean renderInThickFog, Rotation rotation) {
         this.priority = priority;
         this.fade = fade;
-        if (minAlpha > maxAlpha) {
-            throw new IllegalStateException("Maximum alpha is lower than the minimum alpha:\n" + this);
-        }
-        this.minAlpha = minAlpha;
-        this.maxAlpha = maxAlpha;
         this.transitionInDuration = transitionInDuration;
         this.transitionOutDuration = transitionOutDuration;
         this.changeFog = changeFog;
@@ -60,14 +51,6 @@ public class Properties {
 
     public Fade getFade() {
         return this.fade;
-    }
-
-    public float getMinAlpha() {
-        return minAlpha;
-    }
-
-    public float getMaxAlpha() {
-        return this.maxAlpha;
     }
 
     public int getTransitionInDuration() {
@@ -198,7 +181,7 @@ public class Properties {
         }
 
         public Properties build() {
-            return new Properties(this.priority, this.fade, this.minAlpha, this.maxAlpha, this.transitionInDuration, this.transitionOutDuration, this.changeFog, this.changeFogDensity, this.fogColors, this.renderSunSkyTint, this.renderInTickFog, this.rotation);
+            return new Properties(this.priority, this.fade, this.transitionInDuration, this.transitionOutDuration, this.changeFog, this.changeFogDensity, this.fogColors, this.renderSunSkyTint, this.renderInTickFog, this.rotation);
         }
     }
 }

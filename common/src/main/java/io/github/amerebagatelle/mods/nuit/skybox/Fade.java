@@ -2,7 +2,7 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.amerebagatelle.mods.nuit.util.Utils;
+import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
 import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
 
 import java.util.LinkedHashMap;
@@ -12,8 +12,8 @@ public class Fade {
     public static final Fade DEFAULT = new Fade(false, 24000L, new LinkedHashMap<>());
     public static final Codec<Fade> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("alwaysOn", false).forGetter(Fade::isAlwaysOn),
-            Codec.LONG.optionalFieldOf("duration", 24000L).forGetter(Fade::getDuration),
-            Codec.unboundedMap(Codec.STRING, Codec.FLOAT)
+            CodecUtils.getClampedLong(1, Long.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(Fade::getDuration),
+            Codec.unboundedMap(Codec.STRING, CodecUtils.getClampedFloat(0F, 1F))
                     .optionalFieldOf("keyFrames", new LinkedHashMap<>())
                     .forGetter(Fade::getKeyFramesParsed)
     ).apply(instance, Fade::new));

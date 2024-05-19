@@ -140,8 +140,6 @@ The basic structure of a nuit skybox file may look something like this:
       },
       /* keyframes for fade (map of long to float, optional) */
     },
-    "maxAlpha": 0,
-    /* max alpha value (0-1 float, optional) */
     "transitionInDuration": 20,
     /* fade in speed (1-8760000 float, optional) */
     "transitionOutDuration": 20,
@@ -336,7 +334,6 @@ Specifies common properties used by all types of skyboxes.
 |:-----------------------:|:-----------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------:|----------------------------------------------|
 |       `priority`        |               Integer               | Specifies the order which skybox will be rendered. If there are multiple skyboxes with identical priority, those skyboxes are not re-ordered therefore being dependant of Vanilla's alphabetical namespaced identifiers loading. |        :x:         | 0                                            |
 |         `fade`          |     [Fade object](#fade-object)     |                                                                    Specifies the time of day in ticks that the skybox should start and end fading in and out.                                                                    | :white_check_mark: | -                                            |
-|       `maxAlpha`        |                Float                |                                                                       Specifies the maximum value that the alpha can be. The value must be within 0 and 1.                                                                       |        :x:         | 1.0                                          |
 | `transitionInDuration`  |               Integer               |                                   Specifies the duration in ticks that skybox will fade in when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).                                   |        :x:         | 20                                           |
 | `transitionOutDuration` |               Integer               |                                   Specifies the duration in ticks that skybox will fade in when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).                                   |        :x:         | 20                                           |
 |       `changeFog`       |               Boolean               |                                                                                    Specifies whether the skybox should change the fog color.                                                                                     |        :x:         | `false`                                      |
@@ -361,7 +358,6 @@ Specifies common properties used by all types of skyboxes.
       "4000": 0.0
     }
   },
-  "maxAlpha": 0.5,
   "transitionInDuration": 20,
   "transitionOutDuration": 20,
   "sunSkyTint": false,
@@ -881,7 +877,6 @@ Here is a full skybox file for example purposes:
         "4000": 0.0
       }
     },
-    "maxAlpha": 1.0,
     "transitionInDuration": 20,
     "transitionOutDuration": 20,
     "sunSkyTint": true,
