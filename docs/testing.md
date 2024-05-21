@@ -1,5 +1,7 @@
 # Nuit Testing Documentation
 
+All of these tests will be run before a release, but the 
+
 ## Unit Tests
 
 The unit tests are run on every PR.  They are not extensive, as this is a largely visual mod.
