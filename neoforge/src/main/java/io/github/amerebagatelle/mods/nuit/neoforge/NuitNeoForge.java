@@ -43,7 +43,7 @@ public final class NuitNeoForge {
 
     @SubscribeEvent
     public void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(NuitClient.config().getKeyBinding().toggleFabricSkyBoxes);
+        event.register(NuitClient.config().getKeyBinding().toggleNuit);
         event.register(NuitClient.config().getKeyBinding().toggleSkyboxDebugHud);
     }
 
@@ -61,7 +61,7 @@ public final class NuitNeoForge {
 
     @SubscribeEvent
     public void registerHudRender(RenderGuiLayerEvent.Post event) {
-        screen.renderHud(event.getGuiGraphics(), event.getPartialTick());
+        screen.renderHud(event.getGuiGraphics());
     }
 
     @SubscribeEvent
@@ -71,9 +71,7 @@ public final class NuitNeoForge {
 
     @SubscribeEvent
     public void registerSkyTypes(RegisterEvent event) {
-        event.register(SkyboxType.SKYBOX_TYPE_REGISTRY_KEY, registry -> {
-            SkyboxType.register(skyboxType -> registry.register(skyboxType.createId(), skyboxType));
-        });
+        event.register(SkyboxType.SKYBOX_TYPE_REGISTRY_KEY, registry -> SkyboxType.register(skyboxType -> registry.register(skyboxType.createId(), skyboxType)));
     }
 
     @SubscribeEvent

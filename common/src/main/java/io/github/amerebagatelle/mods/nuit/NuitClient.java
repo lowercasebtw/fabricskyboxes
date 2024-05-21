@@ -1,6 +1,5 @@
 package io.github.amerebagatelle.mods.nuit;
 
-import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.config.NuitConfig;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +12,7 @@ public class NuitClient {
     private static NuitConfig CONFIG;
 
     public static void init() {
-        NuitApi.getInstance().setEnabled(config().generalSettings.enable);
+        SkyboxManager.getInstance().setEnabled(config().generalSettings.enable);
     }
 
     public static Logger getLogger() {

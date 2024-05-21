@@ -1,8 +1,8 @@
 {
-  "category.nuit": "FabricSkyBoxes",
-  "key.nuit.toggle": "切換 FabricSkyBoxes",
-  "nuit.message.enabled": "FabricSkyBoxes 已啟用！",
-  "nuit.message.disabled": "FabricSkyBoxes 已停用！",
+  "category.nuit": "Nuit",
+  "key.nuit.toggle": "切換 Nuit",
+  "nuit.message.enabled": "Nuit 已啟用！",
+  "nuit.message.disabled": "Nuit 已停用！",
   "key.nuit.toggle.debug_hud": "切換除錯 HUD",
-  "key.fabricskyboxes.toggle.debug_screen": "切換除錯介面"
+  "key.nuit.toggle.debug_screen": "切換除錯介面"
 }

@@ -1,7 +1,7 @@
 package io.github.amerebagatelle.mods.nuit.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.amerebagatelle.mods.nuit.api.NuitApi;
+import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.skybox.RGBA;
@@ -22,10 +22,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinFogRenderer {
 
     @Unique
-    private static float density;
+    private static float nuit$density;
 
     @Unique
-    private static boolean modifyDensity;
+    private static boolean nuit$modifyDensity;
 
     @Shadow
     private static float fogRed;
@@ -41,22 +41,22 @@ public class MixinFogRenderer {
      */
     @Inject(method = "setupColor", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/FogRenderer;biomeChangedTime:J", ordinal = 6))
     private static void modifyColors(Camera camera, float tickDelta, ClientLevel world, int i, float f, CallbackInfo ci) {
-        FogRGBA fogColor = Utils.alphaBlendFogColors(NuitApi.getInstance().getActiveSkyboxes(), new RGBA(fogRed, fogBlue, fogGreen));
-        if (NuitApi.getInstance().isEnabled() && fogColor != null) {
+        FogRGBA fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), new RGBA(fogRed, fogGreen, fogBlue));
+        if (SkyboxManager.getInstance().isEnabled() && fogColor != null) {
             fogRed = fogColor.getRed();
-            fogBlue = fogColor.getGreen();
-            fogGreen = fogColor.getBlue();
-            density = fogColor.getDensity();
-            modifyDensity = fogColor.isModifyDensity();
+            fogBlue = fogColor.getBlue();
+            fogGreen = fogColor.getGreen();
+            nuit$density = fogColor.getDensity();
+            nuit$modifyDensity = fogColor.isModifyDensity();
         } else {
-            modifyDensity = false;
+            nuit$modifyDensity = false;
         }
     }
 
     @Redirect(method = "levelFogColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogColor(FFF)V"), remap = false)
     private static void redirectSetShaderFogColor(float red, float green, float blue) {
-        if (modifyDensity) {
-            RenderSystem.setShaderFogColor(red, green, blue, density);
+        if (nuit$modifyDensity) {
+            RenderSystem.setShaderFogColor(red, green, blue, nuit$density);
         } else {
             RenderSystem.setShaderFogColor(red, green, blue);
         }
@@ -64,7 +64,7 @@ public class MixinFogRenderer {
 
     @Redirect(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getTimeOfDay(F)F"))
     private static float nuit$redirectSkyAngle(ClientLevel instance, float v) {
-        if (NuitApi.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
             return Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
         }
         return instance.getTimeOfDay(v);
@@ -72,7 +72,7 @@ public class MixinFogRenderer {
 
     @Redirect(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getSunAngle(F)F"))
     private static float nuit$redirectSkyAngleRadian(ClientLevel instance, float v) {
-        if (NuitApi.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
             float skyAngle = Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
             return skyAngle * (float) (Math.PI * 2);
         }
@@ -85,7 +85,7 @@ public class MixinFogRenderer {
             constant = @Constant(intValue = 4, ordinal = 0)
     )
     private static int renderSkyColor(int original) {
-        Skybox skybox = NuitApi.getInstance().getCurrentSkybox();
+        Skybox skybox = SkyboxManager.getInstance().getCurrentSkybox();
         if (skybox instanceof NuitSkybox nuitSkybox) {
             if (!nuitSkybox.getProperties().isRenderSunSkyTint()) {
                 return Integer.MAX_VALUE;

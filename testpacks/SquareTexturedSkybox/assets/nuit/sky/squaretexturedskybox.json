@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "type": "square-textured",
+  "properties": {
+    "fade": {
+      "keyFrames": {
+        "0": 0,
+        "1000": 1.0,
+        "2000": 0
+      }
+    }
+  },
+  "conditions": {
+  },
+  "decorations": {
+  },
+  "texture": "fabricskyboxes:sky/test_texture.png"
+}

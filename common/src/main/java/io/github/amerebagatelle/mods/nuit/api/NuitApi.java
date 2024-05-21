@@ -19,27 +19,13 @@ public interface NuitApi {
     /**
      * Gets the version of this API, This is incremented when changes are implemented
      * without breaking API. Mods can use this to check if given API functionality
-     * is available on the current version of installed FabricSkyBoxes.
+     * is available on the current version of installed Nuit.
      *
      * @return The current version of the API
      */
     static int getApiVersion() {
         return 0;
     }
-
-    /**
-     * Gets the state of the FabricSkyBoxes mod.
-     *
-     * @return Whether FabricSkyBoxes is enabled.
-     */
-    boolean isEnabled();
-
-    /**
-     * Allows mods to set the state of the FabricSkyBoxes.
-     *
-     * @param enabled State of the FabricSkyBoxes.
-     */
-    void setEnabled(boolean enabled);
 
     /**
      * Allows mods to add new skyboxes at runtime.

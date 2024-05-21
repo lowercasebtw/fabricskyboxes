@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "type": "monocolor",
+  "properties": {
+    "changeFog": true,
+    "fogColors": {
+      "red": 0.0,
+      "blue": 0.0,
+      "green": 0.0
+    },
+    "fade": {
+      "keyFrames": {
+        "6000": 0,
+        "8000": 1.0,
+        "10000": 0
+      }
+    }
+  },
+  "conditions": {
+  },
+  "decorations": {
+  },
+  "color": {
+    "red": 1.0,
+    "blue": 0.0,
+    "green": 0.0
+  },
+  "blend": {
+    "type": "add"
+  }
+}

@@ -7,7 +7,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import org.joml.Matrix4f;
 
 public interface Skybox {
-    default int getPriority() {
+    default int getLayer() {
         return 0;
     }
 

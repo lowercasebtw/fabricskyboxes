@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
-import io.github.amerebagatelle.mods.nuit.api.NuitApi;
+import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -76,17 +76,17 @@ public class NuitConfig {
 
     public static class KeyBindingImpl {
 
-        public final KeyMapping toggleFabricSkyBoxes = new KeyMapping("key.nuit.toggle", InputConstants.Type.KEYSYM, -1, "category.nuit");
+        public final KeyMapping toggleNuit = new KeyMapping("key.nuit.toggle", InputConstants.Type.KEYSYM, -1, "category.nuit");
         public final KeyMapping toggleSkyboxDebugHud = new KeyMapping("key.nuit.toggle.debug_hud", InputConstants.Type.KEYSYM, -1, "category.nuit");
 
         public void tick(Minecraft client) {
-            while (this.toggleFabricSkyBoxes.consumeClick()) {
+            while (this.toggleNuit.consumeClick()) {
                 NuitClient.config().generalSettings.enable = !NuitClient.config().generalSettings.enable;
                 NuitClient.config().save();
-                NuitApi.getInstance().setEnabled(NuitClient.config().generalSettings.enable);
+                SkyboxManager.getInstance().setEnabled(NuitClient.config().generalSettings.enable);
 
                 assert client.player != null;
-                if (NuitApi.getInstance().isEnabled()) {
+                if (SkyboxManager.getInstance().isEnabled()) {
                     client.player.displayClientMessage(Component.translatable("nuit.message.enabled"), false);
                 } else {
                     client.player.displayClientMessage(Component.translatable("nuit.message.disabled"), false);
