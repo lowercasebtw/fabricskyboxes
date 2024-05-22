@@ -7,13 +7,6 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        include:
-          - platform: fabric
-            name: Fabric
-          - platform: neoforge
-            name: NeoForge
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout sources
@@ -26,14 +19,23 @@ jobs:
           distribution: 'temurin'
           java-version: 21
           check-latest: true
-      - name: Upload assets to releases
+      - name: Build with Gradle
         run: ./gradlew build
+  publish:
+    needs: build
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - platform: fabric
+            name: Fabric
+          - platform: neoforge
+            name: NeoForge
+    steps:
       - name: Publish ${{ matrix.name }} to Modrinth, CurseForge & GitHub
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
           modrinth-id: YBz7DOs8
-          modrinth-featured: true
-          modrinth-unfeature-mode: subset
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           curseforge-id: 408209
@@ -41,7 +43,7 @@ jobs:
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          name: '[${{matrix.name}}] ${{ github.event.release.name }}'
+          name: '[${{ matrix.name }}] ${{ github.event.release.name }}'
           version: '${{ github.event.release.tag_name }}+${{ matrix.platform }}'
           version-type: release
 
