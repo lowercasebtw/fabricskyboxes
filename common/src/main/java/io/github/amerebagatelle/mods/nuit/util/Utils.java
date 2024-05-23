@@ -173,20 +173,40 @@ public class Utils {
      * Calculates the interpolated alpha value between two keyframes.
      *
      * @param currentTime          The current time.
+     * @param duration             The duration of the keyframes.
      * @param currentKeyFrame      The timestamp of the current keyframe.
      * @param nextKeyFrame         The timestamp of the next keyframe.
      * @param currentKeyFrameValue The alpha value at the current keyframe.
      * @param nextKeyFrameValue    The alpha value at the next keyframe.
      * @return The interpolated alpha value based on the current time and keyframes.
      */
-    public static float calculateInterpolatedAlpha(long currentTime, long currentKeyFrame, long nextKeyFrame, float currentKeyFrameValue, float nextKeyFrameValue) {
-        if (currentKeyFrameValue == nextKeyFrameValue) {
+    public static float calculateInterpolatedAlpha(long currentTime, long duration, long currentKeyFrame, long nextKeyFrame, float currentKeyFrameValue, float nextKeyFrameValue) {
+        // Check if no interpolation is needed
+        if (currentKeyFrameValue == nextKeyFrameValue || currentKeyFrame == nextKeyFrame) {
             return nextKeyFrameValue;
-        } else {
-            long duration = nextKeyFrame - currentKeyFrame;
-            long timePassedSinceKeyFrame = currentTime - currentKeyFrame;
-            return currentKeyFrameValue + ((float) timePassedSinceKeyFrame / duration) * (nextKeyFrameValue - currentKeyFrameValue);
         }
+
+        // Handle cyclical keyframes
+        if (currentKeyFrame > nextKeyFrame) {
+            // Calculate time remaining in the cycle
+            long timeRemainingInCycle = duration - currentKeyFrame;
+            // Calculate total time in the cycle
+            long timeInCycle = timeRemainingInCycle + nextKeyFrame;
+
+            // Adjust nextKeyFrame and currentTime if needed
+            nextKeyFrame = currentKeyFrame + timeInCycle;
+            if (currentTime > nextKeyFrame && currentTime > currentKeyFrame || currentTime == 0) {
+                long timePassed = timeRemainingInCycle + currentTime;
+                currentTime = currentKeyFrame + timePassed;
+            }
+        }
+
+        // Calculate duration between keyframes and time passed since currentKeyFrame
+        long durationBetween = nextKeyFrame - currentKeyFrame;
+        long timePassedSinceKeyFrame = currentTime - currentKeyFrame;
+
+        // Perform interpolation calculation
+        return currentKeyFrameValue + ((float) timePassedSinceKeyFrame / durationBetween) * (nextKeyFrameValue - currentKeyFrameValue);
     }
 
     /**
@@ -200,11 +220,11 @@ public class Utils {
         long closestLowerKeyFrame = Long.MIN_VALUE;
         long closestHigherKeyFrame = Long.MAX_VALUE;
 
-        for (Map.Entry<Long, Float> entry : keyFrames.entrySet()) {
-            long keyFrame = entry.getKey();
+        for (long keyFrame : keyFrames.keySet()) {
             if (keyFrame <= currentTime && keyFrame > closestLowerKeyFrame) {
                 closestLowerKeyFrame = keyFrame;
-            } else if (keyFrame > currentTime && keyFrame < closestHigherKeyFrame) {
+            }
+            if (keyFrame > currentTime && keyFrame < closestHigherKeyFrame) {
                 closestHigherKeyFrame = keyFrame;
             }
         }
@@ -212,7 +232,6 @@ public class Utils {
         if (closestHigherKeyFrame == Long.MAX_VALUE || closestLowerKeyFrame == Long.MIN_VALUE) {
             closestHigherKeyFrame = keyFrames.keySet().stream().max(Long::compare).orElse(Long.MAX_VALUE);
             closestLowerKeyFrame = keyFrames.keySet().stream().min(Long::compare).orElse(Long.MIN_VALUE);
-            return new Tuple<>(closestHigherKeyFrame, closestLowerKeyFrame);
         }
 
         return new Tuple<>(closestLowerKeyFrame, closestHigherKeyFrame);
@@ -237,36 +256,32 @@ public class Utils {
      * @return The final blended fog color.
      */
     public static FogRGBA alphaBlendFogColors(List<Skybox> skyboxList, RGBA initialFogColor) {
-        List<FogRGBA> activeColors = skyboxList.stream()
-                .filter(Skybox::isActive) // check if active
-                .filter(NuitSkybox.class::isInstance) // check if our own skybox impl
-                .map(NuitSkybox.class::cast) // cast to our own skybox impl
-                .filter(nuitSkybox -> nuitSkybox.getProperties().isChangeFog())// check if fog is changed
-                .map(nuitSkybox -> new FogRGBA(nuitSkybox.getProperties().getFogColors().getRed(),
+        FogRGBA destination = new FogRGBA(initialFogColor);
+
+        for (Skybox skybox : skyboxList) {
+            if (skybox.isActive() && skybox instanceof NuitSkybox nuitSkybox && nuitSkybox.getProperties().isChangeFog()) {
+                FogRGBA source = new FogRGBA(
+                        nuitSkybox.getProperties().getFogColors().getRed(),
                         nuitSkybox.getProperties().getFogColors().getGreen(),
                         nuitSkybox.getProperties().getFogColors().getBlue(),
                         nuitSkybox.getAlpha(),
                         nuitSkybox.getProperties().isChangeFogDensity(),
-                        nuitSkybox.getProperties().getFogColors().getAlpha()))
-                .toList(); // map RGB fog colors and A to skybox alpha
-        if (activeColors.isEmpty()) {
-            return null;
-        } else {
-            FogRGBA destination = new FogRGBA(initialFogColor);
-            for (FogRGBA source : activeColors) {
-                // Alpha blending
+                        nuitSkybox.getProperties().getFogColors().getAlpha()
+                );
+
                 float sourceAlphaInv = 1f - source.getAlpha();
-
-                float red = (source.getRed() * source.getAlpha()) + (destination.getRed() * sourceAlphaInv);
-                float green = (source.getGreen() * source.getAlpha()) + (destination.getGreen() * sourceAlphaInv);
-                float blue = (source.getBlue() * source.getAlpha()) + (destination.getBlue() * sourceAlphaInv);
-                float alpha = (source.getAlpha() * source.getAlpha()) + (destination.getAlpha() * sourceAlphaInv);
-                float density = (source.getDensity() * source.getAlpha()) + (destination.getDensity() * sourceAlphaInv);
-
-                destination = new FogRGBA(red, green, blue, alpha, source.isModifyDensity(), density);
+                destination = new FogRGBA(
+                        (source.getRed() * source.getAlpha()) + (destination.getRed() * sourceAlphaInv),
+                        (source.getGreen() * source.getAlpha()) + (destination.getGreen() * sourceAlphaInv),
+                        (source.getBlue() * source.getAlpha()) + (destination.getBlue() * sourceAlphaInv),
+                        (source.getAlpha() * source.getAlpha()) + (destination.getAlpha() * sourceAlphaInv),
+                        source.isModifyDensity(),
+                        (source.getDensity() * source.getAlpha()) + (destination.getDensity() * sourceAlphaInv)
+                );
             }
-            return destination;
         }
+
+        return destination;
     }
 
     /**

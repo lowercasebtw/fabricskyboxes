@@ -47,7 +47,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
     protected Conditions conditions = Conditions.DEFAULT;
     protected Decorations decorations = Decorations.DEFAULT;
 
-    private final Map<Long, Float> cachedFadeValues = new Long2FloatArrayMap((int) this.properties.getFade().getDuration());
+    private final Map<Long, Float> cachedFadeValues = new Long2FloatArrayMap();
 
     protected boolean unexpectedConditionTransition = false;
     protected long lastTime = -2;
@@ -88,7 +88,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
                 fadeAlpha = this.cachedFadeValues.get(currentTime);
             } else {
                 Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
-                fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
+                fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
                 this.cachedFadeValues.put(currentTime, fadeAlpha);
             }
 
