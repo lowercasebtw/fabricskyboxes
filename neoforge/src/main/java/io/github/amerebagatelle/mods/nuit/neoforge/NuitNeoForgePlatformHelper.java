@@ -2,7 +2,7 @@ package io.github.amerebagatelle.mods.nuit.neoforge;
 
 import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
-import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
+import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
 import net.minecraft.core.Registry;
 import net.neoforged.fml.loading.FMLPaths;
 

@@ -1,6 +1,6 @@
 package io.github.amerebagatelle.mods.nuit.util;
 
-import io.github.amerebagatelle.mods.nuit.skybox.RGBA;
+import io.github.amerebagatelle.mods.nuit.components.RGBA;
 
 public class FogRGBA extends RGBA {
     private final boolean modifyDensity;

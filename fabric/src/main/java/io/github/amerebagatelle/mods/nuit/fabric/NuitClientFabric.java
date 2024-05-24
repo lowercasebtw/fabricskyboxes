@@ -6,7 +6,7 @@ import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.resource.SkyboxResourceListener;
 import io.github.amerebagatelle.mods.nuit.screen.SkyboxDebugScreen;
-import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
+import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;

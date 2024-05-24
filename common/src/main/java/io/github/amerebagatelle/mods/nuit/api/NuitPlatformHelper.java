@@ -1,7 +1,7 @@
 package io.github.amerebagatelle.mods.nuit.api;
 
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
-import io.github.amerebagatelle.mods.nuit.skyboxes.SkyboxType;
+import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.core.Registry;
 
