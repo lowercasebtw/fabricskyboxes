@@ -34,6 +34,7 @@ dependencies {
     // modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
 
     modImplementation "maven.modrinth:sodium:mc1.20.6-0.5.8"
+    modImplementation "maven.modrinth:lithium:mc1.20.6-0.12.3"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

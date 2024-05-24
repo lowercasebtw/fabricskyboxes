@@ -16,6 +16,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import java.util.Comparator;
@@ -36,7 +37,7 @@ public class SkyboxManager implements NuitApi {
     private Skybox currentSkybox = null;
     private boolean enabled = true;
 
-    public static Skybox parseSkyboxJson(ResourceLocation id, JsonObject jsonObject) {
+    public static @Nullable Skybox parseSkyboxJson(ResourceLocation id, JsonObject jsonObject) {
         Metadata metadata;
 
         try {
@@ -52,7 +53,14 @@ public class SkyboxManager implements NuitApi {
             NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", id.toString(), metadata.getType().getPath().replace('_', '-'));
             return null;
         }
-        return type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst();
+
+        try {
+            return type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst();
+        } catch (RuntimeException e) {
+            NuitClient.getLogger().warn("Skipping invalid skybox {}", id.toString(), e);
+            NuitClient.getLogger().warn(jsonObject.toString());
+            return null;
+        }
     }
 
     public static SkyboxManager getInstance() {

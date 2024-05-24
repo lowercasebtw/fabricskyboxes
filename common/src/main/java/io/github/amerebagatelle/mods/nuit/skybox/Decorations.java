@@ -2,6 +2,7 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -10,18 +11,16 @@ import net.minecraft.resources.ResourceLocation;
  * different u/v value depending on the moon phase.
  */
 public class Decorations {
-    public static final ResourceLocation MOON_PHASES = new ResourceLocation("textures/environment/moon_phases.png");
-    public static final ResourceLocation SUN = new ResourceLocation("textures/environment/sun.png");
     public static final Codec<Decorations> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.optionalFieldOf("sun", SUN).forGetter(Decorations::getSunTexture),
-            ResourceLocation.CODEC.optionalFieldOf("moon", MOON_PHASES).forGetter(Decorations::getMoonTexture),
+            ResourceLocation.CODEC.optionalFieldOf("sun", LevelRendererAccessor.getSun()).forGetter(Decorations::getSunTexture),
+            ResourceLocation.CODEC.optionalFieldOf("moon", LevelRendererAccessor.getMoonPhases()).forGetter(Decorations::getMoonTexture),
             Codec.BOOL.optionalFieldOf("showSun", false).forGetter(Decorations::isSunEnabled),
             Codec.BOOL.optionalFieldOf("showMoon", false).forGetter(Decorations::isMoonEnabled),
             Codec.BOOL.optionalFieldOf("showStars", false).forGetter(Decorations::isStarsEnabled),
             Rotation.CODEC.optionalFieldOf("rotation", Rotation.DECORATIONS).forGetter(Decorations::getRotation),
             Blend.CODEC.optionalFieldOf("blend", Blend.DECORATIONS).forGetter(Decorations::getBlend)
     ).apply(instance, Decorations::new));
-    public static final Decorations DEFAULT = new Decorations(SUN, MOON_PHASES, false, false, false, Rotation.DEFAULT, Blend.DECORATIONS);
+    public static final Decorations DEFAULT = new Decorations(LevelRendererAccessor.getSun(), LevelRendererAccessor.getMoonPhases(), false, false, false, Rotation.DEFAULT, Blend.DECORATIONS);
     private final ResourceLocation sunTexture;
     private final ResourceLocation moonTexture;
     private final boolean sunEnabled;
