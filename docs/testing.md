@@ -4,13 +4,13 @@ All of these tests will be run before a release, but the
 
 ## Unit Tests
 
-The unit tests are run on every PR.  They are not extensive, as this is a largely visual mod.
+The unit tests are run on every PR. They are not exhaustive of every possibility.
+They also cannot test the most important parts of the mod, as this is a largely visual mod.
 
 ## Visual Tests
 
-In the root directory, there is a folder called `testpacks/`.  This folder contains several resource packs useful for 
-testing the mod.  Each of the affected resource packs should be tested when submitting a PR.  Below is documentation
-for the purpose of each of the resource packs.
+In the root directory, there is a folder called `testpacks/`.  This folder contains several resource packs useful for
+testing the mod. Below is documentation for the purpose of each of the resource packs.
 
 ### [MonoColorSkybox](../testpacks/MonoColorSkybox)
 
