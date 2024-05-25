@@ -10,17 +10,17 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface LevelRendererAccessor {
     @Accessor("SUN_LOCATION")
     static ResourceLocation getSun() {
-        return new ResourceLocation("");
+        return ResourceLocation.tryParse("textures/environment/sun.png");
     }
 
     @Accessor("MOON_LOCATION")
     static ResourceLocation getMoonPhases() {
-        return new ResourceLocation("");
+        return ResourceLocation.tryParse("textures/environment/moon_phases.png");
     }
 
     @Accessor("END_SKY_LOCATION")
     static ResourceLocation getEndSky() {
-        return new ResourceLocation("");
+        return ResourceLocation.tryParse("textures/environment/end_sky.png");
     }
 
     @Accessor("skyBuffer")
