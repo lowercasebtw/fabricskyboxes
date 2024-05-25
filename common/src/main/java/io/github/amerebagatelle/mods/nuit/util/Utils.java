@@ -10,6 +10,7 @@ import io.github.amerebagatelle.mods.nuit.components.UVRange;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -193,12 +194,10 @@ public class Utils {
             // Calculate total time in the cycle
             long timeInCycle = timeRemainingInCycle + nextKeyFrame;
 
-            // Adjust nextKeyFrame and currentTime if needed
+            // Adjust nextKeyFrame and currentTime
             nextKeyFrame = currentKeyFrame + timeInCycle;
-            if (currentTime > nextKeyFrame && currentTime > currentKeyFrame || currentTime == 0) {
-                long timePassed = timeRemainingInCycle + currentTime;
-                currentTime = currentKeyFrame + timePassed;
-            }
+            long timePassed = timeRemainingInCycle + currentTime;
+            currentTime = currentKeyFrame + timePassed;
         }
 
         // Calculate duration between keyframes and time passed since currentKeyFrame
@@ -216,7 +215,10 @@ public class Utils {
      * @param currentTime The current time for which to find the closest keyframes.
      * @return A pair of timestamps representing the closest keyframes before and after the current time.
      */
-    public static Tuple<Long, Long> findClosestKeyframes(Map<Long, Float> keyFrames, long currentTime) {
+    public static @Nullable Tuple<Long, Long> findClosestKeyframes(Map<Long, Float> keyFrames, long currentTime) {
+        if (keyFrames.isEmpty())
+            return null;
+
         long closestLowerKeyFrame = Long.MIN_VALUE;
         long closestHigherKeyFrame = Long.MAX_VALUE;
 
@@ -229,9 +231,10 @@ public class Utils {
             }
         }
 
-        if (closestHigherKeyFrame == Long.MAX_VALUE || closestLowerKeyFrame == Long.MIN_VALUE) {
-            closestHigherKeyFrame = keyFrames.keySet().stream().max(Long::compare).orElse(Long.MAX_VALUE);
-            closestLowerKeyFrame = keyFrames.keySet().stream().min(Long::compare).orElse(Long.MIN_VALUE);
+        // Handle cases where the current time is before the first keyframe or after the last keyframe and single keyframe cases
+        if (closestLowerKeyFrame == Long.MIN_VALUE || closestHigherKeyFrame == Long.MAX_VALUE) {
+            closestLowerKeyFrame = keyFrames.keySet().stream().max(Long::compare).orElse(Long.MIN_VALUE);
+            closestHigherKeyFrame = keyFrames.keySet().stream().min(Long::compare).orElse(Long.MAX_VALUE);
         }
 
         return new Tuple<>(closestLowerKeyFrame, closestHigherKeyFrame);

@@ -88,8 +88,12 @@ public abstract class AbstractSkybox implements NuitSkybox {
                 fadeAlpha = this.cachedFadeValues.get(currentTime);
             } else {
                 Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
-                fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
-                this.cachedFadeValues.put(currentTime, fadeAlpha);
+                if (keyFrames != null) {
+                    fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
+                    this.cachedFadeValues.put(currentTime, fadeAlpha);
+                } else {
+                    throw new IllegalStateException("No keyframes found");
+                }
             }
 
             if ((this.lastTime == currentTime - 1 || this.lastTime == currentTime) && !this.unexpectedConditionTransition) { // Check if time is ticking or if time is same (doDaylightCycle gamerule)
