@@ -8,8 +8,9 @@ import com.mojang.serialization.JsonOps;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
-import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.components.Metadata;
+import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
+import io.github.amerebagatelle.mods.nuit.skybox.DefaultHandler;
 import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.Camera;
@@ -92,12 +93,16 @@ public class SkyboxManager implements NuitApi {
         Preconditions.checkNotNull(identifier, "Identifier was null");
         Preconditions.checkNotNull(skybox, "Skybox was null");
         this.permanentSkyboxMap.put(identifier, skybox);
+
+        DefaultHandler.addConditions(skybox);
     }
 
     @Internal
     public void clearSkyboxes() {
         this.skyboxMap.clear();
         this.activeSkyboxes.clear();
+
+        DefaultHandler.clearConditionsExcept(permanentSkyboxMap.values());
     }
 
     @Internal

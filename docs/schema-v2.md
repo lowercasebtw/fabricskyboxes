@@ -394,16 +394,16 @@ Specifies when and where a skybox should render. All fields are optional.
 
 **Specification**
 
-|     Name     |                    Datatype                     |                                 Description                                  |          Default value           |
-|:------------:|:-----------------------------------------------:|:----------------------------------------------------------------------------:|:--------------------------------:|
-|   `biomes`   |    Array of [Namespaced Ids](#namespaced-id)    |       Specifies a list of biomes that the skybox should be rendered in       |     Empty Array (all biomes)     |
-|   `worlds`   |    Array of [Namespaced Ids](#namespaced-id)    | Specifies a list of worlds sky effects that the skybox should be rendered in |     Empty Array (all worlds)     |
-| `dimensions` |    Array of [Namespaced Ids](#namespaced-id)    |     Specifies a list of dimension that the skybox should be rendered in      |   Empty Array (all dimensions)   |
-|  `effects`   |    Array of [Namespaced Ids](#namespaced-id)    |      Specifies a list of effects that the skybox should be rendered in       |  Empty Array (default effects)   |
-|  `weather`   |          Array of [Weathers](#weather)          | Specifies a list of weather conditions that the skybox should be rendered in | Empty Array (vanilla conditions) |
-|  `xRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  | Empty Array (all x coordinates)  |
-|  `yRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  | Empty Array (all y coordinates)  |
-|  `zRanges`   | Array of [MinMax Entries](#minmax-entry-object) |  Specifies a list of coordinates that the skybox should be rendered between  | Empty Array (all z coordinates)  |
+|     Name     |                    Datatype                     |                                                                                                           Description                                                                                                            |          Default value           |
+|:------------:|:-----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------:|
+|   `biomes`   |    Array of [Namespaced Ids](#namespaced-id)    |       Specifies a list of biomes that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current biome is absent from the biomes condition of all other skyboxes.       |     Empty Array (all biomes)     |
+|   `worlds`   |    Array of [Namespaced Ids](#namespaced-id)    | Specifies a list of worlds sky effects that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current world is absent from the worlds condition of all other skyboxes. |     Empty Array (all worlds)     |
+| `dimensions` |    Array of [Namespaced Ids](#namespaced-id)    | Specifies a list of dimensions that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current dimension is absent from the dimensions condition of all other skyboxes. |   Empty Array (all dimensions)   |
+|  `effects`   |    Array of [Namespaced Ids](#namespaced-id)    |                                                                                Specifies a list of effects that the skybox should be rendered in                                                                                 |  Empty Array (default effects)   |
+|  `weather`   |          Array of [Weathers](#weather)          |                                                                           Specifies a list of weather conditions that the skybox should be rendered in                                                                           | Empty Array (vanilla conditions) |
+|  `xRanges`   | Array of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty Array (all x coordinates)  |
+|  `yRanges`   | Array of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty Array (all y coordinates)  |
+|  `zRanges`   | Array of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty Array (all z coordinates)  |
 
 **Example**
 
@@ -412,7 +412,8 @@ Specifies when and where a skybox should render. All fields are optional.
   "biomes": [
     "minecraft:desert",
     "minecraft:desert_hills",
-    "minecraft:desert_lakes"
+    "minecraft:desert_lakes",
+    "nuit:default"
   ],
   "worlds": [
     "minecraft:overworld"

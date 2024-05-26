@@ -9,7 +9,8 @@ assignees: ''
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-IMPORTANT: New Minecraft versions are likely already being worked on.  Please be patient and join the Discord if you would like to view the progress.
+IMPORTANT: New Minecraft versions are likely already being worked on. Please be patient and join the Discord if you
+would like to view the progress.
 
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
