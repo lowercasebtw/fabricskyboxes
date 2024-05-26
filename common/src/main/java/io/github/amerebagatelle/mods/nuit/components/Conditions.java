@@ -5,29 +5,27 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
-
 public class Conditions {
     public static final Codec<Conditions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.listOf().optionalFieldOf("biomes", ObjectArrayList.of()).forGetter(Conditions::getBiomes),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("worlds", ObjectArrayList.of()).forGetter(Conditions::getWorlds),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("dimensions", ObjectArrayList.of()).forGetter(Conditions::getDimensions),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("effects", ObjectArrayList.of()).forGetter(Conditions::getEffects),
-            Weather.CODEC.listOf().optionalFieldOf("weather", ObjectArrayList.of()).forGetter(Conditions::getWeathers),
-            MinMaxEntry.CODEC.listOf().optionalFieldOf("xRanges", ObjectArrayList.of()).forGetter(Conditions::getXRanges),
-            MinMaxEntry.CODEC.listOf().optionalFieldOf("yRanges", ObjectArrayList.of()).forGetter(Conditions::getYRanges),
-            MinMaxEntry.CODEC.listOf().optionalFieldOf("zRanges", ObjectArrayList.of()).forGetter(Conditions::getZRanges)
+            Condition.create(ResourceLocation.CODEC).optionalFieldOf("biomes", Condition.of()).forGetter(Conditions::getBiomes),
+            Condition.create(ResourceLocation.CODEC).optionalFieldOf("worlds", Condition.of()).forGetter(Conditions::getWorlds),
+            Condition.create(ResourceLocation.CODEC).optionalFieldOf("dimensions", Condition.of()).forGetter(Conditions::getDimensions),
+            Condition.create(ResourceLocation.CODEC).optionalFieldOf("effects", Condition.of()).forGetter(Conditions::getEffects),
+            Condition.create(Weather.CODEC).optionalFieldOf("weathers", Condition.of()).forGetter(Conditions::getWeathers),
+            Condition.create(MinMaxEntry.CODEC).optionalFieldOf("xRanges", Condition.of()).forGetter(Conditions::getXRanges),
+            Condition.create(MinMaxEntry.CODEC).optionalFieldOf("yRanges", Condition.of()).forGetter(Conditions::getYRanges),
+            Condition.create(MinMaxEntry.CODEC).optionalFieldOf("zRanges", Condition.of()).forGetter(Conditions::getZRanges)
     ).apply(instance, Conditions::new));
-    private final List<ResourceLocation> biomes;
-    private final List<ResourceLocation> worlds;
-    private final List<ResourceLocation> dimensions;
-    private final List<ResourceLocation> effects;
-    private final List<Weather> weathers;
-    private final List<MinMaxEntry> yRanges;
-    private final List<MinMaxEntry> zRanges;
-    private final List<MinMaxEntry> xRanges;
+    private final Condition<ResourceLocation> biomes;
+    private final Condition<ResourceLocation> worlds;
+    private final Condition<ResourceLocation> dimensions;
+    private final Condition<ResourceLocation> effects;
+    private final Condition<Weather> weathers;
+    private final Condition<MinMaxEntry> xRanges;
+    private final Condition<MinMaxEntry> yRanges;
+    private final Condition<MinMaxEntry> zRanges;
 
-    public Conditions(List<ResourceLocation> biomes, List<ResourceLocation> worlds, List<ResourceLocation> dimensions, List<ResourceLocation> effects, List<Weather> weathers, List<MinMaxEntry> xRanges, List<MinMaxEntry> yRanges, List<MinMaxEntry> zRanges) {
+    public Conditions(Condition<ResourceLocation> biomes, Condition<ResourceLocation> worlds, Condition<ResourceLocation> dimensions, Condition<ResourceLocation> effects, Condition<Weather> weathers, Condition<MinMaxEntry> xRanges, Condition<MinMaxEntry> yRanges, Condition<MinMaxEntry> zRanges) {
         this.biomes = biomes;
         this.worlds = worlds;
         this.dimensions = dimensions;
@@ -38,39 +36,39 @@ public class Conditions {
         this.zRanges = zRanges;
     }
 
-    public List<ResourceLocation> getBiomes() {
+    public Condition<ResourceLocation> getBiomes() {
         return this.biomes;
     }
 
-    public List<ResourceLocation> getWorlds() {
+    public Condition<ResourceLocation> getWorlds() {
         return this.worlds;
     }
 
-    public List<ResourceLocation> getDimensions() {
+    public Condition<ResourceLocation> getDimensions() {
         return dimensions;
     }
 
-    public List<ResourceLocation> getEffects() {
+    public Condition<ResourceLocation> getEffects() {
         return effects;
     }
 
-    public List<Weather> getWeathers() {
+    public Condition<Weather> getWeathers() {
         return this.weathers;
     }
 
-    public List<MinMaxEntry> getYRanges() {
-        return this.yRanges;
-    }
-
-    public List<MinMaxEntry> getXRanges() {
+    public Condition<MinMaxEntry> getXRanges() {
         return this.xRanges;
     }
 
-    public List<MinMaxEntry> getZRanges() {
+    public Condition<MinMaxEntry> getYRanges() {
+        return this.yRanges;
+    }
+
+    public Condition<MinMaxEntry> getZRanges() {
         return this.zRanges;
     }
 
     public static Conditions of() {
-        return new Conditions(ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of());
+        return new Conditions(Condition.of(), Condition.of(), Condition.of(), Condition.of(), Condition.of(), Condition.of(), Condition.of(), Condition.of());
     }
 }

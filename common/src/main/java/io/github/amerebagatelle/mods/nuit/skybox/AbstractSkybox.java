@@ -128,9 +128,9 @@ public abstract class AbstractSkybox implements NuitSkybox {
         Minecraft client = Minecraft.getInstance();
         Objects.requireNonNull(client.level);
         Objects.requireNonNull(client.player);
-        return this.conditions.getBiomes().isEmpty() ||
-                this.conditions.getBiomes().contains(client.level.registryAccess().registryOrThrow(Registries.BIOME).getKey(client.level.getBiome(client.player.blockPosition()).value())) ||
-                this.conditions.getBiomes().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackBiomes();
+        return this.conditions.getBiomes().getEntries().isEmpty() || this.conditions.getBiomes().isExcludes() ^ (
+                this.conditions.getBiomes().getEntries().contains(client.level.registryAccess().registryOrThrow(Registries.BIOME).getKey(client.level.getBiome(client.player.blockPosition()).value())) ||
+                this.conditions.getBiomes().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackBiomes());
     }
 
     /**
@@ -139,9 +139,9 @@ public abstract class AbstractSkybox implements NuitSkybox {
     protected boolean checkDimensions() {
         Minecraft client = Minecraft.getInstance();
         Objects.requireNonNull(client.level);
-        return this.conditions.getDimensions().isEmpty() ||
-                this.conditions.getDimensions().contains(client.level.dimension().location()) ||
-                this.conditions.getDimensions().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackDimensions();
+        return this.conditions.getDimensions().getEntries().isEmpty() || this.conditions.getBiomes().isExcludes() ^ (
+                this.conditions.getDimensions().getEntries().contains(client.level.dimension().location()) ||
+                this.conditions.getDimensions().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackDimensions());
     }
 
     /**
@@ -150,9 +150,9 @@ public abstract class AbstractSkybox implements NuitSkybox {
     protected boolean checkWorlds() {
         Minecraft client = Minecraft.getInstance();
         Objects.requireNonNull(client.level);
-        return this.conditions.getWorlds().isEmpty() ||
-                this.conditions.getWorlds().contains(client.level.dimensionType().effectsLocation()) ||
-                this.conditions.getWorlds().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackWorlds();
+        return this.conditions.getWorlds().getEntries().isEmpty() || this.conditions.getBiomes().isExcludes() ^ (
+                this.conditions.getWorlds().getEntries().contains(client.level.dimensionType().effectsLocation()) ||
+                this.conditions.getWorlds().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackWorlds());
     }
 
     /*
@@ -164,7 +164,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
         Camera camera = client.gameRenderer.getMainCamera();
 
-        if (this.conditions.getEffects().isEmpty()) {
+        if (this.conditions.getEffects().getEntries().isEmpty()) {
             // Vanilla checks
             boolean thickFog = client.level.effects().isFoggyAt(Mth.floor(camera.getPosition().x()), Mth.floor(camera.getPosition().y())) || client.gui.getBossOverlay().shouldCreateWorldFog();
             if (thickFog) {
@@ -180,7 +180,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
         } else {
             if (camera.getEntity() instanceof LivingEntity livingEntity) {
-                return this.conditions.getEffects().stream().noneMatch(identifier -> client.level.registryAccess().registryOrThrow(Registries.MOB_EFFECT).get(identifier) != null && livingEntity.hasEffect(client.level.registryAccess().registryOrThrow(Registries.MOB_EFFECT).wrapAsHolder(client.level.registryAccess().registryOrThrow(Registries.MOB_EFFECT).get(identifier))));
+                return (this.conditions.getEffects().isExcludes() ^ this.conditions.getEffects().getEntries().stream().noneMatch(identifier -> client.level.registryAccess().registryOrThrow(Registries.MOB_EFFECT).get(identifier) != null && livingEntity.hasEffect(client.level.registryAccess().registryOrThrow(Registries.MOB_EFFECT).wrapAsHolder(client.level.registryAccess().registryOrThrow(Registries.MOB_EFFECT).get(identifier)))));
             }
         }
         return true;
@@ -191,7 +191,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
      */
     protected boolean checkXRanges() {
         double playerX = Objects.requireNonNull(Minecraft.getInstance().player).getX();
-        return Utils.checkRanges(playerX, this.conditions.getXRanges());
+        return Utils.checkRanges(playerX, this.conditions.getXRanges().getEntries(), this.conditions.getXRanges().isExcludes());
     }
 
     /**
@@ -199,7 +199,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
      */
     protected boolean checkYRanges() {
         double playerY = Objects.requireNonNull(Minecraft.getInstance().player).getY();
-        return Utils.checkRanges(playerY, this.conditions.getYRanges());
+        return Utils.checkRanges(playerY, this.conditions.getYRanges().getEntries(), this.conditions.getYRanges().isExcludes());
     }
 
     /**
@@ -207,7 +207,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
      */
     protected boolean checkZRanges() {
         double playerZ = Objects.requireNonNull(Minecraft.getInstance().player).getZ();
-        return Utils.checkRanges(playerZ, this.conditions.getZRanges());
+        return Utils.checkRanges(playerZ, this.conditions.getZRanges().getEntries(), this.conditions.getZRanges().isExcludes());
     }
 
     /**
@@ -217,23 +217,23 @@ public abstract class AbstractSkybox implements NuitSkybox {
         ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
         Biome.Precipitation precipitation = world.getBiome(player.blockPosition()).value().getPrecipitationAt(player.blockPosition());
-        if (!this.conditions.getWeathers().isEmpty()) {
-            if (this.conditions.getWeathers().contains(Weather.THUNDER) && world.isThundering()) {
-                return true;
-            }
-            if (this.conditions.getWeathers().contains(Weather.RAIN) && world.isRaining() && !world.isThundering()) {
-                return true;
-            }
-            if (this.conditions.getWeathers().contains(Weather.SNOW) && world.isRaining() && precipitation == Biome.Precipitation.SNOW) {
-                return true;
-            }
-            if (this.conditions.getWeathers().contains(Weather.BIOME_RAIN) && world.isRaining() && precipitation == Biome.Precipitation.RAIN) {
-                return true;
-            }
-            return this.conditions.getWeathers().contains(Weather.CLEAR) && !world.isRaining() && !world.isThundering();
-        } else {
+        if (this.conditions.getWeathers().getEntries().isEmpty()) {
             return true;
         }
+
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.THUNDER)) && world.isThundering()) {
+            return true;
+        }
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.RAIN)) && world.isRaining() && !world.isThundering()) {
+            return true;
+        }
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.SNOW)) && world.isRaining() && precipitation == Biome.Precipitation.SNOW) {
+            return true;
+        }
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.BIOME_RAIN)) && world.isRaining() && precipitation == Biome.Precipitation.RAIN) {
+            return true;
+        }
+        return (this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.CLEAR)) && !world.isRaining() && !world.isThundering();
     }
 
     public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {

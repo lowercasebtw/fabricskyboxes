@@ -65,10 +65,10 @@ public class Utils {
     /**
      * @return Whether the value is within any of the minMaxEntries.
      */
-    public static boolean checkRanges(double value, List<MinMaxEntry> minMaxEntries) {
-        return minMaxEntries.isEmpty() || minMaxEntries.stream()
+    public static boolean checkRanges(double value, List<MinMaxEntry> minMaxEntries, boolean inverse) {
+        return minMaxEntries.isEmpty() || (inverse ^ minMaxEntries.stream()
                 .anyMatch(minMaxEntry -> Range.closed(minMaxEntry.min(), minMaxEntry.max())
-                        .contains((float) value));
+                        .contains((float) value)));
     }
 
     /**

@@ -21,6 +21,7 @@ This specification defines a format for a set of rules for the purpose of custom
     - [`multi-texture`](#multi-texture-skybox)
 - [Data Types](#data-types)
     - [Properties Object](#properties-object)
+    - [Generic Condition Object](#generic-condition-object)
     - [Conditions Object](#conditions-object)
     - [Decorations Object](#decorations-object)
     - [RGBA Object](#rgba-object)
@@ -33,7 +34,7 @@ This specification defines a format for a set of rules for the purpose of custom
     - [Namespaced Id](#namespaced-id)
     - [Blend Object](#blend-object)
     - [Blender Object](#blender-object)
-    - [Animation Object](#animatableTexture-object)
+    - [Animation Object](#animatable-texture-object)
     - [UV Range Object](#uv-range-object)
 - [Full Example](#full-example)
 
@@ -43,210 +44,210 @@ The basic structure of a nuit skybox file may look something like this:
 
 ```json5
 {
-  "schemaVersion": 0,
-  /* version (int) */
-  "type": "",
-  /* skybox type (string) */
-  "conditions": // conditions object (optional)
-  {
-    "biomes": [],
-    /* biomes (string array, optional) */
-    "worlds": [],
-    /* worlds sky effects (string array, optional) */
-    "dimensions": [],
-    /* dimensions (string array, optional) */
-    "weather": [],
-    /* weathers (string array, optional) */
-    "effects": [],
-    /* effects (namespaced id array, optional) */
-    // Here, a "MinMax" type refers to an object containing "min" and "max" keys, both floats
-    "xRanges": [],
-    /* x ranges (MinMax array, optional) */
-    "yRanges": [],
-    /* y ranges (MinMax array, optional) */
-    "zRanges": []
-    /* z ranges (MinMax array, optional) */
-  },
-  "decorations": // decorations object (optional)
-  {
-    "sun": "",
-    /* sun texture path (string, optional) */
-    "moon": "",
-    /* moon texture path (string, optional) */
-    "showSun": true,
-    /* render sun (bool, optional) */
-    "showMoon": true,
-    /* render moon (bool, optional) */
-    "showStars": true,
-    /* render stars (bool, optional) */
-    "rotation": // rotation object FOR SUN/MOON/STARS (optional)
+    "schemaVersion": 0,
+    /* version (int) */
+    "type": "",
+    /* skybox type (string) */
+    "conditions": // conditions object (optional)
     {
-      // Here, a "Float Vector" type refers to an array of 3 floats
-      "static": [],
-      /* static rotation in degrees (Float Vector, optional) */
-      "axis": [],
-      /* axis rotation in degrees (Float Vector, optional) */
-      "timeShift": [],
-      /* time shifted in rotation (Integer Vector, optional) */
-      "rotationSpeedX": 0,
-      /* speed of rotation pitch (float, optional) */
-      "rotationSpeedY": 0,
-      /* speed of rotation yaw (float, optional) */
-      "rotationSpeedZ": 0
-      /* speed of rotation roll (float, optional) */
+        "biomes": {},
+        /* biomes (Namespaced Identifier Condition, optional) */
+        "worlds": {},
+        /* worlds sky effects (Namespaced Identifier Condition, optional) */
+        "dimensions": {},
+        /* dimensions (Namespaced Identifier Condition, optional) */
+        "weathers": {},
+        /* weathers (Weather Condition, optional) */
+        "effects": {},
+        /* effects (Namespaced Identifier Condition, optional) */
+        // Here, a "MinMax" type refers to an object containing "min" and "max" keys, both floats
+        "xRanges": {},
+        /* x ranges (MinMax Condition, optional) */
+        "yRanges": {},
+        /* y ranges (MinMax Condition, optional) */
+        "zRanges": {}
+        /* z ranges (MinMax Condition, optional) */
+    },
+    "decorations": // decorations object (optional)
+    {
+        "sun": "",
+        /* sun texture path (string, optional) */
+        "moon": "",
+        /* moon texture path (string, optional) */
+        "showSun": true,
+        /* render sun (bool, optional) */
+        "showMoon": true,
+        /* render moon (bool, optional) */
+        "showStars": true,
+        /* render stars (bool, optional) */
+        "rotation": // rotation object FOR SUN/MOON/STARS (optional)
+        {
+            // Here, a "Float Vector" type refers to an array of 3 floats
+            "static": [],
+            /* static rotation in degrees (Float Vector, optional) */
+            "axis": [],
+            /* axis rotation in degrees (Float Vector, optional) */
+            "timeShift": [],
+            /* time shifted in rotation (Integer Vector, optional) */
+            "rotationSpeedX": 0,
+            /* speed of rotation pitch (float, optional) */
+            "rotationSpeedY": 0,
+            /* speed of rotation yaw (float, optional) */
+            "rotationSpeedZ": 0
+            /* speed of rotation roll (float, optional) */
+        },
+        "blend": // blend object (textured types only, optional)
+        {
+            "type": "",
+            /* blend type (string, optional) */
+            "blender": {
+                // blender objects (optional) requires "type" to be "custom"
+                "sourceFactor": 0,
+                /* sFactor number (int, optional) */
+                "destinationFactor": 0,
+                /* dFactor number (int, optional) */
+                "equation": 0,
+                /* equation number (int, optional) */
+                "sourceFactorAlpha": 0,
+                /* sFactor alpha number (int, optional) */
+                "destinationFactorAlpha": 0,
+                /* dFactor alpha number (int, optional) */
+                "redAlphaEnabled": false,
+                /* red alpha state (boolean, optional) */
+                "greenAlphaEnabled": false,
+                /* green alpha state (boolean, optional) */
+                "blueAlphaEnabled": false,
+                /* blue alpha state (boolean, optional) */
+                "alphaEnabled": true
+                /* alpha state (boolean, optional) */
+            }
+        }
+    },
+    "properties": // default properties object
+    {
+        "priority": 0,
+        /* integer (optional) */
+        "fade": // fade object (optional)
+        {
+            "alwaysOn": true,
+            /* always show skybox (bool, optional) */
+            "duration": 24000,
+            /* duration of fade cycle in ticks (long, optional) */
+            "keyFrames": {
+                "1000": 0.0,
+                "2000": 1.0,
+                "3000": 1.0,
+                "4000": 0.0
+            },
+            /* keyframes for fade (map of long to float, optional) */
+        },
+        "transitionInDuration": 20,
+        /* fade in speed (1-8760000 float, optional) */
+        "transitionOutDuration": 20,
+        /* fade out speed (1-8760000 float, optional) */
+        "changeFog": false,
+        /* change fog color (bool, optional) */
+        "changeFogDensity": false,
+        /* change fog density (bool, optional) */
+        "fogColors": // RGBA object for fog color (optional)
+        {
+            "red": 0,
+            /* amount of red (0-1 float, optional) */
+            "blue": 0,
+            /* amount of blue (0-1 float, optional) */
+            "green": 0,
+            /* amount of green (0-1 float, optional) */
+            "alpha": 0
+            /* the fog density (0-1 float, optional) */
+        },
+        "sunSkyTint": true,
+        /* tint sky yellow during sunrise/sunset (bool, optional) */
+        "inThickFog": true,
+        /* renders skybox in thick fog ex. nether (bool, optional) */
+        "rotation": // rotation object FOR SKYBOX (optional)
+        {
+            /* Rotation speed of skybox or decorations (bool, optional) */
+            "skyboxRotation": true,
+            // Here, a "Float Vector" type refers to an array of 3 floats
+            "static": [],
+            /* static rotation in degrees (Float Vector, optional) */
+            "axis": [],
+            /* axis rotation in degrees (Float Vector, optional) */
+            "timeShift": [],
+            /* time shifted in rotation (Integer Vector, optional) */
+            "rotationSpeedX": 0,
+            /* speed of rotation pitch (float, optional) */
+            "rotationSpeedY": 0,
+            /* speed of rotation yaw (float, optional) */
+            "rotationSpeedZ": 0
+            /* speed of rotation roll (float, optional) */
+        }
+    },
+    // The following objects are for specific types, not all of them should be used
+    "color": // RGBA object for sky color (monocolor type only, optional)
+    {
+        "red": 0,
+        /* amount of red (0-1 float, optional) */
+        "blue": 0,
+        /* amount of blue (0-1 float, optional) */
+        "green": 0,
+        /* amount of green (0-1 float, optional) */
+        "alpha": 0
+        /* alpha value (0-1 float, optional) */
     },
     "blend": // blend object (textured types only, optional)
     {
-      "type": "",
-      /* blend type (string, optional) */
-      "blender": {
-        // blender objects (optional) requires "type" to be "custom"
-        "sourceFactor": 0,
-        /* sFactor number (int, optional) */
-        "destinationFactor": 0,
-        /* dFactor number (int, optional) */
-        "equation": 0,
-        /* equation number (int, optional) */
-        "sourceFactorAlpha": 0,
-        /* sFactor alpha number (int, optional) */
-        "destinationFactorAlpha": 0,
-        /* dFactor alpha number (int, optional) */
-        "redAlphaEnabled": false,
-        /* red alpha state (boolean, optional) */
-        "greenAlphaEnabled": false,
-        /* green alpha state (boolean, optional) */
-        "blueAlphaEnabled": false,
-        /* blue alpha state (boolean, optional) */
-        "alphaEnabled": true
-        /* alpha state (boolean, optional) */
-      }
-    }
-  },
-  "properties": // default properties object
-  {
-    "priority": 0,
-    /* integer (optional) */
-    "fade": // fade object (optional)
-    {
-      "alwaysOn": true,
-      /* always show skybox (bool, optional) */
-      "duration": 24000,
-      /* duration of fade cycle in ticks (long, optional) */
-      "keyFrames": {
-        "1000": 0.0,
-        "2000": 1.0,
-        "3000": 1.0,
-        "4000": 0.0
-      },
-      /* keyframes for fade (map of long to float, optional) */
+        "type": "",
+        /* blend type (string, optional) */
+        "blender": {
+            // blender objects (optional) requires "type" to be "custom"
+            "sourceFactor": 0,
+            /* sFactor number (int, optional) */
+            "destinationFactor": 0,
+            /* dFactor number (int, optional) */
+            "equation": 0,
+            /* equation number (int, optional) */
+            "sourceFactorAlpha": 0,
+            /* sFactor alpha number (int, optional) */
+            "destinationFactorAlpha": 0,
+            /* dFactor alpha number (int, optional) */
+            "redAlphaEnabled": false,
+            /* red alpha state (boolean, optional) */
+            "greenAlphaEnabled": false,
+            /* green alpha state (boolean, optional) */
+            "blueAlphaEnabled": false,
+            /* blue alpha state (boolean, optional) */
+            "alphaEnabled": true
+            /* alpha state (boolean, optional) */
+        }
     },
-    "transitionInDuration": 20,
-    /* fade in speed (1-8760000 float, optional) */
-    "transitionOutDuration": 20,
-    /* fade out speed (1-8760000 float, optional) */
-    "changeFog": false,
-    /* change fog color (bool, optional) */
-    "changeFogDensity": false,
-    /* change fog density (bool, optional) */
-    "fogColors": // RGBA object for fog color (optional)
-    {
-      "red": 0,
-      /* amount of red (0-1 float, optional) */
-      "blue": 0,
-      /* amount of blue (0-1 float, optional) */
-      "green": 0,
-      /* amount of green (0-1 float, optional) */
-      "alpha": 0
-      /* the fog density (0-1 float, optional) */
-    },
-    "sunSkyTint": true,
-    /* tint sky yellow during sunrise/sunset (bool, optional) */
-    "inThickFog": true,
-    /* renders skybox in thick fog ex. nether (bool, optional) */
-    "rotation": // rotation object FOR SKYBOX (optional)
-    {
-      /* Rotation speed of skybox or decorations (bool, optional) */
-      "skyboxRotation": true,
-      // Here, a "Float Vector" type refers to an array of 3 floats
-      "static": [],
-      /* static rotation in degrees (Float Vector, optional) */
-      "axis": [],
-      /* axis rotation in degrees (Float Vector, optional) */
-      "timeShift": [],
-      /* time shifted in rotation (Integer Vector, optional) */
-      "rotationSpeedX": 0,
-      /* speed of rotation pitch (float, optional) */
-      "rotationSpeedY": 0,
-      /* speed of rotation yaw (float, optional) */
-      "rotationSpeedZ": 0
-      /* speed of rotation roll (float, optional) */
-    }
-  },
-  // The following objects are for specific types, not all of them should be used
-  "color": // RGBA object for sky color (monocolor type only, optional)
-  {
-    "red": 0,
-    /* amount of red (0-1 float, optional) */
-    "blue": 0,
-    /* amount of blue (0-1 float, optional) */
-    "green": 0,
-    /* amount of green (0-1 float, optional) */
-    "alpha": 0
-    /* alpha value (0-1 float, optional) */
-  },
-  "blend": // blend object (textured types only, optional)
-  {
-    "type": "",
-    /* blend type (string, optional) */
-    "blender": {
-      // blender objects (optional) requires "type" to be "custom"
-      "sourceFactor": 0,
-      /* sFactor number (int, optional) */
-      "destinationFactor": 0,
-      /* dFactor number (int, optional) */
-      "equation": 0,
-      /* equation number (int, optional) */
-      "sourceFactorAlpha": 0,
-      /* sFactor alpha number (int, optional) */
-      "destinationFactorAlpha": 0,
-      /* dFactor alpha number (int, optional) */
-      "redAlphaEnabled": false,
-      /* red alpha state (boolean, optional) */
-      "greenAlphaEnabled": false,
-      /* green alpha state (boolean, optional) */
-      "blueAlphaEnabled": false,
-      /* blue alpha state (boolean, optional) */
-      "alphaEnabled": true
-      /* alpha state (boolean, optional) */
-    }
-  },
-  "texture": "",
-  /* path to single-sprite texture (string, square-textured type only) */
-  "animatableTextures": [
-    // animatableTexture objects for animatableTexture (multi-texture)
-    {
-      "texture": "",
-      // animatableTexture sprite sheet texture (string)
-      "uvRange": {
-        // uv range for animatableTexture (uv-range-object)
-        "minU": 0.25,
-        "minV": 0.25,
-        "maxU": 0.50,
-        "maxV": 0.50
-      },
-      "gridColumns": 32,
-      // number of columns in sprite sheet
-      "gridRows": 1,
-      // number of rows in sprite sheet
-      "duration": 40,
-      // duration of each sprite in milliseconds
-      "frameDuration": {
-        // map of frame duration in milliseconds
-        "1": 20,
-        "5": 10
-      }
-    }
-  ]
+    "texture": "",
+    /* path to single-sprite texture (string, square-textured type only) */
+    "animatableTextures": [
+        // animatableTexture objects for animatableTexture (multi-texture)
+        {
+            "texture": "",
+            // animatableTexture sprite sheet texture (string)
+            "uvRange": {
+                // uv range for animatableTexture (uv-range-object)
+                "minU": 0.25,
+                "minV": 0.25,
+                "maxU": 0.50,
+                "maxV": 0.50
+            },
+            "gridColumns": 32,
+            // number of columns in sprite sheet
+            "gridRows": 1,
+            // number of rows in sprite sheet
+            "duration": 40,
+            // duration of each sprite in milliseconds
+            "frameDuration": {
+                // map of frame duration in milliseconds
+                "1": 20,
+                "5": 10
+            }
+        }
+    ]
 }
 ```
 
@@ -347,44 +348,64 @@ Specifies common properties used by all types of skyboxes.
 
 ```json
 {
-  "priority": 1,
-  "fade": {
-    "alwaysOn": false,
-    "duration": 24000,
-    "keyFrames": {
-      "1000": 0.0,
-      "2000": 1.0,
-      "3000": 1.0,
-      "4000": 0.0
+    "priority": 1,
+    "fade": {
+        "alwaysOn": false,
+        "duration": 24000,
+        "keyFrames": {
+            "1000": 0.0,
+            "2000": 1.0,
+            "3000": 1.0,
+            "4000": 0.0
+        }
+    },
+    "transitionInDuration": 20,
+    "transitionOutDuration": 20,
+    "sunSkyTint": false,
+    "inThickFog": true,
+    "changeFog": true,
+    "changeFogDensity": true,
+    "fogColors": {
+        "red": 0.2,
+        "green": 0.9,
+        "blue": 0.6,
+        "alpha": 1.0
+    },
+    "rotation": {
+        "static": [
+            216,
+            288,
+            144
+        ],
+        "axis": [
+            36,
+            108,
+            72
+        ],
+        "rotationSpeedX": 0,
+        "rotationSpeedY": 1,
+        "rotationSpeedZ": 0
     }
-  },
-  "transitionInDuration": 20,
-  "transitionOutDuration": 20,
-  "sunSkyTint": false,
-  "inThickFog": true,
-  "changeFog": true,
-  "changeFogDensity": true,
-  "fogColors": {
-    "red": 0.2,
-    "green": 0.9,
-    "blue": 0.6,
-    "alpha": 1.0
-  },
-  "rotation": {
-    "static": [
-      216,
-      288,
-      144
-    ],
-    "axis": [
-      36,
-      108,
-      72
-    ],
-    "rotationSpeedX": 0,
-    "rotationSpeedY": 1,
-    "rotationSpeedZ": 0
-  }
+}
+```
+
+### Generic Condition Object
+
+Specifies a list of entries and whether it should be included or excluded.
+
+**Specification**
+
+|    Name    |         Datatype         |                       Description                        | Required | Default value |
+|:----------:|:------------------------:|:--------------------------------------------------------:|:--------:|:-------------:|
+| `excludes` |         Boolean          |    Specifies whether the condition should be excluded    |   :x:    |    `false`    |
+| `entries`  | Array of generic entries | Specifies the list of entries to be included or excluded |   :x:    |  Empty Array  |
+
+**Example**
+
+```json
+{
+    "excludes": false,
+    "entries": []
 }
 ```
 
@@ -394,64 +415,81 @@ Specifies when and where a skybox should render. All fields are optional.
 
 **Specification**
 
-|     Name     |                    Datatype                     |                                                                                                           Description                                                                                                            |          Default value           |
-|:------------:|:-----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------:|
-|   `biomes`   |    Array of [Namespaced Ids](#namespaced-id)    |       Specifies a list of biomes that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current biome is absent from the biomes condition of all other skyboxes.       |     Empty Array (all biomes)     |
-|   `worlds`   |    Array of [Namespaced Ids](#namespaced-id)    | Specifies a list of worlds sky effects that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current world is absent from the worlds condition of all other skyboxes. |     Empty Array (all worlds)     |
-| `dimensions` |    Array of [Namespaced Ids](#namespaced-id)    | Specifies a list of dimensions that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current dimension is absent from the dimensions condition of all other skyboxes. |   Empty Array (all dimensions)   |
-|  `effects`   |    Array of [Namespaced Ids](#namespaced-id)    |                                                                                Specifies a list of effects that the skybox should be rendered in                                                                                 |  Empty Array (default effects)   |
-|  `weather`   |          Array of [Weathers](#weather)          |                                                                           Specifies a list of weather conditions that the skybox should be rendered in                                                                           | Empty Array (vanilla conditions) |
-|  `xRanges`   | Array of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty Array (all x coordinates)  |
-|  `yRanges`   | Array of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty Array (all y coordinates)  |
-|  `zRanges`   | Array of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty Array (all z coordinates)  |
+|     Name     |                                        Datatype                                         |                                                                                                           Description                                                                                                            |            Default value             |
+|:------------:|:---------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------:|
+|   `biomes`   |    [Condition Object](#generic-condition-object) of [Namespaced Ids](#namespaced-id)    |       Specifies a list of biomes that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current biome is absent from the biomes condition of all other skyboxes.       |     Empty condition (all biomes)     |
+|   `worlds`   |    [Condition Object](#generic-condition-object) of [Namespaced Ids](#namespaced-id)    | Specifies a list of worlds sky effects that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current world is absent from the worlds condition of all other skyboxes. |     Empty condition (all worlds)     |
+| `dimensions` |    [Condition Object](#generic-condition-object) of [Namespaced Ids](#namespaced-id)    | Specifies a list of dimensions that the skybox should be rendered in. Note that using the value "nuit:default" will fulfil the condition if the current dimension is absent from the dimensions condition of all other skyboxes. |   Empty condition (all dimensions)   |
+|  `effects`   |    [Condition Object](#generic-condition-object) of [Namespaced Ids](#namespaced-id)    |                                                                                Specifies a list of effects that the skybox should be rendered in                                                                                 |  Empty condition (default effects)   |
+|  `weathers`  |          [Condition Object](#generic-condition-object) of [Weathers](#weather)          |                                                                           Specifies a list of weather conditions that the skybox should be rendered in                                                                           | Empty condition (vanilla conditions) |
+|  `xRanges`   | [Condition Object](#generic-condition-object) of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty condition (all x coordinates)  |
+|  `yRanges`   | [Condition Object](#generic-condition-object) of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty condition (all y coordinates)  |
+|  `zRanges`   | [Condition Object](#generic-condition-object) of [MinMax Entries](#minmax-entry-object) |                                                                            Specifies a list of coordinates that the skybox should be rendered between                                                                            | Empty condition (all z coordinates)  |
 
 **Example**
 
 ```json
 {
-  "biomes": [
-    "minecraft:desert",
-    "minecraft:desert_hills",
-    "minecraft:desert_lakes",
-    "nuit:default"
-  ],
-  "worlds": [
-    "minecraft:overworld"
-  ],
-  "dimensions": [
-    "my_datapack:custom_world"
-  ],
-  "effects": [
-    "minecraft:jump_boost",
-    "minecraft:speed",
-    "minecraft:slowness"
-  ],
-  "weather": [
-    "rain",
-    "thunder"
-  ],
-  "xRanges": [
-    {
-      "min": -100.0,
-      "max": 100.0
-    }
-  ],
-  "yRanges": [
-    {
-      "min": 50.0,
-      "max": 60.0
+    "biomes": {
+        "entries": [
+            "minecraft:desert",
+            "minecraft:desert_hills",
+            "minecraft:desert_lakes",
+            "nuit:default"
+        ]
     },
-    {
-      "min": 100.0,
-      "max": 110.0
+    "worlds": {
+        "entries": [
+            "minecraft:overworld",
+            "minecraft:the_nether"
+        ]
+    },
+    "dimensions": {
+        "excludes": false,
+        "entries": [
+            "my_datapack:custom_world"
+        ]
+    },
+    "effects": {
+        "entries": [
+            "minecraft:night_vision",
+            "minecraft:glowing"
+        ]
+    },
+    "weathers": {
+        "entries": [
+            "clear",
+            "rain"
+        ]
+    },
+    "xRanges": {
+        "entries": [
+            {
+                "min": -100.0,
+                "max": 100.0
+            }
+        ]
+    },
+    "yRanges": {
+        "entries": [
+            {
+                "min": 50.0,
+                "max": 60.0
+            },
+            {
+                "min": 100.0,
+                "max": 110.0
+            }
+        ]
+    },
+    "zRanges": {
+        "entries": [
+            {
+                "min": -100.0,
+                "max": 100.0
+            }
+        ]
     }
-  ],
-  "zRanges": [
-    {
-      "min": -100.0,
-      "max": 100.0
-    }
-  ]
 }
 ```
 
@@ -478,35 +516,35 @@ The Default value stores the overworld sun and moon textures and sets all enable
 
 ```json
 {
-  "sun": "minecraft:textures/environment/sun.png",
-  "moon": "minecraft:textures/atlas/blocks.png",
-  "showSun": true,
-  "showMoon": true,
-  "showStars": false,
-  "rotation": {
-    "skyboxRotation": true,
-    "static": [
-      216,
-      288,
-      144
-    ],
-    "axis": [
-      36,
-      108,
-      72
-    ],
-    "timeShift": [
-      6000,
-      0,
-      0
-    ],
-    "rotationSpeedX": 0,
-    "rotationSpeedY": 1,
-    "rotationSpeedZ": 0
-  },
-  "blend": {
-    "type": "decorations"
-  }
+    "sun": "minecraft:textures/environment/sun.png",
+    "moon": "minecraft:textures/atlas/blocks.png",
+    "showSun": true,
+    "showMoon": true,
+    "showStars": false,
+    "rotation": {
+        "skyboxRotation": true,
+        "static": [
+            216,
+            288,
+            144
+        ],
+        "axis": [
+            36,
+            108,
+            72
+        ],
+        "timeShift": [
+            6000,
+            0,
+            0
+        ],
+        "rotationSpeedX": 0,
+        "rotationSpeedY": 1,
+        "rotationSpeedZ": 0
+    },
+    "blend": {
+        "type": "decorations"
+    }
 }
 ```
 
@@ -529,10 +567,10 @@ The default value for RGBA objects is the RGBA Zero, whose values are zeroes.
 
 ```json
 {
-  "red": 0.5,
-  "blue": 0.4,
-  "green": 0.6,
-  "alpha": 0.8
+    "red": 0.5,
+    "blue": 0.4,
+    "green": 0.6,
+    "alpha": 0.8
 }
 ```
 
@@ -561,14 +599,14 @@ Stores a list of four integers which specify the time in ticks to start and end 
 
 ```json
 {
-  "alwaysOn": false,
-  "duration": 24000,
-  "keyFrames": {
-    "1000": 0.0,
-    "2000": 1.0,
-    "3000": 1.0,
-    "4000": 0.0
-  }
+    "alwaysOn": false,
+    "duration": 24000,
+    "keyFrames": {
+        "1000": 0.0,
+        "2000": 1.0,
+        "3000": 1.0,
+        "4000": 0.0
+    }
 }
 ```
 
@@ -587,8 +625,8 @@ Specifies a minimum and maximum x/y/z value. All fields are required.
 
 ```json
 {
-  "min": 60.0,
-  "max": 120.5
+    "min": 60.0,
+    "max": 120.5
 }
 ```
 
@@ -603,9 +641,9 @@ Does not contain any fields.
 
 ```json
 [
-  6000,
-  12000,
-  0
+    6000,
+    12000,
+    0
 ]
 ```
 
@@ -620,9 +658,9 @@ Does not contain any fields.
 
 ```json
 [
-  0.0,
-  1.0,
-  0.5
+    0.0,
+    1.0,
+    0.5
 ]
 ```
 
@@ -641,8 +679,8 @@ Example 1: Map with integer keys and integer values
 
 ```json
 {
-  "100": 0,
-  "2000": 512
+    "100": 0,
+    "2000": 512
 }
 ```
 
@@ -650,8 +688,8 @@ Example 2: Map with [Namespaced Ids](#namespaced-id) as keys and boolean values
 
 ```json
 {
-  "minecraft:the_nether": false,
-  "minecraft:overworld": true
+    "minecraft:the_nether": false,
+    "minecraft:overworld": true
 }
 ```
 
@@ -677,24 +715,24 @@ in-game day.
 
 ```json
 {
-  "static": [
-    216,
-    288,
-    144
-  ],
-  "axis": [
-    36,
-    108,
-    72
-  ],
-  "timeshift": [
-    0,
-    0,
-    0
-  ],
-  "rotationSpeedX": 0,
-  "rotationSpeedY": 1,
-  "rotationSpeedZ": 0
+    "static": [
+        216,
+        288,
+        144
+    ],
+    "axis": [
+        36,
+        108,
+        72
+    ],
+    "timeshift": [
+        0,
+        0,
+        0
+    ],
+    "rotationSpeedX": 0,
+    "rotationSpeedY": 1,
+    "rotationSpeedZ": 0
 }
 ```
 
@@ -736,7 +774,7 @@ More information on custom blend can be found in the [blend documentation](blend
 
 ```json
 {
-  "type": "add"
+    "type": "add"
 }
 ```
 
@@ -744,19 +782,19 @@ More information on custom blend can be found in the [blend documentation](blend
 
 ```json
 {
-  "type": "custom",
-  "blender": {
-    "separateFunction": false,
-    "sourceFactor": 0,
-    "destinationFactor": 0,
-    "equation": 0,
-    "sourceFactorAlpha": 0,
-    "destinationFactorAlpha": 0,
-    "redAlphaEnabled": true,
-    "greenAlphaEnabled": true,
-    "blueAlphaEnabled": true,
-    "alphaEnabled": false
-  }
+    "type": "custom",
+    "blender": {
+        "separateFunction": false,
+        "sourceFactor": 0,
+        "destinationFactor": 0,
+        "equation": 0,
+        "sourceFactorAlpha": 0,
+        "destinationFactorAlpha": 0,
+        "redAlphaEnabled": true,
+        "greenAlphaEnabled": true,
+        "blueAlphaEnabled": true,
+        "alphaEnabled": false
+    }
 }
 ```
 
@@ -785,16 +823,16 @@ More information on custom blend can be found in the [blend documentation](blend
 
 ```json
 {
-  "separateFunction": false,
-  "sourceFactor": 0,
-  "destinationFactor": 0,
-  "equation": 0,
-  "sourceFactorAlpha": 0,
-  "destinationFactorAlpha": 0,
-  "redAlphaEnabled": true,
-  "greenAlphaEnabled": true,
-  "blueAlphaEnabled": true,
-  "alphaEnabled": false
+    "separateFunction": false,
+    "sourceFactor": 0,
+    "destinationFactor": 0,
+    "equation": 0,
+    "sourceFactorAlpha": 0,
+    "destinationFactorAlpha": 0,
+    "redAlphaEnabled": true,
+    "greenAlphaEnabled": true,
+    "blueAlphaEnabled": true,
+    "alphaEnabled": false
 }
 ```
 
@@ -817,20 +855,20 @@ Specifies an animatableTexture object.
 
 ```json
 {
-  "texture": "Nuit:/sky/anim_texture.png",
-  "uvRange": {
-    "minU": 0.25,
-    "minV": 0.25,
-    "maxU": 0.50,
-    "maxV": 0.50
-  },
-  "gridColumns": 32,
-  "gridRows": 1,
-  "duration": 40,
-  "frameDuration": {
-    "1": 20,
-    "5": 10
-  }
+    "texture": "Nuit:/sky/anim_texture.png",
+    "uvRange": {
+        "minU": 0.25,
+        "minV": 0.25,
+        "maxU": 0.50,
+        "maxV": 0.50
+    },
+    "gridColumns": 32,
+    "gridRows": 1,
+    "duration": 40,
+    "frameDuration": {
+        "1": 20,
+        "5": 10
+    }
 }
 ```
 
@@ -851,10 +889,10 @@ Specifies a UV range object for defining texture coordinates.
 
 ```json
 {
-  "minU": 0.25,
-  "minV": 0.25,
-  "maxU": 0.50,
-  "maxV": 0.50
+    "minU": 0.25,
+    "minV": 0.25,
+    "maxU": 0.50,
+    "maxV": 0.50
 }
 ```
 
@@ -864,94 +902,94 @@ Here is a full skybox file for example purposes:
 
 ```json
 {
-  "schemaVersion": 2,
-  "type": "square-textured",
-  "properties": {
-    "priority": 1,
-    "fade": {
-      "alwaysOn": true,
-      "duration": 24000,
-      "keyFrames": {
-        "1000": 0.0,
-        "2000": 1.0,
-        "3000": 1.0,
-        "4000": 0.0
-      }
+    "schemaVersion": 2,
+    "type": "square-textured",
+    "properties": {
+        "priority": 1,
+        "fade": {
+            "alwaysOn": true,
+            "duration": 24000,
+            "keyFrames": {
+                "1000": 0.0,
+                "2000": 1.0,
+                "3000": 1.0,
+                "4000": 0.0
+            }
+        },
+        "transitionInDuration": 20,
+        "transitionOutDuration": 20,
+        "sunSkyTint": true,
+        "inThickFog": true,
+        "changeFog": true,
+        "changeFogDensity": true,
+        "fogColors": {
+            "red": 0,
+            "green": 0,
+            "blue": 0,
+            "alpha": 0
+        },
+        "rotation": {
+            "static": [
+                0,
+                0,
+                0
+            ],
+            "axis": [
+                0,
+                0,
+                0
+            ],
+            "timeshift": [
+                0,
+                0,
+                0
+            ],
+            "rotationSpeedX": 0,
+            "rotationSpeedY": 1,
+            "rotationSpeedZ": 0
+        }
     },
-    "transitionInDuration": 20,
-    "transitionOutDuration": 20,
-    "sunSkyTint": true,
-    "inThickFog": true,
-    "changeFog": true,
-    "changeFogDensity": true,
-    "fogColors": {
-      "red": 0,
-      "green": 0,
-      "blue": 0,
-      "alpha": 0
+    "conditions": {
+        "biomes": {},
+        "worlds": {},
+        "dimensions": {},
+        "weathers": {},
+        "xRanges": {},
+        "yRanges": {},
+        "zRanges": {}
     },
-    "rotation": {
-      "static": [
-        0,
-        0,
-        0
-      ],
-      "axis": [
-        0,
-        0,
-        0
-      ],
-      "timeshift": [
-        0,
-        0,
-        0
-      ],
-      "rotationSpeedX": 0,
-      "rotationSpeedY": 1,
-      "rotationSpeedZ": 0
-    }
-  },
-  "conditions": {
-    "biomes": [],
-    "worlds": [],
-    "dimensions": [],
-    "weather": [],
-    "xRanges": [],
-    "yRanges": [],
-    "zRanges": []
-  },
-  "decorations": {
-    "sun": "minecraft:textures/environment/sun.png",
-    "moon": "minecraft:textures/environment/moon.png",
-    "showSun": true,
-    "showMoon": true,
-    "showStars": true,
-    "rotation": {
-      "static": [
-        0,
-        0,
-        0
-      ],
-      "axis": [
-        0,
-        0,
-        0
-      ],
-      "timeshift": [
-        0,
-        0,
-        0
-      ],
-      "rotationSpeedX": 0,
-      "rotationSpeedY": 1,
-      "rotationSpeedZ": 0
+    "decorations": {
+        "sun": "minecraft:textures/environment/sun.png",
+        "moon": "minecraft:textures/environment/moon.png",
+        "showSun": true,
+        "showMoon": true,
+        "showStars": true,
+        "rotation": {
+            "static": [
+                0,
+                0,
+                0
+            ],
+            "axis": [
+                0,
+                0,
+                0
+            ],
+            "timeshift": [
+                0,
+                0,
+                0
+            ],
+            "rotationSpeedX": 0,
+            "rotationSpeedY": 1,
+            "rotationSpeedZ": 0
+        },
+        "blend": {
+            "type": "decorations"
+        }
     },
     "blend": {
-      "type": "decorations"
+        "type": "add"
     }
-  },
-  "blend": {
-    "type": "add"
-  }
 }
 ```
