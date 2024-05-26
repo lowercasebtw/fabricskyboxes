@@ -4,59 +4,45 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
 import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Fade {
-    public static final Fade DEFAULT = new Fade(false, 24000L, new LinkedHashMap<>());
     public static final Codec<Fade> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("alwaysOn", false).forGetter(Fade::isAlwaysOn),
             CodecUtils.getClampedLong(1, Long.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(Fade::getDuration),
-            Codec.unboundedMap(Codec.STRING, CodecUtils.getClampedFloat(0F, 1F))
-                    .optionalFieldOf("keyFrames", new LinkedHashMap<>())
-                    .forGetter(Fade::getKeyFramesParsed)
+            CodecUtils.unboundedMapFixed(Long.class, CodecUtils.getClampedFloat(0F, 1F))
+                    .optionalFieldOf("keyFrames", new Long2FloatArrayMap())
+                    .forGetter(Fade::getKeyFrames)
     ).apply(instance, Fade::new));
     private final boolean alwaysOn;
     private final long duration;
-    private final Map<String, Float> keyFramesParsed;
 
     private final Map<Long, Float> keyFrames;
 
-    public Fade(boolean alwaysOn, long duration, Map<String, Float> keyFramesParsed) {
-        validateDuration(duration);
-        this.alwaysOn = alwaysOn || keyFramesParsed.isEmpty();
+    public Fade(boolean alwaysOn, long duration, Map<Long, Float> keyFrames) {
+        this.alwaysOn = alwaysOn || keyFrames.isEmpty();
         this.duration = duration;
-        this.keyFramesParsed = keyFramesParsed;
-        this.keyFrames = parseKeyFrames(keyFramesParsed);
+        this.keyFrames = keyFrames;
         validateKeyFrames();
     }
 
-    private void validateDuration(long duration) {
-        if (duration < 1) {
-            throw new IllegalArgumentException("Duration must be greater than or equal to 1");
+    private void validateKeyFrames() {
+        // Validate that there is at least 1 keyframe if alwaysOn is false
+        if (this.keyFrames.isEmpty() && !this.alwaysOn) {
+            throw new IllegalArgumentException("Keyframes must have at least 1 entries");
         }
-    }
 
-    private Map<Long, Float> parseKeyFrames(Map<String, Float> keyFramesParsed) {
-        Map<Long, Float> parsedKeyFrames = new Long2FloatArrayMap();
-        for (Map.Entry<String, Float> entry : keyFramesParsed.entrySet()) {
+        // Validate that the keyframes are between 0 and the duration
+        for (Long keyFrame : this.keyFrames.keySet()) {
             try {
-                long keyFrame = Long.parseLong(entry.getKey());
                 if (keyFrame < 0 || keyFrame >= this.duration) {
                     throw new IllegalArgumentException("Keyframes must be between 0 and duration");
                 }
-                parsedKeyFrames.put(keyFrame, entry.getValue());
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Keyframes must be numeric", e);
             }
-        }
-        return parsedKeyFrames;
-    }
-
-    private void validateKeyFrames() {
-        if (this.keyFrames.size() < 2 && !this.alwaysOn) {
-            throw new IllegalArgumentException("Keyframes must have at least 2 entries");
         }
     }
 
@@ -68,11 +54,11 @@ public class Fade {
         return this.duration;
     }
 
-    public Map<String, Float> getKeyFramesParsed() {
-        return this.keyFramesParsed;
-    }
-
     public Map<Long, Float> getKeyFrames() {
         return this.keyFrames;
+    }
+
+    public static Fade of() {
+        return new Fade(true, 24000L, new Long2ObjectArrayMap<>());
     }
 }

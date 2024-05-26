@@ -11,9 +11,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class Blender {
-    public static final Blender DEFAULT = new Blender(false, 770, 1, 32774, 0, 0, false, false, false, true);
-    public static final Blender DECORATIONS = new Blender(true, 770, 1, 32774, 1, 0, false, false, false, true);
-
     public static Codec<Blender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("separateFunction", false).forGetter(Blender::isSeparateFunction),
             Codec.INT.optionalFieldOf("sourceFactor", 770).forGetter(Blender::getSourceFactor),
@@ -126,6 +123,34 @@ public class Blender {
 
     public boolean isValidEquation(int equation) {
         return Arrays.stream(Equation.values()).filter(equation1 -> equation == equation1.value).count() == 1;
+    }
+
+    public static Blender normal() {
+        return new Blender(
+                false,
+                770,
+                1,
+                32774,
+                0,
+                0,
+                false,
+                false,
+                false,
+                true);
+    }
+
+    public static Blender decorations() {
+        return new Blender(
+                true,
+                770,
+                1,
+                32774,
+                1,
+                0,
+                false,
+                false,
+                false,
+                true);
     }
 
     public enum Equation {

@@ -8,8 +8,6 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class Rotation {
-    public static final Rotation DEFAULT = new Rotation(true, new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F), new Vector3i(0, 0, 0), 0, 0, 0);
-    public static final Rotation DECORATIONS = new Rotation(false, new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F), new Vector3i(0, 0, 0), 0, 0, 1);
     private static final Codec<Vector3f> VEC_3_F = Codec.FLOAT.listOf().comapFlatMap((list) -> {
         if (list.size() < 3) {
             return DataResult.error(() -> "Incomplete number of elements in vector");
@@ -75,6 +73,14 @@ public class Rotation {
 
     public float getRotationSpeedZ() {
         return rotationSpeedZ;
+    }
+
+    public static Rotation of() {
+        return new Rotation(true, new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F), new Vector3i(0, 0, 0), 0, 0, 0);
+    }
+
+    public static Rotation decorations() {
+        return new Rotation(false, new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F), new Vector3i(0, 0, 0), 0, 0, 1);
     }
 }
 

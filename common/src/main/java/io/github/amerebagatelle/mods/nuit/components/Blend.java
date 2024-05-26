@@ -9,11 +9,9 @@ import io.github.amerebagatelle.mods.nuit.NuitClient;
 import java.util.function.Consumer;
 
 public class Blend {
-    public static final Blend DEFAULT = new Blend("", Blender.DEFAULT);
-    public static final Blend DECORATIONS = new Blend("decorations", Blender.DECORATIONS);
     public static Codec<Blend> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.optionalFieldOf("type", "").forGetter(Blend::getType),
-            Blender.CODEC.optionalFieldOf("blender", Blender.DEFAULT).forGetter(Blend::getBlender)
+            Blender.CODEC.optionalFieldOf("blender", Blender.normal()).forGetter(Blend::getBlender)
     ).apply(instance, Blend::new));
     private final String type;
     private final Blender blender;
@@ -70,7 +68,7 @@ public class Blend {
                     RenderSystem.disableBlend();
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
                 };
-                case "decorations" -> blendFunc = Blender.DECORATIONS::applyBlendFunc;
+                case "decorations" -> blendFunc = Blender.decorations()::applyBlendFunc;
                 case "custom" -> blendFunc = this.blender::applyBlendFunc;
                 default -> {
                     if (NuitClient.config().generalSettings.debugMode) {
@@ -100,5 +98,13 @@ public class Blend {
 
     public Blender getBlender() {
         return blender;
+    }
+
+    public static Blend normal() {
+        return new Blend("", Blender.normal());
+    }
+
+    public static Blend decorations() {
+        return new Blend("decorations", Blender.decorations());
     }
 }

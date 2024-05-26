@@ -13,13 +13,11 @@ public class Properties {
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("transitionOutDuration", 20).forGetter(Properties::getTransitionOutDuration),
             Codec.BOOL.optionalFieldOf("changeFog", false).forGetter(Properties::isChangeFog),
             Codec.BOOL.optionalFieldOf("changeFogDensity", false).forGetter(Properties::isChangeFogDensity),
-            RGBA.CODEC.optionalFieldOf("fogColors", RGBA.DEFAULT).forGetter(Properties::getFogColors),
+            RGBA.CODEC.optionalFieldOf("fogColors", RGBA.of()).forGetter(Properties::getFogColors),
             Codec.BOOL.optionalFieldOf("sunSkyTint", true).forGetter(Properties::isRenderSunSkyTint),
             Codec.BOOL.optionalFieldOf("inThickFog", true).forGetter(Properties::isRenderInThickFog),
-            Rotation.CODEC.optionalFieldOf("rotation", Rotation.DEFAULT).forGetter(Properties::getRotation)
+            Rotation.CODEC.optionalFieldOf("rotation", Rotation.of()).forGetter(Properties::getRotation)
     ).apply(instance, Properties::new));
-
-    public static final Properties DEFAULT = new Properties(0, Fade.DEFAULT, 20, 20, false, false, RGBA.DEFAULT, true, true, Rotation.DEFAULT);
 
     private final int layer;
     private final Fade fade;
@@ -88,5 +86,9 @@ public class Properties {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public static Properties of() {
+        return new Properties(0, Fade.of(), 20, 20, false, false, RGBA.of(), true, true, Rotation.of());
     }
 }

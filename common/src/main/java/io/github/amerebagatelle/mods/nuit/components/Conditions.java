@@ -1,24 +1,23 @@
 package io.github.amerebagatelle.mods.nuit.components;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
 public class Conditions {
     public static final Codec<Conditions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.listOf().optionalFieldOf("biomes", ImmutableList.of()).forGetter(Conditions::getBiomes),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("worlds", ImmutableList.of()).forGetter(Conditions::getWorlds),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("dimensions", ImmutableList.of()).forGetter(Conditions::getDimensions),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("effects", ImmutableList.of()).forGetter(Conditions::getEffects),
-            Weather.CODEC.listOf().optionalFieldOf("weather", ImmutableList.of()).forGetter(Conditions::getWeathers),
-            MinMaxEntry.CODEC.listOf().optionalFieldOf("xRanges", ImmutableList.of()).forGetter(Conditions::getXRanges),
-            MinMaxEntry.CODEC.listOf().optionalFieldOf("yRanges", ImmutableList.of()).forGetter(Conditions::getYRanges),
-            MinMaxEntry.CODEC.listOf().optionalFieldOf("zRanges", ImmutableList.of()).forGetter(Conditions::getZRanges)
+            ResourceLocation.CODEC.listOf().optionalFieldOf("biomes", ObjectArrayList.of()).forGetter(Conditions::getBiomes),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("worlds", ObjectArrayList.of()).forGetter(Conditions::getWorlds),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("dimensions", ObjectArrayList.of()).forGetter(Conditions::getDimensions),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("effects", ObjectArrayList.of()).forGetter(Conditions::getEffects),
+            Weather.CODEC.listOf().optionalFieldOf("weather", ObjectArrayList.of()).forGetter(Conditions::getWeathers),
+            MinMaxEntry.CODEC.listOf().optionalFieldOf("xRanges", ObjectArrayList.of()).forGetter(Conditions::getXRanges),
+            MinMaxEntry.CODEC.listOf().optionalFieldOf("yRanges", ObjectArrayList.of()).forGetter(Conditions::getYRanges),
+            MinMaxEntry.CODEC.listOf().optionalFieldOf("zRanges", ObjectArrayList.of()).forGetter(Conditions::getZRanges)
     ).apply(instance, Conditions::new));
-    public static final Conditions DEFAULT = new Conditions(List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of());
     private final List<ResourceLocation> biomes;
     private final List<ResourceLocation> worlds;
     private final List<ResourceLocation> dimensions;
@@ -69,5 +68,9 @@ public class Conditions {
 
     public List<MinMaxEntry> getZRanges() {
         return this.zRanges;
+    }
+
+    public static Conditions of() {
+        return new Conditions(ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of(), ObjectArrayList.of());
     }
 }

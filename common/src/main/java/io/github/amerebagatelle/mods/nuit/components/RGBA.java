@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
 
 public class RGBA {
-    public static final RGBA DEFAULT = new RGBA(.0F, .0F, .0F, .0F);
     public static final Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             CodecUtils.getClampedFloat(0.0F, 1.0F).fieldOf("red").forGetter(RGBA::getRed),
             CodecUtils.getClampedFloat(0.0F, 1.0F).fieldOf("green").forGetter(RGBA::getGreen),
@@ -50,5 +49,9 @@ public class RGBA {
             return this.red == rgba.red && this.green == rgba.green && this.blue == rgba.blue && this.alpha == rgba.alpha;
         }
         return super.equals(obj);
+    }
+
+    public static RGBA of() {
+        return new RGBA(0, 0, 0, 0);
     }
 }

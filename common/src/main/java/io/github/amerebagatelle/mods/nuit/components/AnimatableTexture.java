@@ -3,10 +3,10 @@ package io.github.amerebagatelle.mods.nuit.components;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
+import it.unimi.dsi.fastutil.ints.Int2LongArrayMap;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class AnimatableTexture {
@@ -17,7 +17,7 @@ public class AnimatableTexture {
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("gridRows", 1).forGetter(AnimatableTexture::getGridRows),
             CodecUtils.getClampedLong(1, Integer.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(AnimatableTexture::getDuration),
             Codec.BOOL.optionalFieldOf("interpolate", true).forGetter(AnimatableTexture::isInterpolate),
-            Codec.unboundedMap(Codec.STRING, Codec.LONG).optionalFieldOf("frameDuration", new HashMap<>()).forGetter(AnimatableTexture::getFrameDuration)
+            CodecUtils.unboundedMapFixed(Integer.class, Codec.LONG).optionalFieldOf("frameDuration", new Int2LongArrayMap()).forGetter(AnimatableTexture::getFrameDuration)
     ).apply(instance, AnimatableTexture::new));
 
     private final Texture texture;
@@ -26,13 +26,13 @@ public class AnimatableTexture {
     private final int gridColumns;
     private final long duration;
     private final boolean interpolate;
-    private final Map<String, Long> frameDuration;
+    private final Map<Integer, Long> frameDuration;
 
     private UVRange currentFrame;
     private int index;
     private long nextTime;
 
-    public AnimatableTexture(Texture texture, UVRange uvRange, int gridColumns, int gridRows, long duration, boolean interpolate, Map<String, Long> frameDuration) {
+    public AnimatableTexture(Texture texture, UVRange uvRange, int gridColumns, int gridRows, long duration, boolean interpolate, Map<Integer, Long> frameDuration) {
         this.texture = texture;
         this.uvRange = uvRange;
         this.gridColumns = gridColumns;
@@ -66,7 +66,7 @@ public class AnimatableTexture {
         return interpolate;
     }
 
-    public Map<String, Long> getFrameDuration() {
+    public Map<Integer, Long> getFrameDuration() {
         return frameDuration;
     }
 
@@ -75,7 +75,7 @@ public class AnimatableTexture {
             // Current Frame
             this.index = (this.index + 1) % (this.gridRows * this.gridColumns);
             this.currentFrame = this.calculateNextFrameUVRange(this.index);
-            this.nextTime = Util.getEpochMillis() + this.frameDuration.getOrDefault(String.valueOf(this.index + 1), this.duration);
+            this.nextTime = Util.getEpochMillis() + this.frameDuration.getOrDefault(this.index + 1, this.duration);
         }
     }
 

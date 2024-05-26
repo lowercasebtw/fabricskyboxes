@@ -19,7 +19,7 @@ public class DefaultHandler {
      * Includes skyboxes from both skyboxMap and permanentSkyboxMap.
      * Default skyboxes check against the inverse of concatConditions.
      */
-    private static Conditions concatConditions = Conditions.DEFAULT;
+    private static Conditions concatConditions = Conditions.of();
 
     /**
      * Concatenates conditions from a skybox to concatConditions.
@@ -54,7 +54,7 @@ public class DefaultHandler {
      * Clears all conditions from concatConditions.
      */
     private static void clearConditions() {
-        concatConditions = Conditions.DEFAULT;
+        concatConditions = Conditions.of();
     }
 
     /**

@@ -43,9 +43,9 @@ public abstract class AbstractSkybox implements NuitSkybox {
      * This variable is responsible for fading in/out skyboxes.
      */
     public transient float alpha;
-    protected Properties properties = Properties.DEFAULT;
-    protected Conditions conditions = Conditions.DEFAULT;
-    protected Decorations decorations = Decorations.DEFAULT;
+    protected Properties properties = Properties.of();
+    protected Conditions conditions = Conditions.of();
+    protected Decorations decorations = Decorations.of();
 
     private final Map<Long, Float> cachedFadeValues = new Long2FloatArrayMap();
 

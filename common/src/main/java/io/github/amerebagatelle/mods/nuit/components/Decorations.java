@@ -17,10 +17,9 @@ public class Decorations {
             Codec.BOOL.optionalFieldOf("showSun", false).forGetter(Decorations::isSunEnabled),
             Codec.BOOL.optionalFieldOf("showMoon", false).forGetter(Decorations::isMoonEnabled),
             Codec.BOOL.optionalFieldOf("showStars", false).forGetter(Decorations::isStarsEnabled),
-            Rotation.CODEC.optionalFieldOf("rotation", Rotation.DECORATIONS).forGetter(Decorations::getRotation),
-            Blend.CODEC.optionalFieldOf("blend", Blend.DECORATIONS).forGetter(Decorations::getBlend)
+            Rotation.CODEC.optionalFieldOf("rotation", Rotation.decorations()).forGetter(Decorations::getRotation),
+            Blend.CODEC.optionalFieldOf("blend", Blend.decorations()).forGetter(Decorations::getBlend)
     ).apply(instance, Decorations::new));
-    public static final Decorations DEFAULT = new Decorations(LevelRendererAccessor.getSun(), LevelRendererAccessor.getMoonPhases(), false, false, false, Rotation.DEFAULT, Blend.DECORATIONS);
     private final ResourceLocation sunTexture;
     private final ResourceLocation moonTexture;
     private final boolean sunEnabled;
@@ -65,6 +64,10 @@ public class Decorations {
 
     public Blend getBlend() {
         return blend;
+    }
+
+    public static Decorations of() {
+        return new Decorations(LevelRendererAccessor.getSun(), LevelRendererAccessor.getMoonPhases(), false, false, false, Rotation.decorations(), Blend.decorations());
     }
 }
 
