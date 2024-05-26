@@ -27,8 +27,7 @@ public class SkyboxResourceListener {
                 JsonObject json = GSON.fromJson(new InputStreamReader(resource.open()), JsonObject.class);
                 skyboxManager.addSkybox(identifier, json);
             } catch (Exception e) {
-                NuitClient.getLogger().error("Error reading skybox {}", identifier.toString());
-                NuitClient.getLogger().error(e.getMessage());
+                NuitClient.getLogger().error("Error reading skybox {}", identifier.toString(), e);
             }
         });
     }
