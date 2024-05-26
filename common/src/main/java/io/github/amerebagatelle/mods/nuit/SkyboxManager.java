@@ -79,6 +79,7 @@ public class SkyboxManager implements NuitApi {
     public void addSkybox(ResourceLocation identifier, Skybox skybox) {
         Preconditions.checkNotNull(identifier, "Identifier was null");
         Preconditions.checkNotNull(skybox, "Skybox was null");
+        DefaultHandler.addConditions(skybox);
         this.skyboxMap.put(identifier, skybox);
     }
 
@@ -92,17 +93,15 @@ public class SkyboxManager implements NuitApi {
     public void addPermanentSkybox(ResourceLocation identifier, Skybox skybox) {
         Preconditions.checkNotNull(identifier, "Identifier was null");
         Preconditions.checkNotNull(skybox, "Skybox was null");
-        this.permanentSkyboxMap.put(identifier, skybox);
-
         DefaultHandler.addConditions(skybox);
+        this.permanentSkyboxMap.put(identifier, skybox);
     }
 
     @Internal
     public void clearSkyboxes() {
+        DefaultHandler.clearConditionsExcept(permanentSkyboxMap.values());
         this.skyboxMap.clear();
         this.activeSkyboxes.clear();
-
-        DefaultHandler.clearConditionsExcept(permanentSkyboxMap.values());
     }
 
     @Internal
