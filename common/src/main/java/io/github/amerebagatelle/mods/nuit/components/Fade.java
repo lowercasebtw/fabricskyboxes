@@ -12,7 +12,7 @@ public class Fade {
     public static final Codec<Fade> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("alwaysOn", false).forGetter(Fade::isAlwaysOn),
             CodecUtils.getClampedLong(1, Long.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(Fade::getDuration),
-            CodecUtils.unboundedMapFixed(Long.class, CodecUtils.getClampedFloat(0F, 1F))
+            CodecUtils.unboundedMapFixed(Long.class, CodecUtils.getClampedFloat(0F, 1F), new Long2FloatArrayMap())
                     .optionalFieldOf("keyFrames", new Long2FloatArrayMap())
                     .forGetter(Fade::getKeyFrames)
     ).apply(instance, Fade::new));

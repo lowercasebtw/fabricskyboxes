@@ -11,7 +11,6 @@ import io.github.amerebagatelle.mods.nuit.components.Properties;
 import io.github.amerebagatelle.mods.nuit.components.Weather;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
-import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.material.FogType;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -46,8 +44,6 @@ public abstract class AbstractSkybox implements NuitSkybox {
     protected Properties properties = Properties.of();
     protected Conditions conditions = Conditions.of();
     protected Decorations decorations = Decorations.of();
-
-    private final Map<Long, Float> cachedFadeValues = new Long2FloatArrayMap();
 
     protected boolean unexpectedConditionTransition = false;
     protected long lastTime = -2;
@@ -83,15 +79,16 @@ public abstract class AbstractSkybox implements NuitSkybox {
         if (this.properties.getFade().isAlwaysOn()) {
             this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
         } else {
-            Float cachedFadeValue = this.cachedFadeValues.getOrDefault(currentTime, null);
+            Float cachedFadeValue = this.properties.getFade().getKeyFrames().getOrDefault(currentTime, null);
             if (cachedFadeValue != null) {
-                fadeAlpha = this.cachedFadeValues.get(currentTime);
+                fadeAlpha = this.properties.getFade().getKeyFrames().get(currentTime);
             } else {
                 Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
                 if (keyFrames != null) {
                     fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
-                    this.cachedFadeValues.put(currentTime, fadeAlpha);
+                    this.properties.getFade().getKeyFrames().put(currentTime, fadeAlpha);
                 } else {
+                    // This should never even happen
                     throw new IllegalStateException("No keyframes found");
                 }
             }
@@ -130,7 +127,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
         Objects.requireNonNull(client.player);
         return this.conditions.getBiomes().getEntries().isEmpty() || this.conditions.getBiomes().isExcludes() ^ (
                 this.conditions.getBiomes().getEntries().contains(client.level.registryAccess().registryOrThrow(Registries.BIOME).getKey(client.level.getBiome(client.player.blockPosition()).value())) ||
-                this.conditions.getBiomes().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackBiomes());
+                        this.conditions.getBiomes().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackBiomes());
     }
 
     /**
@@ -141,7 +138,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
         Objects.requireNonNull(client.level);
         return this.conditions.getDimensions().getEntries().isEmpty() || this.conditions.getBiomes().isExcludes() ^ (
                 this.conditions.getDimensions().getEntries().contains(client.level.dimension().location()) ||
-                this.conditions.getDimensions().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackDimensions());
+                        this.conditions.getDimensions().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackDimensions());
     }
 
     /**
@@ -152,7 +149,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
         Objects.requireNonNull(client.level);
         return this.conditions.getWorlds().getEntries().isEmpty() || this.conditions.getBiomes().isExcludes() ^ (
                 this.conditions.getWorlds().getEntries().contains(client.level.dimensionType().effectsLocation()) ||
-                this.conditions.getWorlds().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackWorlds());
+                        this.conditions.getWorlds().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackWorlds());
     }
 
     /*

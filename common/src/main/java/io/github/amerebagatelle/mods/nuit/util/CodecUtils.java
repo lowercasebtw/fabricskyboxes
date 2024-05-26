@@ -37,7 +37,7 @@ public class CodecUtils {
         return Codec.DOUBLE.xmap(f -> Mth.clamp(f, min, max), Function.identity());
     }
 
-    public static <K extends Number, V> Codec<Map<K, V>> unboundedMapFixed(Class<K> clazz, Codec<V> valueCodec) {
+    public static <K extends Number, V> Codec<Map<K, V>> unboundedMapFixed(Class<K> clazz, Codec<V> valueCodec, Map<K, V> mapImpl) {
         return Codec.unboundedMap(Codec.STRING, valueCodec).xmap(
                 map -> map.entrySet().stream().collect(Collectors.toMap(
                         entry -> {
@@ -58,7 +58,9 @@ public class CodecUtils {
                                 throw new IllegalArgumentException("Unsupported number class: " + clazz);
                             }
                         },
-                        Map.Entry::getValue
+                        Map.Entry::getValue,
+                        (a, b) -> a,
+                        () -> mapImpl
                 )),
                 map -> map.entrySet().stream().collect(Collectors.toMap(
                         entry -> entry.getKey().toString(),

@@ -17,7 +17,7 @@ public class AnimatableTexture {
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("gridRows", 1).forGetter(AnimatableTexture::getGridRows),
             CodecUtils.getClampedLong(1, Integer.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(AnimatableTexture::getDuration),
             Codec.BOOL.optionalFieldOf("interpolate", true).forGetter(AnimatableTexture::isInterpolate),
-            CodecUtils.unboundedMapFixed(Integer.class, Codec.LONG).optionalFieldOf("frameDuration", new Int2LongArrayMap()).forGetter(AnimatableTexture::getFrameDuration)
+            CodecUtils.unboundedMapFixed(Integer.class, Codec.LONG, new Int2LongArrayMap()).optionalFieldOf("frameDuration", new Int2LongArrayMap()).forGetter(AnimatableTexture::getFrameDuration)
     ).apply(instance, AnimatableTexture::new));
 
     private final Texture texture;

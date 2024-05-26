@@ -2,7 +2,6 @@ package io.github.amerebagatelle.mods.nuit.components;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 
 public class Conditions {
