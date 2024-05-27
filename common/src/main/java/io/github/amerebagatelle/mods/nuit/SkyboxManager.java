@@ -17,13 +17,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SkyboxManager implements NuitApi {
     private static final SkyboxManager INSTANCE = new SkyboxManager();
@@ -38,7 +34,7 @@ public class SkyboxManager implements NuitApi {
     private Skybox currentSkybox = null;
     private boolean enabled = true;
 
-    public static @Nullable Skybox parseSkyboxJson(ResourceLocation id, JsonObject jsonObject) {
+    public static Optional<Skybox> parseSkyboxJson(ResourceLocation id, JsonObject jsonObject) {
         Metadata metadata;
 
         try {
@@ -46,21 +42,21 @@ public class SkyboxManager implements NuitApi {
         } catch (RuntimeException e) {
             NuitClient.getLogger().warn("Skipping invalid skybox {}", id.toString(), e);
             NuitClient.getLogger().warn(jsonObject.toString());
-            return null;
+            return Optional.empty();
         }
 
         SkyboxType<? extends Skybox> type = NuitPlatformHelper.INSTANCE.getSkyboxTypeRegistry().get(metadata.getType());
         if (type == null) {
             NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", id.toString(), metadata.getType().getPath().replace('_', '-'));
-            return null;
+            return Optional.empty();
         }
 
         try {
-            return type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst();
+            return Optional.of(type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst());
         } catch (RuntimeException e) {
             NuitClient.getLogger().warn("Skipping invalid skybox {}", id.toString(), e);
             NuitClient.getLogger().warn(jsonObject.toString());
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -69,10 +65,10 @@ public class SkyboxManager implements NuitApi {
     }
 
     public void addSkybox(ResourceLocation identifier, JsonObject jsonObject) {
-        Skybox skybox = SkyboxManager.parseSkyboxJson(identifier, jsonObject);
-        if (skybox != null) {
+        var skybox = SkyboxManager.parseSkyboxJson(identifier, jsonObject);
+        if (skybox.isPresent()) {
             NuitClient.getLogger().info("Adding skybox {}", identifier.toString());
-            this.addSkybox(identifier, skybox);
+            this.addSkybox(identifier, skybox.get());
         }
     }
 

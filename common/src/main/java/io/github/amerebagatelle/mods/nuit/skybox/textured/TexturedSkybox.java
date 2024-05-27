@@ -54,11 +54,14 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
 
         // static
         long currentTime = world.getDayTime() % this.rotation.getRotationDuration();
-        var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
-        var alpha = Math.abs((float) (currentTime - closestKeyframes.getA()) / (closestKeyframes.getB() - closestKeyframes.getA()));
-        var result = new Quaternionf();
-        keyframes.get(closestKeyframes.getA()).nlerp(keyframes.get(closestKeyframes.getB()), alpha, result);
-        matrixStack.mulPose(result);
+        var possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
+        if (possibleClosestKeyframes.isPresent()) {
+            var closestKeyframes = possibleClosestKeyframes.get();
+            var alpha = Math.abs((float) (currentTime - closestKeyframes.getA()) / (closestKeyframes.getB() - closestKeyframes.getA()));
+            var result = new Quaternionf();
+            keyframes.get(closestKeyframes.getA()).nlerp(keyframes.get(closestKeyframes.getB()), alpha, result);
+            matrixStack.mulPose(result);
+        }
         this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, thickFog, fogCallback);
         matrixStack.popPose();
 

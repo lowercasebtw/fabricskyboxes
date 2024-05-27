@@ -79,7 +79,8 @@ public abstract class AbstractSkybox implements NuitSkybox {
         if (this.properties.getFade().isAlwaysOn()) {
             this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
         } else {
-            Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
+            //noinspection OptionalGetWithoutIsPresent
+            Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime).get();
             fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
 
             if ((this.lastTime == currentTime - 1 || this.lastTime == currentTime) && !this.unexpectedConditionTransition) { // Check if time is ticking or if time is same (doDaylightCycle gamerule)
@@ -235,9 +236,12 @@ public abstract class AbstractSkybox implements NuitSkybox {
         // axis rotation
         long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
         var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
-        var result = new Quaternionf();
-        keyframes.get(closestKeyframes.getA()).nlerp(keyframes.get(closestKeyframes.getB()), alpha, result);
-        matrixStack.mulPose(result);
+        if (closestKeyframes.isPresent()) {
+            var result = new Quaternionf();
+            var factor = Math.abs((float) (currentTime - closestKeyframes.get().getA()) / (closestKeyframes.get().getB() - closestKeyframes.get().getA()));
+            keyframes.get(closestKeyframes.get().getA()).nlerp(keyframes.get(closestKeyframes.get().getB()), factor, result);
+            matrixStack.mulPose(result);
+        }
 
         // Vanilla rotation
         //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));

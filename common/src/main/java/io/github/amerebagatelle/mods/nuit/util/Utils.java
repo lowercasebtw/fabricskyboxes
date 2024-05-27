@@ -10,7 +10,6 @@ import io.github.amerebagatelle.mods.nuit.components.UVRange;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -215,9 +214,9 @@ public class Utils {
      * @param currentTime The current time for which to find the closest keyframes.
      * @return A pair of timestamps representing the closest keyframes before and after the current time.
      */
-    public static @Nullable <T> Tuple<Long, Long> findClosestKeyframes(Map<Long, T> keyFrames, long currentTime) {
+    public static <T> Optional<Tuple<Long, Long>> findClosestKeyframes(Map<Long, T> keyFrames, long currentTime) {
         if (keyFrames.isEmpty())
-            return null;
+            return Optional.empty();
 
         long smallestValue = Long.MAX_VALUE;
         long largestValue = Long.MIN_VALUE;
@@ -241,11 +240,11 @@ public class Utils {
 
         // Handle cases where the current time is before the first keyframe or after the last keyframe and single keyframe cases
         if (closestLowerKeyFrame == Long.MIN_VALUE || closestHigherKeyFrame == Long.MAX_VALUE) {
-            closestLowerKeyFrame = largestValue;//keyFrames.keySet().stream().max(Long::compare).orElse(Long.MIN_VALUE);
-            closestHigherKeyFrame = smallestValue;//keyFrames.keySet().stream().min(Long::compare).orElse(Long.MAX_VALUE)
+            closestLowerKeyFrame = largestValue;
+            closestHigherKeyFrame = smallestValue;
         }
 
-        return new Tuple<>(closestLowerKeyFrame, closestHigherKeyFrame);
+        return Optional.of(new Tuple<>(closestLowerKeyFrame, closestHigherKeyFrame));
     }
 
     /**
