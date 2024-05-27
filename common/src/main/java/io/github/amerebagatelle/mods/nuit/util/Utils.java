@@ -219,16 +219,16 @@ public class Utils {
         if (keyFrames.isEmpty())
             return null;
 
-        long smallestValue = Long.MIN_VALUE;
-        long largestValue = Long.MAX_VALUE;
+        long smallestValue = Long.MAX_VALUE;
+        long largestValue = Long.MIN_VALUE;
         long closestLowerKeyFrame = Long.MIN_VALUE;
         long closestHigherKeyFrame = Long.MAX_VALUE;
 
         for (long keyFrame : keyFrames.keySet()) {
-            if (keyFrame > smallestValue)
+            if (keyFrame < smallestValue)
                 smallestValue = keyFrame;
 
-            if (keyFrame < largestValue)
+            if (keyFrame > largestValue)
                 largestValue = keyFrame;
 
             if (keyFrame <= currentTime && keyFrame > closestLowerKeyFrame) {
