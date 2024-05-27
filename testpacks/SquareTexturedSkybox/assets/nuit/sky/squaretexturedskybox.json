@@ -8,11 +8,30 @@
         "1000": 1.0,
         "2000": 0
       }
+    },
+    "rotation": {
+      "keyFrames": {
+        "0": [
+          0,
+          0,
+          0
+        ],
+        "1000": [
+          0,
+          90,
+          0
+        ],
+        "2000": [
+          0,
+          270,
+          0
+        ]
+      }
     }
   },
   "conditions": {
   },
   "decorations": {
   },
-  "texture": "fabricskyboxes:sky/test_texture.png"
+  "texture": "nuit:sky/test_texture.png"
 }

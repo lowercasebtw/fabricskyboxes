@@ -215,7 +215,7 @@ public class Utils {
      * @param currentTime The current time for which to find the closest keyframes.
      * @return A pair of timestamps representing the closest keyframes before and after the current time.
      */
-    public static @Nullable Tuple<Long, Long> findClosestKeyframes(Map<Long, Float> keyFrames, long currentTime) {
+    public static @Nullable <T> Tuple<Long, Long> findClosestKeyframes(Map<Long, T> keyFrames, long currentTime) {
         if (keyFrames.isEmpty())
             return null;
 

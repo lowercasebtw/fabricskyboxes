@@ -2,7 +2,6 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Axis;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
@@ -25,8 +24,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.FogType;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.Quaternionf;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -224,8 +224,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
     public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
         RenderSystem.enableBlend();
-        Vector3f rotationStatic = this.decorations.getRotation().getStatic();
-        Vector3f rotationAxis = this.decorations.getRotation().getAxis();
+        Map<Long, Quaternionf> keyframes = this.decorations.getRotation().getKeyframes();
         ClientLevel world = Minecraft.getInstance().level;
         assert world != null;
 
@@ -234,33 +233,17 @@ public abstract class AbstractSkybox implements NuitSkybox {
         matrixStack.pushPose();
 
         // axis rotation
-        matrixStack.mulPose(Axis.XP.rotationDegrees(rotationAxis.x()));
-        matrixStack.mulPose(Axis.YP.rotationDegrees(rotationAxis.y()));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(rotationAxis.z()));
+        long currentTime = world.getDayTime();
+        var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
+        var result = new Quaternionf();
+        keyframes.get(closestKeyframes.getA()).nlerp(keyframes.get(closestKeyframes.getB()), alpha, result);
+        matrixStack.mulPose(result);
 
         // Vanilla rotation
         //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
         // Iris Compat
         //matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));
         //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(world.getSkyAngle(tickDelta) * 360.0F * this.decorations.getRotation().getRotationSpeed()));
-
-        // Custom rotation
-        double timeRotationX = Utils.calculateRotation(this.decorations.getRotation().getRotationSpeedX(), this.decorations.getRotation().getTimeShift().x(), this.decorations.getRotation().getSkyboxRotation(), world);
-        double timeRotationY = Utils.calculateRotation(this.decorations.getRotation().getRotationSpeedY(), this.decorations.getRotation().getTimeShift().y(), this.decorations.getRotation().getSkyboxRotation(), world);
-        double timeRotationZ = Utils.calculateRotation(this.decorations.getRotation().getRotationSpeedZ(), this.decorations.getRotation().getTimeShift().z(), this.decorations.getRotation().getSkyboxRotation(), world);
-        matrixStack.mulPose(Axis.XP.rotationDegrees((float) timeRotationX));
-        matrixStack.mulPose(Axis.YP.rotationDegrees((float) timeRotationY));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees((float) timeRotationZ));
-
-        // axis rotation
-        matrixStack.mulPose(Axis.ZN.rotationDegrees(rotationAxis.z()));
-        matrixStack.mulPose(Axis.YN.rotationDegrees(rotationAxis.y()));
-        matrixStack.mulPose(Axis.XN.rotationDegrees(rotationAxis.x()));
-
-        // static rotation
-        matrixStack.mulPose(Axis.XP.rotationDegrees(rotationStatic.x()));
-        matrixStack.mulPose(Axis.YP.rotationDegrees(rotationStatic.y()));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(rotationStatic.z()));
 
         Matrix4f matrix4f2 = matrixStack.last().pose();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);

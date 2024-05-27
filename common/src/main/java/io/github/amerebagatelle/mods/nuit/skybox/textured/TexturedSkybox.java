@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Axis;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.RotatableSkybox;
 import io.github.amerebagatelle.mods.nuit.components.*;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
@@ -15,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.Quaternionf;
 
 import java.util.Objects;
 
@@ -49,19 +48,17 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
 
         ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
 
-        Vector3f rotationStatic = this.rotation.getStatic();
+        var keyframes = this.rotation.getKeyframes();
 
         matrixStack.pushPose();
 
-        // axis + time rotation
-        double timeRotationX = Utils.calculateRotation(this.rotation.getRotationSpeedX(), this.rotation.getTimeShift().x(), this.rotation.getSkyboxRotation(), world);
-        double timeRotationY = Utils.calculateRotation(this.rotation.getRotationSpeedY(), this.rotation.getTimeShift().y(), this.rotation.getSkyboxRotation(), world);
-        double timeRotationZ = Utils.calculateRotation(this.rotation.getRotationSpeedZ(), this.rotation.getTimeShift().z(), this.rotation.getSkyboxRotation(), world);
-        this.applyTimeRotation(matrixStack, (float) timeRotationX, (float) timeRotationY, (float) timeRotationZ);
         // static
-        matrixStack.mulPose(Axis.XP.rotationDegrees(rotationStatic.x()));
-        matrixStack.mulPose(Axis.YP.rotationDegrees(rotationStatic.y()));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(rotationStatic.z()));
+        long currentTime = world.getDayTime();
+        var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
+        var alpha = Math.abs((float) (currentTime - closestKeyframes.getA()) / (closestKeyframes.getB() - closestKeyframes.getA()));
+        var result = new Quaternionf();
+        keyframes.get(closestKeyframes.getA()).nlerp(keyframes.get(closestKeyframes.getB()), alpha, result);
+        matrixStack.mulPose(result);
         this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, thickFog, fogCallback);
         matrixStack.popPose();
 
@@ -78,20 +75,6 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
      * Override this method instead of render if you are extending this skybox.
      */
     public abstract void renderSkybox(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, float tickDelta, Camera camera, boolean thickFog, Runnable runnable);
-
-    private void applyTimeRotation(PoseStack matrixStack, float timeRotationX, float timeRotationY, float timeRotationZ) {
-        // Very ugly, find a better way to do this
-        Vector3f timeRotationAxis = this.rotation.getAxis();
-        matrixStack.mulPose(Axis.XP.rotationDegrees(timeRotationAxis.x()));
-        matrixStack.mulPose(Axis.YP.rotationDegrees(timeRotationAxis.y()));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(timeRotationAxis.z()));
-        matrixStack.mulPose(Axis.XP.rotationDegrees(timeRotationX));
-        matrixStack.mulPose(Axis.YP.rotationDegrees(timeRotationY));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(timeRotationZ));
-        matrixStack.mulPose(Axis.ZN.rotationDegrees(timeRotationAxis.z()));
-        matrixStack.mulPose(Axis.YN.rotationDegrees(timeRotationAxis.y()));
-        matrixStack.mulPose(Axis.XN.rotationDegrees(timeRotationAxis.x()));
-    }
 
     public Blend getBlend() {
         return this.blend;
