@@ -12,12 +12,12 @@ import java.util.Map;
 public class AnimatableTexture {
     public static final Codec<AnimatableTexture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Texture.CODEC.fieldOf("texture").forGetter(AnimatableTexture::getTexture),
-            UVRange.CODEC.optionalFieldOf("uvRange", new UVRange(0, 0, 1, 1)).forGetter(AnimatableTexture::getUvRange),
+            UVRange.CODEC.optionalFieldOf("uvRange", UVRange.of()).forGetter(AnimatableTexture::getUvRange),
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("gridColumns", 1).forGetter(AnimatableTexture::getGridColumns),
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("gridRows", 1).forGetter(AnimatableTexture::getGridRows),
             CodecUtils.getClampedLong(1, Integer.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(AnimatableTexture::getDuration),
             Codec.BOOL.optionalFieldOf("interpolate", true).forGetter(AnimatableTexture::isInterpolate),
-            CodecUtils.unboundedMapFixed(Integer.class, Codec.LONG, new Int2LongArrayMap()).optionalFieldOf("frameDuration", new Int2LongArrayMap()).forGetter(AnimatableTexture::getFrameDuration)
+            CodecUtils.unboundedMapFixed(Integer.class, Codec.LONG, Int2LongArrayMap::new).optionalFieldOf("frameDuration", CodecUtils.fastUtilInt2LongArrayMap()).forGetter(AnimatableTexture::getFrameDuration)
     ).apply(instance, AnimatableTexture::new));
 
     private final Texture texture;

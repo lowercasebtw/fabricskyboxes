@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
 import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 
 import java.util.Map;
 
@@ -12,8 +11,8 @@ public class Fade {
     public static final Codec<Fade> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("alwaysOn", false).forGetter(Fade::isAlwaysOn),
             CodecUtils.getClampedLong(1, Long.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(Fade::getDuration),
-            CodecUtils.unboundedMapFixed(Long.class, CodecUtils.getClampedFloat(0F, 1F), new Long2FloatArrayMap())
-                    .optionalFieldOf("keyFrames", new Long2FloatArrayMap())
+            CodecUtils.unboundedMapFixed(Long.class, CodecUtils.getClampedFloat(0F, 1F), Long2FloatArrayMap::new)
+                    .optionalFieldOf("keyFrames", CodecUtils.fastUtilLong2FloatArrayMap())
                     .forGetter(Fade::getKeyFrames)
     ).apply(instance, Fade::new));
     private final boolean alwaysOn;
@@ -59,6 +58,6 @@ public class Fade {
     }
 
     public static Fade of() {
-        return new Fade(true, 24000L, new Long2ObjectArrayMap<>());
+        return new Fade(true, 24000L, CodecUtils.fastUtilLong2FloatArrayMap());
     }
 }

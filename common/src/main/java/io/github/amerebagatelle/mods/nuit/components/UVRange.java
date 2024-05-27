@@ -38,5 +38,9 @@ public class UVRange {
     public float getMaxV() {
         return this.maxV;
     }
+
+    public static UVRange of() {
+        return new UVRange(0, 0, 1, 1);
+    }
 }
 

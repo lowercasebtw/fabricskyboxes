@@ -1,10 +1,13 @@
 package io.github.amerebagatelle.mods.nuit.util;
 
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.ints.Int2LongArrayMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
 import net.minecraft.util.Mth;
 
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class CodecUtils {
@@ -37,7 +40,7 @@ public class CodecUtils {
         return Codec.DOUBLE.xmap(f -> Mth.clamp(f, min, max), Function.identity());
     }
 
-    public static <K extends Number, V> Codec<Map<K, V>> unboundedMapFixed(Class<K> clazz, Codec<V> valueCodec, Map<K, V> mapImpl) {
+    public static <K extends Number, V> Codec<Map<K, V>> unboundedMapFixed(Class<K> clazz, Codec<V> valueCodec, Supplier<Map<K, V>> mapSupplier) {
         return Codec.unboundedMap(Codec.STRING, valueCodec).xmap(
                 map -> map.entrySet().stream().collect(Collectors.toMap(
                         entry -> {
@@ -60,12 +63,21 @@ public class CodecUtils {
                         },
                         Map.Entry::getValue,
                         (a, b) -> a,
-                        () -> mapImpl
+                        mapSupplier
+
                 )),
                 map -> map.entrySet().stream().collect(Collectors.toMap(
                         entry -> entry.getKey().toString(),
                         Map.Entry::getValue
                 ))
         );
+    }
+
+    public static Map<Long, Float> fastUtilLong2FloatArrayMap() {
+        return new Long2FloatArrayMap();
+    }
+
+    public static Map<Integer, Long> fastUtilInt2LongArrayMap() {
+        return new Int2LongArrayMap();
     }
 }

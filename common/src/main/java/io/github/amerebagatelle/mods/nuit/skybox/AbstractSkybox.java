@@ -79,19 +79,8 @@ public abstract class AbstractSkybox implements NuitSkybox {
         if (this.properties.getFade().isAlwaysOn()) {
             this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
         } else {
-            Float cachedFadeValue = this.properties.getFade().getKeyFrames().getOrDefault(currentTime, null);
-            if (cachedFadeValue != null) {
-                fadeAlpha = this.properties.getFade().getKeyFrames().get(currentTime);
-            } else {
-                Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
-                if (keyFrames != null) {
-                    fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
-                    this.properties.getFade().getKeyFrames().put(currentTime, fadeAlpha);
-                } else {
-                    // This should never even happen
-                    throw new IllegalStateException("No keyframes found");
-                }
-            }
+            Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
+            fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
 
             if ((this.lastTime == currentTime - 1 || this.lastTime == currentTime) && !this.unexpectedConditionTransition) { // Check if time is ticking or if time is same (doDaylightCycle gamerule)
                 this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);

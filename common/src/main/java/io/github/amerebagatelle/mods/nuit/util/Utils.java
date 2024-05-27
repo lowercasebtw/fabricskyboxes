@@ -219,10 +219,18 @@ public class Utils {
         if (keyFrames.isEmpty())
             return null;
 
+        long smallestValue = Long.MIN_VALUE;
+        long largestValue = Long.MAX_VALUE;
         long closestLowerKeyFrame = Long.MIN_VALUE;
         long closestHigherKeyFrame = Long.MAX_VALUE;
 
         for (long keyFrame : keyFrames.keySet()) {
+            if (keyFrame > smallestValue)
+                smallestValue = keyFrame;
+
+            if (keyFrame < largestValue)
+                largestValue = keyFrame;
+
             if (keyFrame <= currentTime && keyFrame > closestLowerKeyFrame) {
                 closestLowerKeyFrame = keyFrame;
             }
@@ -233,8 +241,8 @@ public class Utils {
 
         // Handle cases where the current time is before the first keyframe or after the last keyframe and single keyframe cases
         if (closestLowerKeyFrame == Long.MIN_VALUE || closestHigherKeyFrame == Long.MAX_VALUE) {
-            closestLowerKeyFrame = keyFrames.keySet().stream().max(Long::compare).orElse(Long.MIN_VALUE);
-            closestHigherKeyFrame = keyFrames.keySet().stream().min(Long::compare).orElse(Long.MAX_VALUE);
+            closestLowerKeyFrame = largestValue;//keyFrames.keySet().stream().max(Long::compare).orElse(Long.MIN_VALUE);
+            closestHigherKeyFrame = smallestValue;//keyFrames.keySet().stream().min(Long::compare).orElse(Long.MAX_VALUE)
         }
 
         return new Tuple<>(closestLowerKeyFrame, closestHigherKeyFrame);
