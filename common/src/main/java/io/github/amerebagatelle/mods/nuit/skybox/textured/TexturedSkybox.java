@@ -53,7 +53,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
         matrixStack.pushPose();
 
         // static
-        long currentTime = world.getDayTime();
+        long currentTime = world.getDayTime() % this.rotation.getRotationDuration();
         var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
         var alpha = Math.abs((float) (currentTime - closestKeyframes.getA()) / (closestKeyframes.getB() - closestKeyframes.getA()));
         var result = new Quaternionf();

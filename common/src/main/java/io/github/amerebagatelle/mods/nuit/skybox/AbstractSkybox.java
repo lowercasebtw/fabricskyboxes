@@ -233,7 +233,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
         matrixStack.pushPose();
 
         // axis rotation
-        long currentTime = world.getDayTime();
+        long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
         var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
         var result = new Quaternionf();
         keyframes.get(closestKeyframes.getA()).nlerp(keyframes.get(closestKeyframes.getB()), alpha, result);

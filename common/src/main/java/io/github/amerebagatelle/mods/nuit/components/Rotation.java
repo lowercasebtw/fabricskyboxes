@@ -30,24 +30,18 @@ public class Rotation {
                     .optionalFieldOf("keyFrames", new HashMap<>())
                     .forGetter(Rotation::getKeyframes),
             VEC_3_I.optionalFieldOf("timeShift", new Vector3i(0, 0, 0)).forGetter(Rotation::getTimeShift),
-            Codec.FLOAT.optionalFieldOf("rotationSpeedX", 0F).forGetter(Rotation::getRotationSpeedX),
-            Codec.FLOAT.optionalFieldOf("rotationSpeedY", 0F).forGetter(Rotation::getRotationSpeedY),
-            Codec.FLOAT.optionalFieldOf("rotationSpeedZ", 0F).forGetter(Rotation::getRotationSpeedZ)
+            Codec.LONG.optionalFieldOf("rotationDuration", 24000L).forGetter(Rotation::getRotationDuration)
     ).apply(instance, Rotation::new));
     private final boolean skyboxRotation;
     private final Map<Long, Quaternionf> keyframes;
     private final Vector3i timeShift;
-    private final float rotationSpeedX;
-    private final float rotationSpeedY;
-    private final float rotationSpeedZ;
+    private final long rotationDuration;
 
-    public Rotation(boolean skyboxRotation, Map<Long, Quaternionf> keyframes, Vector3i timeShift, float rotationSpeedX, float rotationSpeedY, float rotationSpeedZ) {
+    public Rotation(boolean skyboxRotation, Map<Long, Quaternionf> keyframes, Vector3i timeShift, long rotationDuration) {
         this.skyboxRotation = skyboxRotation;
         this.keyframes = keyframes;
         this.timeShift = timeShift;
-        this.rotationSpeedX = rotationSpeedX;
-        this.rotationSpeedY = rotationSpeedY;
-        this.rotationSpeedZ = rotationSpeedZ;
+        this.rotationDuration = rotationDuration;
     }
 
     public boolean getSkyboxRotation() {
@@ -62,24 +56,16 @@ public class Rotation {
         return timeShift;
     }
 
-    public float getRotationSpeedX() {
-        return rotationSpeedX;
-    }
-
-    public float getRotationSpeedY() {
-        return rotationSpeedY;
-    }
-
-    public float getRotationSpeedZ() {
-        return rotationSpeedZ;
+    public long getRotationDuration() {
+        return rotationDuration;
     }
 
     public static Rotation of() {
-        return new Rotation(true, Map.of(0L, new Quaternionf()), new Vector3i(0, 0, 0), 0, 0, 0);
+        return new Rotation(true, Map.of(0L, new Quaternionf()), new Vector3i(0, 0, 0), 24000);
     }
 
     public static Rotation decorations() {
-        return new Rotation(false, Map.of(0L, new Quaternionf()), new Vector3i(0, 0, 0), 0, 0, 1);
+        return new Rotation(false, Map.of(0L, new Quaternionf()), new Vector3i(0, 0, 0), 24000);
     }
 }
 
