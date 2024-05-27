@@ -9,14 +9,14 @@ import org.joml.Vector3i;
 
 public class Rotation {
     private static final Codec<Vector3f> VEC_3_F = Codec.FLOAT.listOf().comapFlatMap((list) -> {
-        if (list.size() < 3) {
-            return DataResult.error(() -> "Incomplete number of elements in vector");
+        if (list.size() != 3) {
+            return DataResult.error(() -> "Invalid number of elements in vector");
         }
         return DataResult.success(new Vector3f(list.get(0), list.get(1), list.get(2)));
     }, (vec) -> ImmutableList.of(vec.x(), vec.y(), vec.z()));
     private static final Codec<Vector3i> VEC_3_I = Codec.INT.listOf().comapFlatMap((list) -> {
-        if (list.size() < 3) {
-            return DataResult.error(() -> "Incomplete number of elements in vector");
+        if (list.size() != 3) {
+            return DataResult.error(() -> "Invalid number of elements in vector");
         }
         return DataResult.success(new Vector3i(list.get(0), list.get(1), list.get(2)));
     }, (vec) -> ImmutableList.of(vec.x(), vec.y(), vec.z()));
