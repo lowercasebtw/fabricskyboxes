@@ -235,16 +235,10 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
         // axis rotation
         long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
-        var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
-        if (closestKeyframes.isPresent()) {
-            var result = new Quaternionf();
-            if (closestKeyframes.get().getA().equals(closestKeyframes.get().getB())) {
-                matrixStack.mulPose(keyframes.get(closestKeyframes.get().getA()));
-            } else {
-                var factor = Math.abs((float) (currentTime - closestKeyframes.get().getA()) / (closestKeyframes.get().getB() - closestKeyframes.get().getA()));
-                keyframes.get(closestKeyframes.get().getA()).nlerp(keyframes.get(closestKeyframes.get().getB()), factor, result);
-                matrixStack.mulPose(result);
-            }
+        var possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
+        if (possibleClosestKeyframes.isPresent()) {
+            var rot = Utils.interpolateQuatKeyframes(keyframes, possibleClosestKeyframes.get(), currentTime);
+            matrixStack.mulPose(rot);
         }
 
         // Iris Compat

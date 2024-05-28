@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 import java.util.Objects;
 
@@ -56,15 +55,8 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
         long currentTime = world.getDayTime() % this.rotation.getRotationDuration();
         var possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
         if (possibleClosestKeyframes.isPresent()) {
-            var closestKeyframes = possibleClosestKeyframes.get();
-            if (closestKeyframes.getA().equals(closestKeyframes.getB())) {
-                matrixStack.mulPose(keyframes.get(closestKeyframes.getA()));
-            } else {
-                var alpha = Math.abs((float) (currentTime - closestKeyframes.getA()) / (closestKeyframes.getB() - closestKeyframes.getA()));
-                var result = new Quaternionf();
-                keyframes.get(closestKeyframes.getA()).nlerp(keyframes.get(closestKeyframes.getB()), alpha, result);
-                matrixStack.mulPose(result);
-            }
+            var rot = Utils.interpolateQuatKeyframes(keyframes, possibleClosestKeyframes.get(), currentTime);
+            matrixStack.mulPose(rot);
         }
         this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, thickFog, fogCallback);
         matrixStack.popPose();

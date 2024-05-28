@@ -10,6 +10,7 @@ import io.github.amerebagatelle.mods.nuit.components.UVRange;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
+import org.joml.Quaternionf;
 
 import java.util.*;
 
@@ -245,6 +246,25 @@ public class Utils {
         }
 
         return Optional.of(new Tuple<>(closestLowerKeyFrame, closestHigherKeyFrame));
+    }
+
+    /**
+     * Interpolates between two quaternion keyframes.
+     *
+     * @param keyFrames The keyframe map being used.
+     * @param chosenFrames The two frames to interpolate between.
+     * @param currentTime The current time in game ticks.
+     * @return The interpolated quaternion.
+     */
+    public static Quaternionf interpolateQuatKeyframes(Map<Long, Quaternionf> keyFrames, Tuple<Long, Long> chosenFrames, long currentTime) {
+        if (keyFrames.size() == 1) {
+            return keyFrames.values().iterator().next();
+        }
+
+        var alpha = Math.abs((float) (currentTime - chosenFrames.getA()) / (chosenFrames.getB() - chosenFrames.getA()));
+        var result = new Quaternionf();
+        keyFrames.get(chosenFrames.getA()).nlerp(keyFrames.get(chosenFrames.getB()), alpha, result);
+        return result;
     }
 
     /**
