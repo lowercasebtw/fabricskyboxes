@@ -27,22 +27,7 @@ public class RotationTest {
                     """,
             """
                     {
-                        "timeShift": [0, 90, 0]
-                    }
-                    """,
-            """
-                    {
-                        "rotationSpeedX": 1
-                    }
-                    """,
-            """
-                    {
-                        "rotationSpeedY": 0.5
-                    }
-                    """,
-            """
-                    {
-                        "rotationSpeedZ": 0.25
+                        "rotationDuration": 12000
                     }
                     """
     })

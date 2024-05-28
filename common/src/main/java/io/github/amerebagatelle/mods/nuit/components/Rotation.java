@@ -29,18 +29,15 @@ public class Rotation {
             CodecUtils.unboundedMapFixed(Long.class, QUAT_FROM_VEC_3_F, HashMap::new)
                     .optionalFieldOf("keyFrames", new HashMap<>())
                     .forGetter(Rotation::getKeyframes),
-            VEC_3_I.optionalFieldOf("timeShift", new Vector3i(0, 0, 0)).forGetter(Rotation::getTimeShift),
             Codec.LONG.optionalFieldOf("rotationDuration", 24000L).forGetter(Rotation::getRotationDuration)
     ).apply(instance, Rotation::new));
     private final boolean skyboxRotation;
     private final Map<Long, Quaternionf> keyframes;
-    private final Vector3i timeShift;
     private final long rotationDuration;
 
-    public Rotation(boolean skyboxRotation, Map<Long, Quaternionf> keyframes, Vector3i timeShift, long rotationDuration) {
+    public Rotation(boolean skyboxRotation, Map<Long, Quaternionf> keyframes, long rotationDuration) {
         this.skyboxRotation = skyboxRotation;
         this.keyframes = keyframes;
-        this.timeShift = timeShift;
         this.rotationDuration = rotationDuration;
     }
 
@@ -52,20 +49,16 @@ public class Rotation {
         return this.keyframes;
     }
 
-    public Vector3i getTimeShift() {
-        return timeShift;
-    }
-
     public long getRotationDuration() {
         return rotationDuration;
     }
 
     public static Rotation of() {
-        return new Rotation(true, Map.of(0L, new Quaternionf()), new Vector3i(0, 0, 0), 24000);
+        return new Rotation(true, Map.of(0L, new Quaternionf()), 24000);
     }
 
     public static Rotation decorations() {
-        return new Rotation(false, Map.of(0L, new Quaternionf()), new Vector3i(0, 0, 0), 24000);
+        return new Rotation(false, Map.of(0L, new Quaternionf()), 24000);
     }
 }
 
