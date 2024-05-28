@@ -20,12 +20,9 @@ public class RotationTest {
                     """,
             """
                     {
-                        "static": [0, 90, 0]
-                    }
-                    """,
-            """
-                    {
-                        "axis": [0, 90, 0]
+                        "keyFrames": {
+                            "0": [0, 0, 0]
+                        }
                     }
                     """,
             """
