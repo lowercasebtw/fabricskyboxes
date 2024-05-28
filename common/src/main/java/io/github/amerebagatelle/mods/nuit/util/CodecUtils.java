@@ -3,6 +3,7 @@ package io.github.amerebagatelle.mods.nuit.util;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.Int2LongArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import net.minecraft.util.Mth;
 
 import java.util.Map;
@@ -79,5 +80,9 @@ public class CodecUtils {
 
     public static Map<Integer, Long> fastUtilInt2LongArrayMap() {
         return new Int2LongArrayMap();
+    }
+
+    public static Map<Long, Float> fastUtilLong2FloatOpenHashMap() {
+        return new Long2FloatOpenHashMap();
     }
 }

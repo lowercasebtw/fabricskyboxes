@@ -11,6 +11,7 @@ import io.github.amerebagatelle.mods.nuit.components.Properties;
 import io.github.amerebagatelle.mods.nuit.components.Weather;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
+import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.material.FogType;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -48,6 +50,12 @@ public abstract class AbstractSkybox implements NuitSkybox {
     protected boolean unexpectedConditionTransition = false;
     protected long lastTime = -2;
     protected float conditionAlpha = 0f;
+
+    /**
+     * Why don't we use the fade's keyframes map directly?
+     * Because findClosestKeyframes has a O(n) time complexity operation. Adding to that will just make it worse.
+     */
+    private final Map<Long, Float> cachedKeyFrames = new Long2FloatOpenHashMap();
 
 
     protected AbstractSkybox() {
@@ -79,8 +87,29 @@ public abstract class AbstractSkybox implements NuitSkybox {
         if (this.properties.getFade().isAlwaysOn()) {
             this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
         } else {
-            Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
-            fadeAlpha = Utils.calculateInterpolatedAlpha(currentTime, this.properties.getFade().getDuration(), keyFrames.getA(), keyFrames.getB(), this.properties.getFade().getKeyFrames().get(keyFrames.getA()), this.properties.getFade().getKeyFrames().get(keyFrames.getB()));
+            if (this.properties.getFade().getDuration() <= NuitClient.config().generalSettings.fadeCacheDuration) {
+                fadeAlpha = this.cachedKeyFrames.computeIfAbsent(currentTime, time -> {
+                    Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), time);
+                    return Utils.calculateInterpolatedAlpha(
+                            time,
+                            this.properties.getFade().getDuration(),
+                            keyFrames.getA(),
+                            keyFrames.getB(),
+                            this.properties.getFade().getKeyFrames().get(keyFrames.getA()),
+                            this.properties.getFade().getKeyFrames().get(keyFrames.getB())
+                    );
+                });
+            } else {
+                Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime);
+                fadeAlpha = Utils.calculateInterpolatedAlpha(
+                        currentTime,
+                        this.properties.getFade().getDuration(),
+                        keyFrames.getA(),
+                        keyFrames.getB(),
+                        this.properties.getFade().getKeyFrames().get(keyFrames.getA()),
+                        this.properties.getFade().getKeyFrames().get(keyFrames.getB())
+                );
+            }
 
             if ((this.lastTime == currentTime - 1 || this.lastTime == currentTime) && !this.unexpectedConditionTransition) { // Check if time is ticking or if time is same (doDaylightCycle gamerule)
                 this.conditionAlpha = Utils.calculateConditionAlphaValue(1f, 0f, this.conditionAlpha, condition ? this.properties.getTransitionInDuration() : this.properties.getTransitionOutDuration(), condition);
