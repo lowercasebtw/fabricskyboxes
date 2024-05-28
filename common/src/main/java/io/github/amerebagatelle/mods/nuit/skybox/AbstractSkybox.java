@@ -247,8 +247,6 @@ public abstract class AbstractSkybox implements NuitSkybox {
             }
         }
 
-        // Vanilla rotation
-        //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
         // Iris Compat
         //matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));
         //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(world.getSkyAngle(tickDelta) * 360.0F * this.decorations.getRotation().getRotationSpeed()));

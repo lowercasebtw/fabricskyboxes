@@ -3,18 +3,19 @@
   "type": "square-textured",
   "properties": {
     "fade": {
+      "alwaysOn": true,
       "keyFrames": {
         "0": 0,
-        "1000": 1.0,
-        "2000": 0
+        "12000": 1.0,
+        "23999": 0
       }
     },
     "rotation": {
       "keyFrames": {
         "0": [
+          50,
           0,
-          0,
-          90
+          0
         ]
       }
     }
@@ -22,6 +23,32 @@
   "conditions": {
   },
   "decorations": {
+    "showSun": true,
+    "showMoon": true,
+    "rotation": {
+      "keyFrames": {
+        "0": [
+          0,
+          0,
+          270
+        ],
+        "6000": [
+          0,
+          0,
+          0
+        ],
+        "12000": [
+          0,
+          0,
+          90
+        ],
+        "18000": [
+          0,
+          0,
+          180
+        ]
+      }
+    }
   },
   "texture": "nuit:sky/test_texture.png"
 }
