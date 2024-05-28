@@ -238,9 +238,13 @@ public abstract class AbstractSkybox implements NuitSkybox {
         var closestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
         if (closestKeyframes.isPresent()) {
             var result = new Quaternionf();
-            var factor = Math.abs((float) (currentTime - closestKeyframes.get().getA()) / (closestKeyframes.get().getB() - closestKeyframes.get().getA()));
-            keyframes.get(closestKeyframes.get().getA()).nlerp(keyframes.get(closestKeyframes.get().getB()), factor, result);
-            matrixStack.mulPose(result);
+            if (closestKeyframes.get().getA().equals(closestKeyframes.get().getB())) {
+                matrixStack.mulPose(keyframes.get(closestKeyframes.get().getA()));
+            } else {
+                var factor = Math.abs((float) (currentTime - closestKeyframes.get().getA()) / (closestKeyframes.get().getB() - closestKeyframes.get().getA()));
+                keyframes.get(closestKeyframes.get().getA()).nlerp(keyframes.get(closestKeyframes.get().getB()), factor, result);
+                matrixStack.mulPose(result);
+            }
         }
 
         // Vanilla rotation

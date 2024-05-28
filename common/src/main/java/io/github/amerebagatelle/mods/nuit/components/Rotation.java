@@ -16,7 +16,7 @@ public class Rotation {
         if (list.size() != 3) {
             return DataResult.error(() -> "Invalid number of elements in vector");
         }
-        return DataResult.success(new Quaternionf().rotateXYZ(list.get(0), list.get(1), list.get(2)));
+        return DataResult.success(new Quaternionf().rotateXYZ((float) Math.toRadians(list.get(0)), (float) Math.toRadians(list.get(1)), (float) Math.toRadians(list.get(2))));
     }, (vec) -> ImmutableList.of(vec.x(), vec.y(), vec.z()));
     private static final Codec<Vector3i> VEC_3_I = Codec.INT.listOf().comapFlatMap((list) -> {
         if (list.size() != 3) {
