@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "type": "monocolor",
   "properties": {
-    "changeFog": true,
-    "fogColors": {
+    "fog": {
+      "modifyColors": true,
       "red": 0.0,
       "blue": 0.0,
       "green": 0.0
