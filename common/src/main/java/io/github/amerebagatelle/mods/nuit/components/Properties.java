@@ -11,11 +11,8 @@ public class Properties {
             Fade.CODEC.fieldOf("fade").forGetter(Properties::getFade),
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("transitionInDuration", 20).forGetter(Properties::getTransitionInDuration),
             CodecUtils.getClampedInteger(1, Integer.MAX_VALUE).optionalFieldOf("transitionOutDuration", 20).forGetter(Properties::getTransitionOutDuration),
-            Codec.BOOL.optionalFieldOf("changeFog", false).forGetter(Properties::isChangeFog),
-            Codec.BOOL.optionalFieldOf("changeFogDensity", false).forGetter(Properties::isChangeFogDensity),
-            RGBA.CODEC.optionalFieldOf("fogColors", RGBA.of()).forGetter(Properties::getFogColors),
+            Fog.CODEC.optionalFieldOf("fog", Fog.of()).forGetter(Properties::getFog),
             Codec.BOOL.optionalFieldOf("sunSkyTint", true).forGetter(Properties::isRenderSunSkyTint),
-            Codec.BOOL.optionalFieldOf("inThickFog", true).forGetter(Properties::isRenderInThickFog),
             Rotation.CODEC.optionalFieldOf("rotation", Rotation.of()).forGetter(Properties::getRotation)
     ).apply(instance, Properties::new));
 
@@ -23,23 +20,17 @@ public class Properties {
     private final Fade fade;
     private final int transitionInDuration;
     private final int transitionOutDuration;
-    private final boolean changeFog;
-    private final boolean changeFogDensity;
-    private final RGBA fogColors;
+    private final Fog fog;
     private final boolean renderSunSkyTint;
-    private final boolean renderInThickFog;
     private final Rotation rotation;
 
-    public Properties(int layer, Fade fade, int transitionInDuration, int transitionOutDuration, boolean changeFog, boolean changeFogDensity, RGBA fogColors, boolean renderSunSkyTint, boolean renderInThickFog, Rotation rotation) {
+    public Properties(int layer, Fade fade, int transitionInDuration, int transitionOutDuration, Fog fog, boolean renderSunSkyTint, Rotation rotation) {
         this.layer = layer;
         this.fade = fade;
         this.transitionInDuration = transitionInDuration;
         this.transitionOutDuration = transitionOutDuration;
-        this.changeFog = changeFog;
-        this.changeFogDensity = changeFogDensity;
-        this.fogColors = fogColors;
+        this.fog = fog;
         this.renderSunSkyTint = renderSunSkyTint;
-        this.renderInThickFog = renderInThickFog;
         this.rotation = rotation;
     }
 
@@ -59,24 +50,12 @@ public class Properties {
         return transitionOutDuration;
     }
 
-    public boolean isChangeFog() {
-        return this.changeFog;
-    }
-
-    public boolean isChangeFogDensity() {
-        return changeFogDensity;
-    }
-
-    public RGBA getFogColors() {
-        return this.fogColors;
+    public Fog getFog() {
+        return this.fog;
     }
 
     public boolean isRenderSunSkyTint() {
         return renderSunSkyTint;
-    }
-
-    public boolean isRenderInThickFog() {
-        return renderInThickFog;
     }
 
     public Rotation getRotation() {
@@ -89,6 +68,6 @@ public class Properties {
     }
 
     public static Properties of() {
-        return new Properties(0, Fade.of(), 20, 20, false, false, RGBA.of(), true, true, Rotation.of());
+        return new Properties(0, Fade.of(), 20, 20, Fog.of(), true, Rotation.of());
     }
 }

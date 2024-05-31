@@ -183,7 +183,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
             boolean thickFog = client.level.effects().isFoggyAt(Mth.floor(camera.getPosition().x()), Mth.floor(camera.getPosition().y())) || client.gui.getBossOverlay().shouldCreateWorldFog();
             if (thickFog) {
                 // Render skybox in thick fog, enabled by default
-                return this.properties.isRenderInThickFog();
+                return this.properties.getFog().isShowInDenseFog();
             }
 
             FogType cameraSubmersionType = camera.getFluidInCamera();

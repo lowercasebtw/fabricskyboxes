@@ -4,9 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
-import io.github.amerebagatelle.mods.nuit.components.RGBA;
+import io.github.amerebagatelle.mods.nuit.components.RGB;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
-import io.github.amerebagatelle.mods.nuit.util.FogRGBA;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -14,18 +13,11 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FogRenderer.class)
 public class MixinFogRenderer {
-
-    @Unique
-    private static float nuit$density;
-
-    @Unique
-    private static boolean nuit$modifyDensity;
 
     @Shadow
     private static float fogRed;
@@ -41,22 +33,21 @@ public class MixinFogRenderer {
      */
     @Inject(method = "setupColor", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/FogRenderer;biomeChangedTime:J", ordinal = 6))
     private static void modifyColors(Camera camera, float tickDelta, ClientLevel world, int i, float f, CallbackInfo ci) {
-        FogRGBA fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), new RGBA(fogRed, fogGreen, fogBlue));
-        if (SkyboxManager.getInstance().isEnabled() && fogColor != null) {
+        RGB initialFogColor = new RGB(fogRed, fogGreen, fogBlue);
+        RGB fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), initialFogColor);
+        if (SkyboxManager.getInstance().isEnabled() && fogColor != initialFogColor) {
             fogRed = fogColor.getRed();
             fogBlue = fogColor.getBlue();
             fogGreen = fogColor.getGreen();
-            nuit$density = fogColor.getDensity();
-            nuit$modifyDensity = fogColor.isModifyDensity();
-        } else {
-            nuit$modifyDensity = false;
         }
     }
 
     @Redirect(method = "levelFogColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogColor(FFF)V"), remap = false)
     private static void redirectSetShaderFogColor(float red, float green, float blue) {
-        if (nuit$modifyDensity) {
-            RenderSystem.setShaderFogColor(red, green, blue, nuit$density);
+        float initialFogDensity = 1.0F; // Vanilla's default is 1F
+        float fogDensity = Utils.alphaBlendFogDensity(SkyboxManager.getInstance().getActiveSkyboxes(), initialFogDensity);
+        if (SkyboxManager.getInstance().isEnabled() && fogDensity != initialFogDensity) {
+            RenderSystem.setShaderFogColor(red, green, blue, fogDensity);
         } else {
             RenderSystem.setShaderFogColor(red, green, blue);
         }

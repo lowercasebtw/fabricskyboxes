@@ -5,14 +5,17 @@ import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.components.MinMaxEntry;
-import io.github.amerebagatelle.mods.nuit.components.RGBA;
+import io.github.amerebagatelle.mods.nuit.components.RGB;
 import io.github.amerebagatelle.mods.nuit.components.UVRange;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import org.joml.Quaternionf;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
 
 public class Utils {
     public static final UVRange[] TEXTURE_FACES = new UVRange[]{
@@ -285,28 +288,18 @@ public class Utils {
      * @param initialFogColor The initial fog color to be blended with the skybox fog colors.
      * @return The final blended fog color.
      */
-    public static FogRGBA alphaBlendFogColors(List<Skybox> skyboxList, RGBA initialFogColor) {
-        FogRGBA destination = new FogRGBA(initialFogColor);
+    public static RGB alphaBlendFogColors(List<Skybox> skyboxList, RGB initialFogColor) {
+        RGB destination = initialFogColor;
 
         for (Skybox skybox : skyboxList) {
-            if (skybox.isActive() && skybox instanceof NuitSkybox nuitSkybox && nuitSkybox.getProperties().isChangeFog()) {
-                FogRGBA source = new FogRGBA(
-                        nuitSkybox.getProperties().getFogColors().getRed(),
-                        nuitSkybox.getProperties().getFogColors().getGreen(),
-                        nuitSkybox.getProperties().getFogColors().getBlue(),
-                        nuitSkybox.getAlpha(),
-                        nuitSkybox.getProperties().isChangeFogDensity(),
-                        nuitSkybox.getProperties().getFogColors().getAlpha()
-                );
+            if (skybox.isActive() && skybox instanceof NuitSkybox nuitSkybox && nuitSkybox.getProperties().getFog().isModifyColors()) {
+                RGB source = nuitSkybox.getProperties().getFog();
 
-                float sourceAlphaInv = 1f - source.getAlpha();
-                destination = new FogRGBA(
-                        (source.getRed() * source.getAlpha()) + (destination.getRed() * sourceAlphaInv),
-                        (source.getGreen() * source.getAlpha()) + (destination.getGreen() * sourceAlphaInv),
-                        (source.getBlue() * source.getAlpha()) + (destination.getBlue() * sourceAlphaInv),
-                        (source.getAlpha() * source.getAlpha()) + (destination.getAlpha() * sourceAlphaInv),
-                        source.isModifyDensity(),
-                        (source.getDensity() * source.getAlpha()) + (destination.getDensity() * sourceAlphaInv)
+                float sourceAlphaInv = 1f - nuitSkybox.getAlpha();
+                destination = new RGB(
+                        (source.getRed() * nuitSkybox.getAlpha()) + (destination.getRed() * sourceAlphaInv),
+                        (source.getGreen() * nuitSkybox.getAlpha()) + (destination.getGreen() * sourceAlphaInv),
+                        (source.getBlue() * nuitSkybox.getAlpha()) + (destination.getBlue() * sourceAlphaInv)
                 );
             }
         }
@@ -314,45 +307,15 @@ public class Utils {
         return destination;
     }
 
-    /**
-     * Uses weighted additive color mixing and then applies the alpha blending formula: (source * source_alpha) + (destination * (1 - source_alpha)) with the initial fog color.
-     *
-     * @param skyboxList      List of skyboxes to blend the fog colors from.
-     * @param initialFogColor The initial fog color to be blended with the skybox fog colors.
-     * @return The weighted additive color with the final blended color using the alpha blending formula along with the initial fog color.
-     */
-    public static RGBA weightedAdditiveBlendFogColors(List<Skybox> skyboxList, RGBA initialFogColor) {
-        float[] colorSum = new float[4];
-        List<RGBA> activeColors = skyboxList.stream()
-                .filter(Skybox::isActive)
-                .filter(NuitSkybox.class::isInstance)
-                .map(NuitSkybox.class::cast)
-                .filter(nuitSkybox -> nuitSkybox.getProperties().isChangeFog())
-                .map(nuitSkybox -> new RGBA(nuitSkybox.getProperties().getFogColors().getRed(),
-                        nuitSkybox.getProperties().getFogColors().getGreen(),
-                        nuitSkybox.getProperties().getFogColors().getBlue(),
-                        nuitSkybox.getAlpha()))
-                .toList();
-        if (activeColors.isEmpty()) {
-            return null;
+    public static float alphaBlendFogDensity(List<Skybox> skyboxList, float initialFogDensity) {
+        float destination = initialFogDensity;
+        for (Skybox skybox : skyboxList) {
+            if (skybox.isActive() && skybox instanceof NuitSkybox nuitSkybox && nuitSkybox.getProperties().getFog().isModifyDensity()) {
+                float sourceAlphaInv = 1f - nuitSkybox.getAlpha();
+                destination = (nuitSkybox.getProperties().getFog().getDensity() * nuitSkybox.getAlpha()) + (destination * sourceAlphaInv);
+            }
         }
-        for (RGBA rgba : activeColors) {
-            colorSum[0] += rgba.getRed() * rgba.getAlpha();
-            colorSum[1] += rgba.getGreen() * rgba.getAlpha();
-            colorSum[2] += rgba.getBlue() * rgba.getAlpha();
-            colorSum[3] += rgba.getAlpha(); // this should never be zero.
-        }
-        float finalAlpha = colorSum[3];
-        final RGBA activeColorsMixed = new RGBA(colorSum[0] / finalAlpha, colorSum[1] / finalAlpha, colorSum[2] / finalAlpha);
-
-        Optional<RGBA> activeColorsHighestAlpha = activeColors.stream().max(Comparator.comparingDouble(RGBA::getAlpha));
-        float activeColorsMaxAlpha = activeColorsHighestAlpha.get().getAlpha();
-
-        float diffMul = 1f - activeColorsMaxAlpha;
-        final RGBA originalFogColorModified = new RGBA(initialFogColor.getRed() * diffMul, initialFogColor.getGreen() * diffMul, initialFogColor.getBlue() * diffMul);
-        final RGBA activeColorsMixedFinal = new RGBA(activeColorsMixed.getRed() * activeColorsMaxAlpha, activeColorsMixed.getGreen() * activeColorsMaxAlpha, activeColorsMixed.getBlue() * activeColorsMaxAlpha);
-
-        return new RGBA(originalFogColorModified.getRed() + activeColorsMixedFinal.getRed(), originalFogColorModified.getGreen() + activeColorsMixedFinal.getGreen(), originalFogColorModified.getBlue() + activeColorsMixedFinal.getBlue());
+        return destination;
     }
 
     /**

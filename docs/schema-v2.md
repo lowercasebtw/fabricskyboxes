@@ -21,6 +21,7 @@ This specification defines a format for a set of rules for the purpose of custom
     - [`multi-texture`](#multi-texture-skybox)
 - [Data Types](#data-types)
     - [Properties Object](#properties-object)
+    - [Fog Object](#fog-object)
     - [Generic Condition Object](#generic-condition-object)
     - [Conditions Object](#conditions-object)
     - [Decorations Object](#decorations-object)
@@ -145,25 +146,25 @@ The basic structure of a nuit skybox file may look something like this:
         /* fade in speed (1-8760000 float, optional) */
         "transitionOutDuration": 20,
         /* fade out speed (1-8760000 float, optional) */
-        "changeFog": false,
-        /* change fog color (bool, optional) */
-        "changeFogDensity": false,
-        /* change fog density (bool, optional) */
-        "fogColors": // RGBA object for fog color (optional)
+        "fog": // Fog object for fog properties (optional)
         {
+            "modifyColors": false,
+            /* modifies the fog color (bool, optional) */
             "red": 0,
             /* amount of red (0-1 float, optional) */
             "blue": 0,
             /* amount of blue (0-1 float, optional) */
             "green": 0,
             /* amount of green (0-1 float, optional) */
-            "alpha": 0
+            "modifyDensity": false,
+            /* change fog density (bool, optional) */
+            "density": 0,
             /* the fog density (0-1 float, optional) */
+            "showInDenseFog": true,
+            /* renders skybox in dense fog ex. nether (bool, optional) */
         },
         "sunSkyTint": true,
         /* tint sky yellow during sunrise/sunset (bool, optional) */
-        "inThickFog": true,
-        /* renders skybox in thick fog ex. nether (bool, optional) */
         "rotation": // rotation object FOR SKYBOX (optional)
         {
             /* Rotation speed of skybox or decorations (bool, optional) */
@@ -337,11 +338,8 @@ Specifies common properties used by all types of skyboxes.
 |         `fade`          |     [Fade object](#fade-object)     |                                                                    Specifies the time of day in ticks that the skybox should start and end fading in and out.                                                                    | :white_check_mark: | -                                            |
 | `transitionInDuration`  |               Integer               |                                   Specifies the duration in ticks that skybox will fade in when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).                                   |        :x:         | 20                                           |
 | `transitionOutDuration` |               Integer               |                                   Specifies the duration in ticks that skybox will fade in when valid conditions are changed. The value must be within 1 and 8760000 (365 days * 24000 ticks).                                   |        :x:         | 20                                           |
-|       `changeFog`       |               Boolean               |                                                                                    Specifies whether the skybox should change the fog color.                                                                                     |        :x:         | `false`                                      |
-|   `changeFogDensity`    |               Boolean               |                                                                                   Specifies whether the skybox should change the fog density.                                                                                    |        :x:         | `false`                                      |
-|       `fogColors`       |     [RGBA Object](#rgba-object)     |                                                             Specifies the colors to be used for rendering fog. The alpha channel is used to modify the fog density.                                                              |        :x:         | 0 for each value                             |
+|          `fog`          |      [Fog Object](#fog-object)      |                                                                                                  Specifies the fog properties.                                                                                                   |        :x:         | Default value of [Fog Object](#fog-object)   |
 |      `sunSkyTint`       |               Boolean               |                                                                            Specifies whether the skybox should disable sunrise/set sky color tinting                                                                             |        :x:         | `true`                                       |
-|      `inThickFog`       |               Boolean               |                                                                                  Specifies whether the skybox should be rendered in thick fog.                                                                                   |        :x:         | `true`                                       |
 |       `rotation`        | [Rotation object](#rotation-object) |                                                                                           Specifies the rotation angles of the skybox.                                                                                           |        :x:         | [0,0,0] for static/axis, 1 for rotationSpeed |
 
 **Example**
@@ -362,14 +360,14 @@ Specifies common properties used by all types of skyboxes.
     "transitionInDuration": 20,
     "transitionOutDuration": 20,
     "sunSkyTint": false,
-    "inThickFog": true,
-    "changeFog": true,
-    "changeFogDensity": true,
-    "fogColors": {
+    "fog": {
+        "modifyColors": true,
         "red": 0.2,
         "green": 0.9,
         "blue": 0.6,
-        "alpha": 1.0
+        "modifyDensity": true,
+        "density": 1.0,
+        "showInDenseFog": true
     },
     "rotation": {
         "static": [
@@ -736,6 +734,36 @@ in-game day.
 }
 ```
 
+### Fog Object
+
+Specifies fog properties for a skybox
+
+**Specification**
+
+|       Name       | Datatype |                                Description                                 | Required | Default value |
+|:----------------:|:--------:|:--------------------------------------------------------------------------:|:--------:|:-------------:|
+|  `modifyColors`  | Boolean  |                  Whether we should modify the fog colors                   |   :x:    |    `false`    |
+|      `red`       |  Float   |                Specifies the red component of the fog color                |   :x:    |      `0`      |
+|     `green`      |  Float   |               Specifies the green component of the fog color               |   :x:    |      `0`      |
+|      `blue`      |  Float   |               Specifies the blue component of the fog color                |   :x:    |      `0`      |
+| `modifyDensity`  | Boolean  |                  Whether we should modify the fog density                  |   :x:    |    `false`    |
+|    `density`     |  Float   |                 Specifies the density component of the fog                 |   :x:    |      `0`      |
+| `showInDenseFog` | Boolean  | Whether the skybox will display in dense fog (ex. Nether and boss overlay) |   :x:    |    `true`     |
+
+**Example**
+
+```json
+{
+    "modifyColors": true,
+    "red": 1.0,
+    "green": 0.0,
+    "blue": 0.0,
+    "modifyDensity": true,
+    "density": 0.8,
+    "showInDenseFog": true
+}
+```
+
 ### Weather
 
 Specifies a kind of weather as a String.
@@ -919,14 +947,14 @@ Here is a full skybox file for example purposes:
         "transitionInDuration": 20,
         "transitionOutDuration": 20,
         "sunSkyTint": true,
-        "inThickFog": true,
-        "changeFog": true,
-        "changeFogDensity": true,
-        "fogColors": {
-            "red": 0,
-            "green": 0,
-            "blue": 0,
-            "alpha": 0
+        "fog": {
+            "modifyColors": true,
+            "red": 0.0,
+            "green": 0.0,
+            "blue": 0.0,
+            "modifyDensity": true,
+            "density": 0.0,
+            "showInDenseFog": true
         },
         "rotation": {
             "static": [
