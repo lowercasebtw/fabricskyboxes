@@ -70,7 +70,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
             axisRot.difference(mappingRot.conjugate());
             matrixStack.mulPose(axisRot);
 
-            double timeRotation = Utils.calculateRotation(this.decorations.getRotation().getSpeed(), this.decorations.getRotation().getSkyboxRotation(), world);
+            double timeRotation = Utils.calculateRotation(this.getRotation().getSpeed(), this.getRotation().getSkyboxRotation(), world);
             matrixStack.mulPose(Axis.XP.rotationDegrees((float) timeRotation));
 
             matrixStack.mulPose(axisRot.conjugate());
