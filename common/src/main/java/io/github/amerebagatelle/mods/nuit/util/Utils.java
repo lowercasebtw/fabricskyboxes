@@ -254,9 +254,9 @@ public class Utils {
     /**
      * Interpolates between two quaternion keyframes.
      *
-     * @param keyFrames The keyframe map being used.
+     * @param keyFrames    The keyframe map being used.
      * @param chosenFrames The two frames to interpolate between.
-     * @param currentTime The current time in game ticks.
+     * @param currentTime  The current time in game ticks.
      * @return The interpolated quaternion.
      */
     public static Quaternionf interpolateQuatKeyframes(Map<Long, Quaternionf> keyFrames, Tuple<Long, Long> chosenFrames, long currentTime) {
@@ -264,8 +264,8 @@ public class Utils {
             return keyFrames.values().iterator().next();
         }
 
-        var alpha = Math.abs((float) (currentTime - chosenFrames.getA()) / (chosenFrames.getB() - chosenFrames.getA()));
-        var result = new Quaternionf();
+        float alpha = Math.abs((float) (currentTime - chosenFrames.getA()) / (chosenFrames.getB() - chosenFrames.getA()));
+        Quaternionf result = new Quaternionf();
         keyFrames.get(chosenFrames.getA()).nlerp(keyFrames.get(chosenFrames.getB()), alpha, result);
         return result;
     }

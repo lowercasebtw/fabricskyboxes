@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.Int2LongArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.util.Mth;
 
 import java.util.Map;
@@ -84,5 +85,9 @@ public class CodecUtils {
 
     public static Map<Long, Float> fastUtilLong2FloatOpenHashMap() {
         return new Long2FloatOpenHashMap();
+    }
+
+    public static <T> Map<Long, T> fastUtilLong2ObjectOpenHashMap() {
+        return new Long2ObjectOpenHashMap<>();
     }
 }

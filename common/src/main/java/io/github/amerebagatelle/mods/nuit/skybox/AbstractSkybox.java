@@ -29,6 +29,7 @@ import org.joml.Quaternionf;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * All classes that implement {@link AbstractSkybox} should
@@ -88,7 +89,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
         } else {
             if (this.properties.getFade().getDuration() <= NuitClient.config().generalSettings.fadeCacheDuration) {
                 fadeAlpha = this.cachedKeyFrames.computeIfAbsent(currentTime, time -> {
-                    Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), time).orElse(new Tuple<>(0L, 0L));
+                    Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), time).orElseThrow();
                     return Utils.calculateInterpolatedAlpha(
                             time,
                             this.properties.getFade().getDuration(),
@@ -99,7 +100,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
                     );
                 });
             } else {
-                Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime).orElse(new Tuple<>(0L, 0L));
+                Tuple<Long, Long> keyFrames = Utils.findClosestKeyframes(this.properties.getFade().getKeyFrames(), currentTime).orElseThrow();
                 fadeAlpha = Utils.calculateInterpolatedAlpha(
                         currentTime,
                         this.properties.getFade().getDuration(),
@@ -252,7 +253,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
     public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
         RenderSystem.enableBlend();
-        Map<Long, Quaternionf> keyframes = this.decorations.getRotation().getKeyframes();
+        Map<Long, Quaternionf> keyframes = this.decorations.getRotation().getKeyFrames();
         ClientLevel world = Minecraft.getInstance().level;
         assert world != null;
 
@@ -261,10 +262,10 @@ public abstract class AbstractSkybox implements NuitSkybox {
         matrixStack.pushPose();
 
         // axis rotation
-        long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
-        var possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
+        long currentTime = world.getDayTime() % this.decorations.getRotation().getDuration();
+        Optional<Tuple<Long, Long>> possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
         if (possibleClosestKeyframes.isPresent()) {
-            var rot = Utils.interpolateQuatKeyframes(keyframes, possibleClosestKeyframes.get(), currentTime);
+            Quaternionf rot = Utils.interpolateQuatKeyframes(keyframes, possibleClosestKeyframes.get(), currentTime);
             matrixStack.mulPose(rot);
         }
 

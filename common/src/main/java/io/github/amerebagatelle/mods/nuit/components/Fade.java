@@ -7,36 +7,32 @@ import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 
 import java.util.Map;
 
-public class Fade {
+public class Fade extends Keyable<Float> {
     public static final Codec<Fade> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("alwaysOn", false).forGetter(Fade::isAlwaysOn),
             CodecUtils.getClampedLong(1, Long.MAX_VALUE).optionalFieldOf("duration", 24000L).forGetter(Fade::getDuration),
             CodecUtils.unboundedMapFixed(Long.class, CodecUtils.getClampedFloat(0F, 1F), Long2FloatOpenHashMap::new)
                     .optionalFieldOf("keyFrames", CodecUtils.fastUtilLong2FloatOpenHashMap())
                     .forGetter(Fade::getKeyFrames)
-    ).apply(instance, Fade::new));
+    ).apply(instance, (alwaysOn1, duration, keyFrames) -> new Fade(duration, keyFrames, alwaysOn1)));
     private final boolean alwaysOn;
-    private final long duration;
 
-    private final Map<Long, Float> keyFrames;
-
-    public Fade(boolean alwaysOn, long duration, Map<Long, Float> keyFrames) {
+    public Fade(long duration, Map<Long, Float> keyFrames, boolean alwaysOn) {
+        super(duration, keyFrames);
         this.alwaysOn = alwaysOn || keyFrames.isEmpty();
-        this.duration = duration;
-        this.keyFrames = keyFrames;
         validateKeyFrames();
     }
 
     private void validateKeyFrames() {
         // Validate that there is at least 1 keyframe if alwaysOn is false
-        if (this.keyFrames.isEmpty() && !this.alwaysOn) {
+        if (this.getKeyFrames().isEmpty() && !this.alwaysOn) {
             throw new IllegalArgumentException("Keyframes must have at least 1 entries");
         }
 
         // Validate that the keyframes are between 0 and the duration
-        for (Long keyFrame : this.keyFrames.keySet()) {
+        for (Long keyFrame : this.getKeyFrames().keySet()) {
             try {
-                if (keyFrame < 0 || keyFrame >= this.duration) {
+                if (keyFrame < 0 || keyFrame >= this.getDuration()) {
                     throw new IllegalArgumentException("Keyframes must be between 0 and duration");
                 }
             } catch (NumberFormatException e) {
@@ -49,15 +45,7 @@ public class Fade {
         return this.alwaysOn;
     }
 
-    public long getDuration() {
-        return this.duration;
-    }
-
-    public Map<Long, Float> getKeyFrames() {
-        return this.keyFrames;
-    }
-
     public static Fade of() {
-        return new Fade(true, 24000L, CodecUtils.fastUtilLong2FloatOpenHashMap());
+        return new Fade(24000L, CodecUtils.fastUtilLong2FloatOpenHashMap(), true);
     }
 }
