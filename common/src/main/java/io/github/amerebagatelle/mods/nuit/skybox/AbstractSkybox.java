@@ -29,7 +29,6 @@ import org.joml.Quaternionf;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * All classes that implement {@link AbstractSkybox} should
@@ -253,7 +252,7 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
     public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
         RenderSystem.enableBlend();
-        Map<Long, Quaternionf> keyframes = this.decorations.getRotation().getKeyFrames();
+        Map<Long, Quaternionf> keyframes = this.decorations.getRotation().getKeyframes();
         ClientLevel world = Minecraft.getInstance().level;
         assert world != null;
 
@@ -262,10 +261,10 @@ public abstract class AbstractSkybox implements NuitSkybox {
         matrixStack.pushPose();
 
         // axis rotation
-        long currentTime = world.getDayTime() % this.decorations.getRotation().getDuration();
-        Optional<Tuple<Long, Long>> possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
+        long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
+        var possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
         if (possibleClosestKeyframes.isPresent()) {
-            Quaternionf rot = Utils.interpolateQuatKeyframes(keyframes, possibleClosestKeyframes.get(), currentTime);
+            var rot = Utils.interpolateQuatKeyframes(keyframes, possibleClosestKeyframes.get(), currentTime);
             matrixStack.mulPose(rot);
         }
 

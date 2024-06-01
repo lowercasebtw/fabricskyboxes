@@ -264,8 +264,8 @@ public class Utils {
             return keyFrames.values().iterator().next();
         }
 
-        float alpha = Math.abs((float) (currentTime - chosenFrames.getA()) / (chosenFrames.getB() - chosenFrames.getA()));
-        Quaternionf result = new Quaternionf();
+        var alpha = Math.abs((float) (currentTime - chosenFrames.getA()) / (chosenFrames.getB() - chosenFrames.getA()));
+        var result = new Quaternionf();
         keyFrames.get(chosenFrames.getA()).nlerp(keyFrames.get(chosenFrames.getB()), alpha, result);
         return result;
     }
