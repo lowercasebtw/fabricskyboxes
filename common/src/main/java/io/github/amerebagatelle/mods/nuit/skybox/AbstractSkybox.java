@@ -2,6 +2,7 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Axis;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
@@ -252,21 +253,37 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
     public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
         RenderSystem.enableBlend();
-        Map<Long, Quaternionf> keyframes = this.decorations.getRotation().getKeyframes();
-        ClientLevel world = Minecraft.getInstance().level;
+        var mappingFrames = this.decorations.getRotation().getMapping();
+        var axisFrames = this.decorations.getRotation().getAxis();
+        var world = Minecraft.getInstance().level;
         assert world != null;
+        long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
 
         // Custom Blender
         this.decorations.getBlend().applyBlendFunc(alpha);
         matrixStack.pushPose();
 
-        // axis rotation
-        long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
-        var possibleClosestKeyframes = Utils.findClosestKeyframes(keyframes, currentTime);
-        if (possibleClosestKeyframes.isPresent()) {
-            var rot = Utils.interpolateQuatKeyframes(keyframes, possibleClosestKeyframes.get(), currentTime);
-            matrixStack.mulPose(rot);
+        // static
+        var possibleMappingKeyframes = Utils.findClosestKeyframes(mappingFrames, currentTime);
+        Quaternionf mappingRot = new Quaternionf();
+        if (possibleMappingKeyframes.isPresent()) {
+            mappingRot.set(Utils.interpolateQuatKeyframes(mappingFrames, possibleMappingKeyframes.get(), currentTime));
+            matrixStack.mulPose(mappingRot);
         }
+
+        var possibleAxisKeyframes = Utils.findClosestKeyframes(axisFrames, currentTime);
+        Quaternionf axisRot = new Quaternionf();
+        if (possibleAxisKeyframes.isPresent()) {
+            axisRot.set(Utils.interpolateQuatKeyframes(axisFrames, possibleAxisKeyframes.get(), currentTime));
+            axisRot.difference(mappingRot.conjugate());
+            matrixStack.mulPose(axisRot);
+
+            double timeRotation = Utils.calculateRotation(this.decorations.getRotation().getSpeed(), this.decorations.getRotation().getSkyboxRotation(), world);
+            matrixStack.mulPose(Axis.XP.rotationDegrees((float) timeRotation));
+
+            matrixStack.mulPose(axisRot.conjugate());
+        }
+
 
         // Iris Compat
         //matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));

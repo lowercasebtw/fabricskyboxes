@@ -105,14 +105,13 @@ public class Utils {
      * Calculates the rotation in degrees for skybox rotations
      *
      * @param rotationSpeed    Rotation speed
-     * @param timeShift        Time shift (by default 0, OptiFine starts at 18000)
      * @param isSkyboxRotation Whether it is a skybox rotation or decoration rotation
      * @param world            Client world
      * @return Rotation in degrees
      */
-    public static double calculateRotation(double rotationSpeed, int timeShift, boolean isSkyboxRotation, ClientLevel world) {
+    public static double calculateRotation(double rotationSpeed, boolean isSkyboxRotation, ClientLevel world) {
         if (rotationSpeed != 0F) {
-            long timeOfDay = world.getDayTime() + timeShift;
+            long timeOfDay = world.getDayTime();
             double rotationFraction = timeOfDay / (24000.0D / rotationSpeed);
             double skyAngle = Mth.positiveModulo(rotationFraction, 1);
             if (isSkyboxRotation) {
