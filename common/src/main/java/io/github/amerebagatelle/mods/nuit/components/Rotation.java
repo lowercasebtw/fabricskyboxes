@@ -1,13 +1,17 @@
 package io.github.amerebagatelle.mods.nuit.components;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
+import io.github.amerebagatelle.mods.nuit.util.Utils;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.client.multiplayer.ClientLevel;
 import org.joml.Quaternionf;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Rotation {
@@ -19,26 +23,49 @@ public class Rotation {
     }, (vec) -> ImmutableList.of(vec.x(), vec.y(), vec.z()));
     public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("skyboxRotation", true).forGetter(Rotation::getSkyboxRotation),
-            CodecUtils.unboundedMapFixed(Long.class, QUAT_FROM_VEC_3_F, HashMap::new)
-                    .optionalFieldOf("mapping", Map.of())
+            CodecUtils.unboundedMapFixed(Long.class, QUAT_FROM_VEC_3_F, Long2ObjectOpenHashMap::new)
+                    .optionalFieldOf("mapping", CodecUtils.fastUtilLong2ObjectOpenHashMap())
                     .forGetter(Rotation::getMapping),
-            CodecUtils.unboundedMapFixed(Long.class, QUAT_FROM_VEC_3_F, HashMap::new)
-                    .optionalFieldOf("axis", Map.of())
+            CodecUtils.unboundedMapFixed(Long.class, QUAT_FROM_VEC_3_F, Long2ObjectOpenHashMap::new)
+                    .optionalFieldOf("axis", CodecUtils.fastUtilLong2ObjectOpenHashMap())
                     .forGetter(Rotation::getAxis),
-            Codec.LONG.optionalFieldOf("duration", 24000L).forGetter(Rotation::getRotationDuration),
+            Codec.LONG.optionalFieldOf("duration", 24000L).forGetter(Rotation::getDuration),
             Codec.FLOAT.optionalFieldOf("speed", 1f).forGetter(Rotation::getSpeed)
     ).apply(instance, Rotation::new));
     private final boolean skyboxRotation;
     private final Map<Long, Quaternionf> mapping, axis;
-    private final long rotationDuration;
+    private final long duration;
     private final float speed;
 
-    public Rotation(boolean skyboxRotation, Map<Long, Quaternionf> mapping, Map<Long, Quaternionf> axis, long rotationDuration, float speed) {
+    public Rotation(boolean skyboxRotation, Map<Long, Quaternionf> mapping, Map<Long, Quaternionf> axis, long duration, float speed) {
         this.skyboxRotation = skyboxRotation;
         this.mapping = mapping;
         this.axis = axis;
-        this.rotationDuration = rotationDuration;
+        this.duration = duration;
         this.speed = speed;
+    }
+
+    public void rotateStack(PoseStack matrixStack, long currentTime, ClientLevel world) {
+        // static
+        var possibleMappingKeyframes = Utils.findClosestKeyframes(mapping, currentTime);
+        Quaternionf mappingRot = new Quaternionf();
+        if (possibleMappingKeyframes.isPresent()) {
+            mappingRot.set(Utils.interpolateQuatKeyframes(mapping, possibleMappingKeyframes.get(), currentTime));
+            matrixStack.mulPose(mappingRot);
+        }
+
+        var possibleAxisKeyframes = Utils.findClosestKeyframes(axis, currentTime);
+        Quaternionf axisRot = new Quaternionf();
+        if (possibleAxisKeyframes.isPresent()) {
+            axisRot.set(Utils.interpolateQuatKeyframes(axis, possibleAxisKeyframes.get(), currentTime));
+            axisRot.difference(mappingRot.conjugate());
+            matrixStack.mulPose(axisRot);
+
+            double timeRotation = Utils.calculateRotation(speed, skyboxRotation, world);
+            matrixStack.mulPose(Axis.XP.rotationDegrees((float) timeRotation));
+
+            matrixStack.mulPose(axisRot.conjugate());
+        }
     }
 
     public boolean getSkyboxRotation() {
@@ -57,8 +84,8 @@ public class Rotation {
         return this.speed;
     }
 
-    public long getRotationDuration() {
-        return rotationDuration;
+    public long getDuration() {
+        return duration;
     }
 
     public static Rotation of() {
@@ -69,4 +96,3 @@ public class Rotation {
         return new Rotation(false, Map.of(0L, new Quaternionf()), Map.of(), 24000L, 1f);
     }
 }
-

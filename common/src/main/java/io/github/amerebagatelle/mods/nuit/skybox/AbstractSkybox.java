@@ -2,7 +2,6 @@ package io.github.amerebagatelle.mods.nuit.skybox;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Axis;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
@@ -26,7 +25,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.FogType;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 import java.util.Map;
 import java.util.Objects;
@@ -253,37 +251,16 @@ public abstract class AbstractSkybox implements NuitSkybox {
 
     public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
         RenderSystem.enableBlend();
-        var mappingFrames = this.decorations.getRotation().getMapping();
-        var axisFrames = this.decorations.getRotation().getAxis();
         var world = Minecraft.getInstance().level;
         assert world != null;
-        long currentTime = world.getDayTime() % this.decorations.getRotation().getRotationDuration();
+        long currentTime = world.getDayTime() % this.decorations.getRotation().getDuration();
 
         // Custom Blender
         this.decorations.getBlend().applyBlendFunc(alpha);
         matrixStack.pushPose();
 
         // static
-        var possibleMappingKeyframes = Utils.findClosestKeyframes(mappingFrames, currentTime);
-        Quaternionf mappingRot = new Quaternionf();
-        if (possibleMappingKeyframes.isPresent()) {
-            mappingRot.set(Utils.interpolateQuatKeyframes(mappingFrames, possibleMappingKeyframes.get(), currentTime));
-            matrixStack.mulPose(mappingRot);
-        }
-
-        var possibleAxisKeyframes = Utils.findClosestKeyframes(axisFrames, currentTime);
-        Quaternionf axisRot = new Quaternionf();
-        if (possibleAxisKeyframes.isPresent()) {
-            axisRot.set(Utils.interpolateQuatKeyframes(axisFrames, possibleAxisKeyframes.get(), currentTime));
-            axisRot.difference(mappingRot.conjugate());
-            matrixStack.mulPose(axisRot);
-
-            double timeRotation = Utils.calculateRotation(this.decorations.getRotation().getSpeed(), this.decorations.getRotation().getSkyboxRotation(), world);
-            matrixStack.mulPose(Axis.XP.rotationDegrees((float) timeRotation));
-
-            matrixStack.mulPose(axisRot.conjugate());
-        }
-
+        this.decorations.getRotation().rotateStack(matrixStack, currentTime, world);
 
         // Iris Compat
         //matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));
