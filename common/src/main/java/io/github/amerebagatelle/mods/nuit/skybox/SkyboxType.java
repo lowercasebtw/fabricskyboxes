@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.mojang.serialization.Codec;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
+import io.github.amerebagatelle.mods.nuit.skybox.decorations.DecorationBox;
 import io.github.amerebagatelle.mods.nuit.skybox.textured.MultiTexturedSkybox;
 import io.github.amerebagatelle.mods.nuit.skybox.textured.SquareTexturedSkybox;
 import io.github.amerebagatelle.mods.nuit.skybox.vanilla.EndSkybox;
@@ -28,6 +29,8 @@ public class SkyboxType<T extends Skybox> {
     public static final SkyboxType<SquareTexturedSkybox> SQUARE_TEXTURED_SKYBOX;
     public static final SkyboxType<MultiTexturedSkybox> MULTI_TEXTURED_SKYBOX;
 
+    public static final SkyboxType<DecorationBox> DECORATION_BOX;
+
     static {
         SKYBOX_ID_CODEC = Codec.STRING.xmap((s) -> {
             if (!s.contains(":")) {
@@ -48,6 +51,8 @@ public class SkyboxType<T extends Skybox> {
         MONO_COLOR_SKYBOX = new SkyboxType<>("monocolor", 1, MonoColorSkybox.CODEC);
         SQUARE_TEXTURED_SKYBOX = new SkyboxType<>("square-textured", 1, SquareTexturedSkybox.CODEC);
         MULTI_TEXTURED_SKYBOX = new SkyboxType<>("multi-textured", 1, MultiTexturedSkybox.CODEC);
+
+        DECORATION_BOX = new SkyboxType<>("decorations", 1, DecorationBox.CODEC);
     }
 
     private final BiMap<Integer, Codec<T>> codecBiMap;
@@ -68,6 +73,7 @@ public class SkyboxType<T extends Skybox> {
         function.accept(MONO_COLOR_SKYBOX);
         function.accept(SQUARE_TEXTURED_SKYBOX);
         function.accept(MULTI_TEXTURED_SKYBOX);
+        function.accept(DECORATION_BOX);
     }
 
     public String getName() {

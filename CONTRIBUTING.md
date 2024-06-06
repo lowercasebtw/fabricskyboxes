@@ -25,7 +25,3 @@ create a separate request for it. This helps the maintainers to review your code
 
 We value your contributions and appreciate your efforts in helping us maintain a high-quality codebase. Thank you for
 contributing to our project!
-
-## Testing
-
-See [testing.md](docs/testing.md).

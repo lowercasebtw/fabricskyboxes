@@ -45,7 +45,8 @@ public class Rotation {
         this.speed = speed;
     }
 
-    public void rotateStack(PoseStack matrixStack, long currentTime, ClientLevel world) {
+    public void rotateStack(PoseStack matrixStack, ClientLevel world) {
+        long currentTime = world.getDayTime() % duration;
         // static
         var possibleMappingKeyframes = Utils.findClosestKeyframes(mapping, currentTime);
         Quaternionf mappingRot = new Quaternionf();

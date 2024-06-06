@@ -1,22 +1,16 @@
 package io.github.amerebagatelle.mods.nuit.skybox;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
-import io.github.amerebagatelle.mods.nuit.components.Decorations;
 import io.github.amerebagatelle.mods.nuit.components.Properties;
 import io.github.amerebagatelle.mods.nuit.components.Weather;
-import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
@@ -24,7 +18,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.FogType;
-import org.joml.Matrix4f;
 
 import java.util.Map;
 import java.util.Objects;
@@ -43,7 +36,6 @@ public abstract class AbstractSkybox implements NuitSkybox {
     public transient float alpha;
     protected Properties properties = Properties.of();
     protected Conditions conditions = Conditions.of();
-    protected Decorations decorations = Decorations.of();
 
     protected boolean unexpectedConditionTransition = false;
     protected long lastTime = -2;
@@ -59,10 +51,9 @@ public abstract class AbstractSkybox implements NuitSkybox {
     protected AbstractSkybox() {
     }
 
-    protected AbstractSkybox(Properties properties, Conditions conditions, Decorations decorations) {
+    protected AbstractSkybox(Properties properties, Conditions conditions) {
         this.properties = properties;
         this.conditions = conditions;
-        this.decorations = decorations;
     }
 
     @Override
@@ -247,77 +238,6 @@ public abstract class AbstractSkybox implements NuitSkybox {
             return true;
         }
         return (this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.CLEAR)) && !world.isRaining() && !world.isThundering();
-    }
-
-    public void renderDecorations(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, BufferBuilder bufferBuilder, float alpha, Runnable fogCallback) {
-        RenderSystem.enableBlend();
-        var world = Minecraft.getInstance().level;
-        assert world != null;
-        long currentTime = world.getDayTime() % this.decorations.getRotation().getDuration();
-
-        // Custom Blender
-        this.decorations.getBlend().applyBlendFunc(alpha);
-        matrixStack.pushPose();
-
-        // static
-        this.decorations.getRotation().rotateStack(matrixStack, currentTime, world);
-
-        // Iris Compat
-        //matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));
-        //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(world.getSkyAngle(tickDelta) * 360.0F * this.decorations.getRotation().getRotationSpeed()));
-
-        Matrix4f matrix4f2 = matrixStack.last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        // Sun
-        if (this.decorations.isSunEnabled()) {
-            RenderSystem.setShaderTexture(0, this.decorations.getSunTexture());
-            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-            bufferBuilder.vertex(matrix4f2, -30.0F, 100.0F, -30.0F).uv(0.0F, 0.0F).endVertex();
-            bufferBuilder.vertex(matrix4f2, 30.0F, 100.0F, -30.0F).uv(1.0F, 0.0F).endVertex();
-            bufferBuilder.vertex(matrix4f2, 30.0F, 100.0F, 30.0F).uv(1.0F, 1.0F).endVertex();
-            bufferBuilder.vertex(matrix4f2, -30.0F, 100.0F, 30.0F).uv(0.0F, 1.0F).endVertex();
-            BufferUploader.drawWithShader(bufferBuilder.end());
-        }
-        // Moon
-        if (this.decorations.isMoonEnabled()) {
-            RenderSystem.setShaderTexture(0, this.decorations.getMoonTexture());
-            int moonPhase = world.getMoonPhase();
-            int xCoord = moonPhase % 4;
-            int yCoord = moonPhase / 4 % 2;
-            float startX = xCoord / 4.0F;
-            float startY = yCoord / 2.0F;
-            float endX = (xCoord + 1) / 4.0F;
-            float endY = (yCoord + 1) / 2.0F;
-            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-            bufferBuilder.vertex(matrix4f2, -20.0F, -100.0F, 20.0F).uv(endX, endY).endVertex();
-            bufferBuilder.vertex(matrix4f2, 20.0F, -100.0F, 20.0F).uv(startX, endY).endVertex();
-            bufferBuilder.vertex(matrix4f2, 20.0F, -100.0F, -20.0F).uv(startX, startY).endVertex();
-            bufferBuilder.vertex(matrix4f2, -20.0F, -100.0F, -20.0F).uv(endX, startY).endVertex();
-            BufferUploader.drawWithShader(bufferBuilder.end());
-        }
-        // Stars
-        if (this.decorations.isStarsEnabled()) {
-            float i = 1.0F - world.getRainLevel(tickDelta);
-            float brightness = world.getStarBrightness(tickDelta) * i;
-            if (brightness > 0.0F) {
-                RenderSystem.setShaderColor(brightness, brightness, brightness, brightness);
-                FogRenderer.setupNoFog();
-                worldRendererAccess.getStarsBuffer().bind();
-                worldRendererAccess.getStarsBuffer().drawWithShader(matrixStack.last().pose(), projectionMatrix, GameRenderer.getPositionShader());
-                VertexBuffer.unbind();
-                fogCallback.run();
-            }
-        }
-        matrixStack.popPose();
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
-    }
-
-    @Override
-    public Decorations getDecorations() {
-        return this.decorations;
     }
 
     @Override

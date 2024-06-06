@@ -5,7 +5,10 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.amerebagatelle.mods.nuit.components.*;
+import io.github.amerebagatelle.mods.nuit.components.Blend;
+import io.github.amerebagatelle.mods.nuit.components.Conditions;
+import io.github.amerebagatelle.mods.nuit.components.Properties;
+import io.github.amerebagatelle.mods.nuit.components.RGBA;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
@@ -15,15 +18,14 @@ public class MonoColorSkybox extends AbstractSkybox {
     public static Codec<MonoColorSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions),
-            Decorations.CODEC.optionalFieldOf("decorations", Decorations.of()).forGetter(AbstractSkybox::getDecorations),
             RGBA.CODEC.optionalFieldOf("color", RGBA.of()).forGetter(MonoColorSkybox::getColor),
             Blend.CODEC.optionalFieldOf("blend", Blend.normal()).forGetter(MonoColorSkybox::getBlend)
     ).apply(instance, MonoColorSkybox::new));
     public RGBA color;
     public Blend blend;
 
-    public MonoColorSkybox(Properties properties, Conditions conditions, Decorations decorations, RGBA color, Blend blend) {
-        super(properties, conditions, decorations);
+    public MonoColorSkybox(Properties properties, Conditions conditions, RGBA color, Blend blend) {
+        super(properties, conditions);
         this.color = color;
         this.blend = blend;
     }
@@ -63,8 +65,6 @@ public class MonoColorSkybox extends AbstractSkybox {
                 matrices.popPose();
             }
             BufferUploader.drawWithShader(bufferBuilder.end());
-
-            this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);

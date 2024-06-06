@@ -8,10 +8,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
-import io.github.amerebagatelle.mods.nuit.components.Decorations;
 import io.github.amerebagatelle.mods.nuit.components.Properties;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
+import io.github.amerebagatelle.mods.nuit.skybox.decorations.DecorationBox;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -25,12 +25,11 @@ import org.joml.Matrix4f;
 public class OverworldSkybox extends AbstractSkybox {
     public static Codec<OverworldSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
-            Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions),
-            Decorations.CODEC.optionalFieldOf("decorations", Decorations.of()).forGetter(AbstractSkybox::getDecorations)
+            Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions)
     ).apply(instance, OverworldSkybox::new));
 
-    public OverworldSkybox(Properties properties, Conditions conditions, Decorations decorations) {
-        super(properties, conditions, decorations);
+    public OverworldSkybox(Properties properties, Conditions conditions) {
+        super(properties, conditions);
     }
 
     @Override
@@ -61,7 +60,7 @@ public class OverworldSkybox extends AbstractSkybox {
         float skyAngle = world.getTimeOfDay(tickDelta);
         float skyAngleRadian = world.getSunAngle(tickDelta);
 
-        if (SkyboxManager.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorationBox && decorationBox.getProperties().getRotation().getSkyboxRotation())) {
             skyAngle = Mth.positiveModulo(world.getDayTime() / 24000F + 0.75F, 1);
             skyAngleRadian = skyAngle * (float) (Math.PI * 2);
         }
@@ -92,9 +91,6 @@ public class OverworldSkybox extends AbstractSkybox {
             BufferUploader.drawWithShader(bufferBuilder.end());
             matrices.popPose();
         }
-
-
-        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
         // Dark Sky
         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);

@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
-import io.github.amerebagatelle.mods.nuit.components.Decorations;
 import io.github.amerebagatelle.mods.nuit.components.Properties;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
@@ -18,12 +17,11 @@ import org.joml.Matrix4f;
 public class EndSkybox extends AbstractSkybox {
     public static Codec<EndSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
-            Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions),
-            Decorations.CODEC.optionalFieldOf("decorations", Decorations.of()).forGetter(AbstractSkybox::getDecorations)
+            Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions)
     ).apply(instance, EndSkybox::new));
 
-    public EndSkybox(Properties properties, Conditions conditions, Decorations decorations) {
-        super(properties, conditions, decorations);
+    public EndSkybox(Properties properties, Conditions conditions) {
+        super(properties, conditions);
     }
 
     @Override
@@ -69,8 +67,6 @@ public class EndSkybox extends AbstractSkybox {
             matrices.popPose();
         }
         BufferUploader.drawWithShader(bufferBuilder.end());
-
-        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();

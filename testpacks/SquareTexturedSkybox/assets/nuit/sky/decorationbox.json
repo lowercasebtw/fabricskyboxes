@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
-  "type": "square-textured",
+  "type": "decorations",
   "properties": {
+    "layer": 1,
     "fade": {
       "alwaysOn": true,
       "keyFrames": {
@@ -27,7 +28,7 @@
       }
     }
   },
-  "conditions": {
-  },
-  "texture": "nuit:sky/test_texture.png"
+  "decorations": {
+    "showSun": true
+  }
 }

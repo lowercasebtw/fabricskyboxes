@@ -5,7 +5,7 @@ import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.NuitSkybox;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.components.RGB;
-import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
+import io.github.amerebagatelle.mods.nuit.skybox.decorations.DecorationBox;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -55,7 +55,7 @@ public class MixinFogRenderer {
 
     @Redirect(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getTimeOfDay(F)F"))
     private static float nuit$redirectSkyAngle(ClientLevel instance, float v) {
-        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().getRotation().getSkyboxRotation())) {
             return Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
         }
         return instance.getTimeOfDay(v);
@@ -63,7 +63,7 @@ public class MixinFogRenderer {
 
     @Redirect(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getSunAngle(F)F"))
     private static float nuit$redirectSkyAngleRadian(ClientLevel instance, float v) {
-        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof AbstractSkybox abstractSkybox && abstractSkybox.getDecorations().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().getRotation().getSkyboxRotation())) {
             float skyAngle = Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
             return skyAngle * (float) (Math.PI * 2);
         }

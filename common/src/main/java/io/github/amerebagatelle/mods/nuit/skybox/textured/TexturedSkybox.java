@@ -1,11 +1,12 @@
 package io.github.amerebagatelle.mods.nuit.skybox.textured;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.RotatableSkybox;
-import io.github.amerebagatelle.mods.nuit.components.*;
+import io.github.amerebagatelle.mods.nuit.components.Blend;
+import io.github.amerebagatelle.mods.nuit.components.Conditions;
+import io.github.amerebagatelle.mods.nuit.components.Properties;
+import io.github.amerebagatelle.mods.nuit.components.Rotation;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
 import net.minecraft.client.Camera;
@@ -23,8 +24,8 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
     protected TexturedSkybox() {
     }
 
-    protected TexturedSkybox(Properties properties, Conditions conditions, Decorations decorations, Blend blend) {
-        super(properties, conditions, decorations);
+    protected TexturedSkybox(Properties properties, Conditions conditions, Blend blend) {
+        super(properties, conditions);
         this.blend = blend;
         this.rotation = properties.getRotation();
     }
@@ -45,19 +46,14 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
         this.blend.applyBlendFunc(this.alpha);
 
         ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
-        long currentTime = world.getDayTime() % this.rotation.getDuration();
 
         matrixStack.pushPose();
 
         // static
-        this.rotation.rotateStack(matrixStack, currentTime, world);
+        this.rotation.rotateStack(matrixStack, world);
 
         this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, thickFog, fogCallback);
         matrixStack.popPose();
-
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-
-        this.renderDecorations(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();

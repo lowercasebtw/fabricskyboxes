@@ -19,7 +19,6 @@ public class MultiTexturedSkybox extends TexturedSkybox {
     public static Codec<MultiTexturedSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions),
-            Decorations.CODEC.optionalFieldOf("decorations", Decorations.of()).forGetter(AbstractSkybox::getDecorations),
             Blend.CODEC.optionalFieldOf("blend", Blend.normal()).forGetter(TexturedSkybox::getBlend),
             AnimatableTexture.CODEC.listOf().optionalFieldOf("animatableTextures", new ArrayList<>()).forGetter(MultiTexturedSkybox::getAnimations)
     ).apply(instance, MultiTexturedSkybox::new));
@@ -28,8 +27,8 @@ public class MultiTexturedSkybox extends TexturedSkybox {
     private final float quadSize = 100F;
     private final UVRange quad = new UVRange(-this.quadSize, -this.quadSize, this.quadSize, this.quadSize);
 
-    public MultiTexturedSkybox(Properties properties, Conditions conditions, Decorations decorations, Blend blend, List<AnimatableTexture> animatableTextures) {
-        super(properties, conditions, decorations, blend);
+    public MultiTexturedSkybox(Properties properties, Conditions conditions, Blend blend, List<AnimatableTexture> animatableTextures) {
+        super(properties, conditions, blend);
         this.animatableTextures = animatableTextures;
     }
 
