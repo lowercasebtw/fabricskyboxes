@@ -42,7 +42,7 @@ public class MixinFogRenderer {
         }
     }
 
-    @Redirect(method = "levelFogColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogColor(FFF)V"), remap = false)
+    @Redirect(method = "levelFogColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogColor(FFF)V"))
     private static void redirectSetShaderFogColor(float red, float green, float blue) {
         float initialFogDensity = 1.0F; // Vanilla's default is 1F
         float fogDensity = Utils.alphaBlendFogDensity(SkyboxManager.getInstance().getActiveSkyboxes(), initialFogDensity);
