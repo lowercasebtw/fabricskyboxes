@@ -24,7 +24,7 @@ import org.joml.Matrix4f;
 
 public class OverworldSkybox extends AbstractSkybox {
     public static Codec<OverworldSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
+            Properties.CODEC.optionalFieldOf("properties", Properties.of()).forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions)
     ).apply(instance, OverworldSkybox::new));
 

@@ -16,7 +16,7 @@ import org.joml.Matrix4f;
 
 public class MonoColorSkybox extends AbstractSkybox {
     public static Codec<MonoColorSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
+            Properties.CODEC.optionalFieldOf("properties", Properties.of()).forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions),
             RGBA.CODEC.optionalFieldOf("color", RGBA.of()).forGetter(MonoColorSkybox::getColor),
             Blend.CODEC.optionalFieldOf("blend", Blend.normal()).forGetter(MonoColorSkybox::getBlend)

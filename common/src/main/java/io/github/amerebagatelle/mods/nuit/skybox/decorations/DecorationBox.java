@@ -6,7 +6,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.components.Blend;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
-import io.github.amerebagatelle.mods.nuit.components.Decorations;
 import io.github.amerebagatelle.mods.nuit.components.Properties;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
@@ -15,26 +14,35 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 public class DecorationBox extends AbstractSkybox {
     public static Codec<DecorationBox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Properties.CODEC.fieldOf("properties").forGetter(DecorationBox::getProperties),
+            Properties.CODEC.optionalFieldOf("properties", Properties.decorations()).forGetter(DecorationBox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(DecorationBox::getConditions),
-            Decorations.CODEC.fieldOf("decorations").forGetter(DecorationBox::getDecorations),
+            ResourceLocation.CODEC.optionalFieldOf("sun", LevelRendererAccessor.getSun()).forGetter(DecorationBox::getSunTexture),
+            ResourceLocation.CODEC.optionalFieldOf("moon", LevelRendererAccessor.getMoonPhases()).forGetter(DecorationBox::getMoonTexture),
+            Codec.BOOL.optionalFieldOf("showSun", false).forGetter(DecorationBox::isSunEnabled),
+            Codec.BOOL.optionalFieldOf("showMoon", false).forGetter(DecorationBox::isMoonEnabled),
+            Codec.BOOL.optionalFieldOf("showStars", false).forGetter(DecorationBox::isStarsEnabled),
             Blend.CODEC.optionalFieldOf("blend", Blend.decorations()).forGetter(DecorationBox::getBlend)
     ).apply(instance, DecorationBox::new));
+    private final ResourceLocation sunTexture;
+    private final ResourceLocation moonTexture;
+    private final boolean sunEnabled;
+    private final boolean moonEnabled;
+    private final boolean starsEnabled;
+    private final Blend blend;
 
-    private Decorations decorations;
-    private Blend blend;
-
-    protected DecorationBox() {
-    }
-
-    public DecorationBox(Properties properties, Conditions conditions, Decorations decorations, Blend blend) {
+    public DecorationBox(Properties properties, Conditions conditions, ResourceLocation sun, ResourceLocation moon, boolean sunEnabled, boolean moonEnabled, boolean starsEnabled, Blend blend) {
         this.properties = properties;
         this.conditions = conditions;
-        this.decorations = decorations;
+        this.sunTexture = sun;
+        this.moonTexture = moon;
+        this.sunEnabled = sunEnabled;
+        this.moonEnabled = moonEnabled;
+        this.starsEnabled = starsEnabled;
         this.blend = blend;
     }
 
@@ -59,15 +67,15 @@ public class DecorationBox extends AbstractSkybox {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         // Sun
-        if (this.decorations.isSunEnabled()) {
+        if (this.sunEnabled) {
             this.renderSun(bufferBuilder, matrix4f2);
         }
         // Moon
-        if (this.decorations.isMoonEnabled()) {
+        if (this.moonEnabled) {
             this.renderMoon(bufferBuilder, matrix4f2);
         }
         // Stars
-        if (this.decorations.isStarsEnabled()) {
+        if (this.starsEnabled) {
             this.renderStars(levelRendererAccessor, tickDelta, poseStack, matrix4f);
         }
         poseStack.popPose();
@@ -78,7 +86,7 @@ public class DecorationBox extends AbstractSkybox {
     }
 
     public void renderSun(BufferBuilder bufferBuilder, Matrix4f matrix4f) {
-        RenderSystem.setShaderTexture(0, this.decorations.getSunTexture());
+        RenderSystem.setShaderTexture(0, this.sunTexture);
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferBuilder.vertex(matrix4f, -30.0F, 100.0F, -30.0F).uv(0.0F, 0.0F).endVertex();
         bufferBuilder.vertex(matrix4f, 30.0F, 100.0F, -30.0F).uv(1.0F, 0.0F).endVertex();
@@ -88,7 +96,7 @@ public class DecorationBox extends AbstractSkybox {
     }
 
     public void renderMoon(BufferBuilder bufferBuilder, Matrix4f matrix4f) {
-        RenderSystem.setShaderTexture(0, this.decorations.getMoonTexture());
+        RenderSystem.setShaderTexture(0, this.moonTexture);
         int moonPhase = Minecraft.getInstance().level.getMoonPhase();
         int xCoord = moonPhase % 4;
         int yCoord = moonPhase / 4 % 2;
@@ -117,8 +125,25 @@ public class DecorationBox extends AbstractSkybox {
         }
     }
 
-    public Decorations getDecorations() {
-        return decorations;
+
+    public ResourceLocation getSunTexture() {
+        return this.sunTexture;
+    }
+
+    public ResourceLocation getMoonTexture() {
+        return this.moonTexture;
+    }
+
+    public boolean isSunEnabled() {
+        return this.sunEnabled;
+    }
+
+    public boolean isMoonEnabled() {
+        return this.moonEnabled;
+    }
+
+    public boolean isStarsEnabled() {
+        return this.starsEnabled;
     }
 
     public Blend getBlend() {

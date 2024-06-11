@@ -70,4 +70,8 @@ public class Properties {
     public static Properties of() {
         return new Properties(0, Fade.of(), 20, 20, Fog.of(), true, Rotation.of());
     }
+
+    public static Properties decorations() {
+        return new Properties(0, Fade.of(), 20, 20, Fog.of(), true, Rotation.decorations());
+    }
 }

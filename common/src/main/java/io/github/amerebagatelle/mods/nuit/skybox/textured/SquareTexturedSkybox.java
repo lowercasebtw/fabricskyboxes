@@ -14,7 +14,7 @@ import org.joml.Matrix4f;
 
 public class SquareTexturedSkybox extends TexturedSkybox {
     public static Codec<SquareTexturedSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Properties.CODEC.fieldOf("properties").forGetter(AbstractSkybox::getProperties),
+            Properties.CODEC.optionalFieldOf("properties", Properties.of()).forGetter(AbstractSkybox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(AbstractSkybox::getConditions),
             Blend.CODEC.optionalFieldOf("blend", Blend.normal()).forGetter(TexturedSkybox::getBlend),
             Texture.CODEC.fieldOf("texture").forGetter(SquareTexturedSkybox::getTexture)
