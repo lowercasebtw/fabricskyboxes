@@ -16,11 +16,11 @@ public class Condition<T> {
     }
 
     public boolean isExcludes() {
-        return excludes;
+        return this.excludes;
     }
 
     public List<T> getEntries() {
-        return entries;
+        return this.entries;
     }
 
     public static <T> Condition<T> of() {

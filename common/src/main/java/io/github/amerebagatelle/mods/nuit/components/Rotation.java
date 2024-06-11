@@ -10,9 +10,11 @@ import io.github.amerebagatelle.mods.nuit.util.CodecUtils;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.util.Tuple;
 import org.joml.Quaternionf;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class Rotation {
     private static final Codec<Quaternionf> QUAT_FROM_VEC_3_F = Codec.FLOAT.listOf().comapFlatMap((list) -> {
@@ -46,23 +48,23 @@ public class Rotation {
     }
 
     public void rotateStack(PoseStack matrixStack, ClientLevel world) {
-        long currentTime = world.getDayTime() % duration;
+        long currentTime = world.getDayTime() % this.duration;
         // static
-        var possibleMappingKeyframes = Utils.findClosestKeyframes(mapping, currentTime);
+        Optional<Tuple<Long, Long>> possibleMappingKeyframes = Utils.findClosestKeyframes(this.mapping, currentTime);
         Quaternionf mappingRot = new Quaternionf();
         if (possibleMappingKeyframes.isPresent()) {
-            mappingRot.set(Utils.interpolateQuatKeyframes(mapping, possibleMappingKeyframes.get(), currentTime));
+            mappingRot.set(Utils.interpolateQuatKeyframes(this.mapping, possibleMappingKeyframes.get(), currentTime));
             matrixStack.mulPose(mappingRot);
         }
 
-        var possibleAxisKeyframes = Utils.findClosestKeyframes(axis, currentTime);
+        Optional<Tuple<Long, Long>> possibleAxisKeyframes = Utils.findClosestKeyframes(this.axis, currentTime);
         Quaternionf axisRot = new Quaternionf();
         if (possibleAxisKeyframes.isPresent()) {
-            axisRot.set(Utils.interpolateQuatKeyframes(axis, possibleAxisKeyframes.get(), currentTime));
+            axisRot.set(Utils.interpolateQuatKeyframes(this.axis, possibleAxisKeyframes.get(), currentTime));
             axisRot.difference(mappingRot.conjugate());
             matrixStack.mulPose(axisRot);
 
-            double timeRotation = Utils.calculateRotation(speed, skyboxRotation, world);
+            double timeRotation = Utils.calculateRotation(this.speed, this.skyboxRotation, world);
             matrixStack.mulPose(Axis.XP.rotationDegrees((float) timeRotation));
 
             matrixStack.mulPose(axisRot.conjugate());
@@ -70,7 +72,7 @@ public class Rotation {
     }
 
     public boolean getSkyboxRotation() {
-        return skyboxRotation;
+        return this.skyboxRotation;
     }
 
     public Map<Long, Quaternionf> getMapping() {
@@ -86,14 +88,14 @@ public class Rotation {
     }
 
     public long getDuration() {
-        return duration;
+        return this.duration;
     }
 
     public static Rotation of() {
-        return new Rotation(true, Map.of(0L, new Quaternionf()), Map.of(), 24000L, 1f);
+        return new Rotation(true, Map.of(), Map.of(), 24000L, 1f);
     }
 
     public static Rotation decorations() {
-        return new Rotation(false, Map.of(0L, new Quaternionf()), Map.of(), 24000L, 1f);
+        return new Rotation(false, Map.of(), Map.of(), 24000L, 1f);
     }
 }

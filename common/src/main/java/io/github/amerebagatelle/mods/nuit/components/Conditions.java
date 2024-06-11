@@ -44,11 +44,11 @@ public class Conditions {
     }
 
     public Condition<ResourceLocation> getDimensions() {
-        return dimensions;
+        return this.dimensions;
     }
 
     public Condition<ResourceLocation> getEffects() {
-        return effects;
+        return this.effects;
     }
 
     public Condition<Weather> getWeathers() {

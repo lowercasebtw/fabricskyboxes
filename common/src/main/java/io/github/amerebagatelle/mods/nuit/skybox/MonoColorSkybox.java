@@ -76,6 +76,6 @@ public class MonoColorSkybox extends AbstractSkybox {
     }
 
     public Blend getBlend() {
-        return blend;
+        return this.blend;
     }
 }

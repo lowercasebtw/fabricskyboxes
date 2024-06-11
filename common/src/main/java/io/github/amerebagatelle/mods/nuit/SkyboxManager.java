@@ -95,21 +95,21 @@ public class SkyboxManager implements NuitApi {
 
     @Internal
     public void clearSkyboxes() {
-        DefaultHandler.clearConditionsExcept(permanentSkyboxMap.values());
+        DefaultHandler.clearConditionsExcept(this.permanentSkyboxMap.values());
         this.skyboxMap.clear();
         this.activeSkyboxes.clear();
     }
 
     @Internal
     public void renderSkyboxes(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
-        for (Skybox skybox : activeSkyboxes) {
+        for (Skybox skybox : this.activeSkyboxes) {
             this.currentSkybox = skybox;
             skybox.render(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, camera, thickFog, fogCallback);
         }
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
 
     public void setEnabled(boolean enabled) {
@@ -133,7 +133,7 @@ public class SkyboxManager implements NuitApi {
         this.activeSkyboxes.removeIf(skybox -> !skybox.isActive());
 
         // Add the skyboxes to a activeSkyboxes container so that they can be ordered
-        for (Skybox skybox : Iterables.concat(skyboxMap.values(), this.permanentSkyboxMap.values())) {
+        for (Skybox skybox : Iterables.concat(this.skyboxMap.values(), this.permanentSkyboxMap.values())) {
             if (!this.activeSkyboxes.contains(skybox) && skybox.isActive()) {
                 this.activeSkyboxes.add(skybox);
             }
@@ -142,6 +142,6 @@ public class SkyboxManager implements NuitApi {
     }
 
     public Map<ResourceLocation, Skybox> getSkyboxMap() {
-        return skyboxMap;
+        return this.skyboxMap;
     }
 }

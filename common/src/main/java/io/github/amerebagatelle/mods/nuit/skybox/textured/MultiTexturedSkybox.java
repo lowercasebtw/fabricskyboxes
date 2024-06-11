@@ -91,6 +91,6 @@ public class MultiTexturedSkybox extends TexturedSkybox {
     }
 
     public List<AnimatableTexture> getAnimations() {
-        return animatableTextures;
+        return this.animatableTextures;
     }
 }

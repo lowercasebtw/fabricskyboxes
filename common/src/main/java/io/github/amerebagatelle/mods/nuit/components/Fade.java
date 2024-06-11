@@ -24,7 +24,7 @@ public class Fade {
         this.alwaysOn = alwaysOn || keyFrames.isEmpty();
         this.duration = duration;
         this.keyFrames = keyFrames;
-        validateKeyFrames();
+        this.validateKeyFrames();
     }
 
     private void validateKeyFrames() {

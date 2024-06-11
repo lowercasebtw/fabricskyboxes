@@ -43,31 +43,31 @@ public class AnimatableTexture {
     }
 
     public Texture getTexture() {
-        return texture;
+        return this.texture;
     }
 
     public UVRange getUvRange() {
-        return uvRange;
+        return this.uvRange;
     }
 
     public int getGridColumns() {
-        return gridColumns;
+        return this.gridColumns;
     }
 
     public int getGridRows() {
-        return gridRows;
+        return this.gridRows;
     }
 
     public long getDuration() {
-        return duration;
+        return this.duration;
     }
 
     public boolean isInterpolate() {
-        return interpolate;
+        return this.interpolate;
     }
 
     public Map<Integer, Long> getFrameDuration() {
-        return frameDuration;
+        return this.frameDuration;
     }
 
     public void tick() {
@@ -80,7 +80,7 @@ public class AnimatableTexture {
     }
 
     public UVRange getCurrentFrame() {
-        return currentFrame;
+        return this.currentFrame;
     }
 
     private UVRange calculateNextFrameUVRange(int nextFrameIndex) {

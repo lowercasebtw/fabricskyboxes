@@ -29,19 +29,19 @@ public class Fog extends RGB {
     }
 
     public boolean isModifyColors() {
-        return modifyColors;
+        return this.modifyColors;
     }
 
     public boolean isModifyDensity() {
-        return modifyDensity;
+        return this.modifyDensity;
     }
 
     public float getDensity() {
-        return density;
+        return this.density;
     }
 
     public boolean isShowInDenseFog() {
-        return showInDenseFog;
+        return this.showInDenseFog;
     }
 
     public static Fog of() {

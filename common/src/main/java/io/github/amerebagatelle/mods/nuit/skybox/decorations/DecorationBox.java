@@ -45,7 +45,7 @@ public class DecorationBox extends AbstractSkybox {
         assert world != null;
 
         // Custom Blender
-        this.blend.applyBlendFunc(alpha);
+        this.blend.applyBlendFunc(this.alpha);
         poseStack.pushPose();
 
         // static
@@ -60,15 +60,15 @@ public class DecorationBox extends AbstractSkybox {
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         // Sun
         if (this.decorations.isSunEnabled()) {
-            renderSun(bufferBuilder, matrix4f2);
+            this.renderSun(bufferBuilder, matrix4f2);
         }
         // Moon
         if (this.decorations.isMoonEnabled()) {
-            renderMoon(bufferBuilder, matrix4f2);
+            this.renderMoon(bufferBuilder, matrix4f2);
         }
         // Stars
         if (this.decorations.isStarsEnabled()) {
-            renderStars(levelRendererAccessor, tickDelta, poseStack, matrix4f);
+            this.renderStars(levelRendererAccessor, tickDelta, poseStack, matrix4f);
         }
         poseStack.popPose();
 
@@ -122,6 +122,6 @@ public class DecorationBox extends AbstractSkybox {
     }
 
     public Blend getBlend() {
-        return blend;
+        return this.blend;
     }
 }

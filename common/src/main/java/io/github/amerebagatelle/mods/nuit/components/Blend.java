@@ -24,64 +24,64 @@ public class Blend {
 
         if (!type.isEmpty()) {
             switch (type) {
-                case "add" -> blendFunc = (alpha) -> {
+                case "add" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
                 };
-                case "subtract" -> blendFunc = (alpha) -> {
+                case "subtract" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ZERO);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(alpha, alpha, alpha, 1.0F);
                 };
-                case "multiply" -> blendFunc = (alpha) -> {
+                case "multiply" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(alpha, alpha, alpha, alpha);
                 };
-                case "screen" -> blendFunc = (alpha) -> {
+                case "screen" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(alpha, alpha, alpha, 1.0F);
                 };
-                case "replace" -> blendFunc = (alpha) -> {
+                case "replace" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
                 };
-                case "normal" -> blendFunc = (alpha) -> {
+                case "normal" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
                 };
-                case "burn" -> blendFunc = (alpha) -> {
+                case "burn" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(alpha, alpha, alpha, 1.0F);
                 };
-                case "dodge" -> blendFunc = (alpha) -> {
+                case "dodge" -> this.blendFunc = (alpha) -> {
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.ONE);
                     RenderSystem.blendEquation(Blender.Equation.ADD.value);
                     RenderSystem.setShaderColor(alpha, alpha, alpha, 1.0F);
                 };
-                case "disable" -> blendFunc = (alpha) -> {
+                case "disable" -> this.blendFunc = (alpha) -> {
                     RenderSystem.disableBlend();
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
                 };
-                case "decorations" -> blendFunc = Blender.decorations()::applyBlendFunc;
-                case "custom" -> blendFunc = this.blender::applyBlendFunc;
+                case "decorations" -> this.blendFunc = Blender.decorations()::applyBlendFunc;
+                case "custom" -> this.blendFunc = this.blender::applyBlendFunc;
                 default -> {
                     if (NuitClient.config().generalSettings.debugMode) {
                         NuitClient.getLogger().error("Blend mode is set to an invalid or unsupported value.");
                     }
-                    blendFunc = (alpha) -> {
+                    this.blendFunc = (alpha) -> {
                         RenderSystem.defaultBlendFunc();
                         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
                     };
                 }
             }
         } else {
-            blendFunc = (alpha) -> {
+            this.blendFunc = (alpha) -> {
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
             };
@@ -89,15 +89,15 @@ public class Blend {
     }
 
     public void applyBlendFunc(float alpha) {
-        blendFunc.accept(alpha);
+        this.blendFunc.accept(alpha);
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
     public Blender getBlender() {
-        return blender;
+        return this.blender;
     }
 
     public static Blend normal() {

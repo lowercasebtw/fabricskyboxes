@@ -35,7 +35,7 @@ public class Properties {
     }
 
     public int getLayer() {
-        return layer;
+        return this.layer;
     }
 
     public Fade getFade() {
@@ -43,11 +43,11 @@ public class Properties {
     }
 
     public int getTransitionInDuration() {
-        return transitionInDuration;
+        return this.transitionInDuration;
     }
 
     public int getTransitionOutDuration() {
-        return transitionOutDuration;
+        return this.transitionOutDuration;
     }
 
     public Fog getFog() {
@@ -55,7 +55,7 @@ public class Properties {
     }
 
     public boolean isRenderSunSkyTint() {
-        return renderSunSkyTint;
+        return this.renderSunSkyTint;
     }
 
     public Rotation getRotation() {
