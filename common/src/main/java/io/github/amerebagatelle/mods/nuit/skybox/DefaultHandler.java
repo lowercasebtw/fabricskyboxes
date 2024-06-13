@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class DefaultHandler {
-    public static final ResourceLocation DEFAULT = new ResourceLocation(NuitClient.MOD_ID, "default");
+    public static final ResourceLocation DEFAULT = ResourceLocation.tryBuild(NuitClient.MOD_ID, "default");
 
     /**
      * Stores a Conditions instance concatenated from all Conditions instances in skyboxes in SkyboxManager.

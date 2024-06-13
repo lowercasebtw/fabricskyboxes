@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 public class SkyboxType<T extends Skybox> {
     public static final Codec<ResourceLocation> SKYBOX_ID_CODEC;
-    public static final ResourceKey<Registry<SkyboxType<? extends Skybox>>> SKYBOX_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(NuitClient.MOD_ID, "skybox_type"));
+    public static final ResourceKey<Registry<SkyboxType<? extends Skybox>>> SKYBOX_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.tryBuild(NuitClient.MOD_ID, "skybox_type"));
 
     public static final SkyboxType<OverworldSkybox> OVERWORLD;
     public static final SkyboxType<EndSkybox> END;
@@ -34,9 +34,9 @@ public class SkyboxType<T extends Skybox> {
     static {
         SKYBOX_ID_CODEC = Codec.STRING.xmap((s) -> {
             if (!s.contains(":")) {
-                return new ResourceLocation(NuitClient.MOD_ID, s.replace('-', '_'));
+                return ResourceLocation.tryBuild(NuitClient.MOD_ID, s.replace('-', '_'));
             }
-            return new ResourceLocation(s.replace('-', '_'));
+            return ResourceLocation.tryParse(s.replace('-', '_'));
         }, (id) -> {
             if (id.getNamespace().equals(NuitClient.MOD_ID)) {
                 return id.getPath().replace('_', '-');
@@ -85,7 +85,7 @@ public class SkyboxType<T extends Skybox> {
     }
 
     public Function<String, ResourceLocation> createIdFactory() {
-        return (ns) -> new ResourceLocation(ns, this.getName().replace('-', '_'));
+        return (ns) -> ResourceLocation.tryBuild(ns, this.getName().replace('-', '_'));
     }
 
     public Codec<T> getCodec(int schemaVersion) {

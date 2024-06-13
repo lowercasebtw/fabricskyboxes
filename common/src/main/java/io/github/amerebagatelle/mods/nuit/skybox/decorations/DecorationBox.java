@@ -65,14 +65,13 @@ public class DecorationBox extends AbstractSkybox {
 
         Matrix4f matrix4f2 = poseStack.last().pose();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         // Sun
         if (this.sunEnabled) {
-            this.renderSun(bufferBuilder, matrix4f2);
+            this.renderSun(matrix4f2);
         }
         // Moon
         if (this.moonEnabled) {
-            this.renderMoon(bufferBuilder, matrix4f2);
+            this.renderMoon(matrix4f2);
         }
         // Stars
         if (this.starsEnabled) {
@@ -85,17 +84,17 @@ public class DecorationBox extends AbstractSkybox {
         RenderSystem.defaultBlendFunc();
     }
 
-    public void renderSun(BufferBuilder bufferBuilder, Matrix4f matrix4f) {
+    public void renderSun(Matrix4f matrix4f) {
         RenderSystem.setShaderTexture(0, this.sunTexture);
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix4f, -30.0F, 100.0F, -30.0F).uv(0.0F, 0.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, 30.0F, 100.0F, -30.0F).uv(1.0F, 0.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, 30.0F, 100.0F, 30.0F).uv(1.0F, 1.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, -30.0F, 100.0F, 30.0F).uv(0.0F, 1.0F).endVertex();
-        BufferUploader.drawWithShader(bufferBuilder.end());
+        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.addVertex(matrix4f, -30.0F, 100.0F, -30.0F).setUv(0.0F, 0.0F);
+        bufferBuilder.addVertex(matrix4f, 30.0F, 100.0F, -30.0F).setUv(1.0F, 0.0F);
+        bufferBuilder.addVertex(matrix4f, 30.0F, 100.0F, 30.0F).setUv(1.0F, 1.0F);
+        bufferBuilder.addVertex(matrix4f, -30.0F, 100.0F, 30.0F).setUv(0.0F, 1.0F);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
-    public void renderMoon(BufferBuilder bufferBuilder, Matrix4f matrix4f) {
+    public void renderMoon(Matrix4f matrix4f) {
         RenderSystem.setShaderTexture(0, this.moonTexture);
         int moonPhase = Minecraft.getInstance().level.getMoonPhase();
         int xCoord = moonPhase % 4;
@@ -104,12 +103,12 @@ public class DecorationBox extends AbstractSkybox {
         float startY = yCoord / 2.0F;
         float endX = (xCoord + 1) / 4.0F;
         float endY = (yCoord + 1) / 2.0F;
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix4f, -20.0F, -100.0F, 20.0F).uv(endX, endY).endVertex();
-        bufferBuilder.vertex(matrix4f, 20.0F, -100.0F, 20.0F).uv(startX, endY).endVertex();
-        bufferBuilder.vertex(matrix4f, 20.0F, -100.0F, -20.0F).uv(startX, startY).endVertex();
-        bufferBuilder.vertex(matrix4f, -20.0F, -100.0F, -20.0F).uv(endX, startY).endVertex();
-        BufferUploader.drawWithShader(bufferBuilder.end());
+        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.addVertex(matrix4f, -20.0F, -100.0F, 20.0F).setUv(endX, endY);
+        bufferBuilder.addVertex(matrix4f, 20.0F, -100.0F, 20.0F).setUv(startX, endY);
+        bufferBuilder.addVertex(matrix4f, 20.0F, -100.0F, -20.0F).setUv(startX, startY);
+        bufferBuilder.addVertex(matrix4f, -20.0F, -100.0F, -20.0F).setUv(endX, startY);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
     public void renderStars(LevelRendererAccessor levelRendererAccessor, float tickDelta, PoseStack poseStack, Matrix4f matrix4f) {

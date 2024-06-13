@@ -30,7 +30,7 @@ public class NuitClientFabric implements ClientModInitializer {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
-                return new ResourceLocation(NuitClient.MOD_ID, "skybox_reader");
+                return ResourceLocation.tryBuild(NuitClient.MOD_ID, "skybox_reader");
             }
 
             @Override
