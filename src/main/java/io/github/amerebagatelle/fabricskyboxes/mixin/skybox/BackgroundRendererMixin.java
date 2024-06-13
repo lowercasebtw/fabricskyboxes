@@ -2,7 +2,6 @@ package io.github.amerebagatelle.fabricskyboxes.mixin.skybox;
 
 import io.github.amerebagatelle.fabricskyboxes.SkyboxManager;
 import io.github.amerebagatelle.fabricskyboxes.skyboxes.AbstractSkybox;
-import io.github.amerebagatelle.fabricskyboxes.skyboxes.OverworldSkybox;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;

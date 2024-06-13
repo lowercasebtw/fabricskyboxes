@@ -33,7 +33,7 @@ public class SkyboxType<T extends Skybox> {
     public static final Codec<Identifier> SKYBOX_ID_CODEC;
 
     static {
-        REGISTRY = FabricRegistryBuilder.<SkyboxType<? extends Skybox>, SimpleRegistry<SkyboxType<? extends Skybox>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier(FabricSkyBoxesClient.MODID, "skybox_type")), Lifecycle.stable())).buildAndRegister();
+        REGISTRY = FabricRegistryBuilder.<SkyboxType<? extends Skybox>, SimpleRegistry<SkyboxType<? extends Skybox>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(Identifier.of(FabricSkyBoxesClient.MODID, "skybox_type")), Lifecycle.stable())).buildAndRegister();
         MONO_COLOR_SKYBOX = register(SkyboxType.Builder.create(MonoColorSkybox.class, "monocolor").legacySupported().deserializer(LegacyDeserializer.MONO_COLOR_SKYBOX_DESERIALIZER).factory(MonoColorSkybox::new).add(2, MonoColorSkybox.CODEC).build());
         OVERWORLD_SKYBOX = register(SkyboxType.Builder.create(OverworldSkybox.class, "overworld").add(2, OverworldSkybox.CODEC).build());
         END_SKYBOX = register(SkyboxType.Builder.create(EndSkybox.class, "end").add(2, EndSkybox.CODEC).build());
@@ -44,9 +44,9 @@ public class SkyboxType<T extends Skybox> {
         MULTI_TEXTURE_SKYBOX = register(SkyboxType.Builder.create(MultiTextureSkybox.class, "multi-texture").add(2, MultiTextureSkybox.CODEC).build());
         SKYBOX_ID_CODEC = Codec.STRING.xmap((s) -> {
             if (!s.contains(":")) {
-                return new Identifier(FabricSkyBoxesClient.MODID, s.replace('-', '_'));
+                return Identifier.of(FabricSkyBoxesClient.MODID, s.replace('-', '_'));
             }
-            return new Identifier(s.replace('-', '_'));
+            return Identifier.of(s.replace('-', '_'));
         }, (id) -> {
             if (id.getNamespace().equals(FabricSkyBoxesClient.MODID)) {
                 return id.getPath().replace('_', '-');
@@ -62,6 +62,7 @@ public class SkyboxType<T extends Skybox> {
     private final Supplier<T> factory;
     @Nullable
     private final LegacyDeserializer<T> deserializer;
+
     private SkyboxType(BiMap<Integer, Codec<T>> codecBiMap, boolean legacySupported, String name, @Nullable Supplier<T> factory, @Nullable LegacyDeserializer<T> deserializer) {
         this.codecBiMap = codecBiMap;
         this.legacySupported = legacySupported;
@@ -103,7 +104,7 @@ public class SkyboxType<T extends Skybox> {
     }
 
     public Function<String, Identifier> createIdFactory() {
-        return (ns) -> new Identifier(ns, this.getName().replace('-', '_'));
+        return (ns) -> Identifier.of(ns, this.getName().replace('-', '_'));
     }
 
     public Codec<T> getCodec(int schemaVersion) {
@@ -163,7 +164,7 @@ public class SkyboxType<T extends Skybox> {
         }
 
         public SkyboxType<T> buildAndRegister(String namespace) {
-            return Registry.register(SkyboxType.REGISTRY, new Identifier(namespace, this.name.replace('-', '_')), this.build());
+            return Registry.register(SkyboxType.REGISTRY, Identifier.of(namespace, this.name.replace('-', '_')), this.build());
         }
     }
 }

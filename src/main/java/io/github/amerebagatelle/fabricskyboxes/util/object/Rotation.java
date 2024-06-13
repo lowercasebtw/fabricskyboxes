@@ -50,7 +50,7 @@ public class Rotation {
     }
 
     public boolean getSkyboxRotation() {
-        return skyboxRotation;
+        return this.skyboxRotation;
     }
 
     public Vector3f getStatic() {
@@ -62,18 +62,18 @@ public class Rotation {
     }
 
     public Vector3i getTimeShift() {
-        return timeShift;
+        return this.timeShift;
     }
 
     public float getRotationSpeedX() {
-        return rotationSpeedX;
+        return this.rotationSpeedX;
     }
 
     public float getRotationSpeedY() {
-        return rotationSpeedY;
+        return this.rotationSpeedY;
     }
 
     public float getRotationSpeedZ() {
-        return rotationSpeedZ;
+        return this.rotationSpeedZ;
     }
 }

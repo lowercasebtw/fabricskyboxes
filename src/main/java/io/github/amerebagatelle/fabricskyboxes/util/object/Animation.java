@@ -42,31 +42,31 @@ public class Animation {
     }
 
     public Texture getTexture() {
-        return texture;
+        return this.texture;
     }
 
     public UVRange getUvRanges() {
-        return uvRange;
+        return this.uvRange;
     }
 
     public int getGridColumns() {
-        return gridColumns;
+        return this.gridColumns;
     }
 
     public int getGridRows() {
-        return gridRows;
+        return this.gridRows;
     }
 
     public int getDuration() {
-        return duration;
+        return this.duration;
     }
 
     public boolean isInterpolate() {
-        return interpolate;
+        return this.interpolate;
     }
 
     public Map<String, Integer> getFrameDuration() {
-        return frameDuration;
+        return this.frameDuration;
     }
 
     public void tick() {

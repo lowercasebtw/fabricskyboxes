@@ -10,8 +10,8 @@ import net.minecraft.util.Identifier;
  * different u/v value depending on the moon phase.
  */
 public class Decorations {
-    public static final Identifier MOON_PHASES = new Identifier("textures/environment/moon_phases.png");
-    public static final Identifier SUN = new Identifier("textures/environment/sun.png");
+    public static final Identifier MOON_PHASES = Identifier.tryParse("textures/environment/moon_phases.png");
+    public static final Identifier SUN = Identifier.tryParse("textures/environment/sun.png");
     public static final Codec<Decorations> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.optionalFieldOf("sun", SUN).forGetter(Decorations::getSunTexture),
             Identifier.CODEC.optionalFieldOf("moon", MOON_PHASES).forGetter(Decorations::getMoonTexture),
@@ -61,10 +61,10 @@ public class Decorations {
     }
 
     public Rotation getRotation() {
-        return rotation;
+        return this.rotation;
     }
 
     public Blend getBlend() {
-        return blend;
+        return this.blend;
     }
 }

@@ -72,7 +72,7 @@ public class Properties {
     }
 
     public int getPriority() {
-        return priority;
+        return this.priority;
     }
 
     public Fade getFade() {
@@ -80,7 +80,7 @@ public class Properties {
     }
 
     public float getMinAlpha() {
-        return minAlpha;
+        return this.minAlpha;
     }
 
     public float getMaxAlpha() {
@@ -88,11 +88,11 @@ public class Properties {
     }
 
     public int getTransitionInDuration() {
-        return transitionInDuration;
+        return this.transitionInDuration;
     }
 
     public int getTransitionOutDuration() {
-        return transitionOutDuration;
+        return this.transitionOutDuration;
     }
 
     public boolean isChangeFog() {
@@ -100,7 +100,7 @@ public class Properties {
     }
 
     public boolean isChangeFogDensity() {
-        return changeFogDensity;
+        return this.changeFogDensity;
     }
 
     public RGBA getFogColors() {
@@ -108,11 +108,11 @@ public class Properties {
     }
 
     public boolean isRenderSunSkyTint() {
-        return renderSunSkyTint;
+        return this.renderSunSkyTint;
     }
 
     public boolean isRenderInThickFog() {
-        return renderInThickFog;
+        return this.renderInThickFog;
     }
 
     public Rotation getRotation() {

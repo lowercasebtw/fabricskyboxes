@@ -17,10 +17,10 @@ public class FogRGBA extends RGBA {
     }
 
     public boolean isModifyDensity() {
-        return modifyDensity;
+        return this.modifyDensity;
     }
 
     public float getDensity() {
-        return density;
+        return this.density;
     }
 }

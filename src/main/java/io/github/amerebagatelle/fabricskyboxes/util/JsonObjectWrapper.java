@@ -26,7 +26,7 @@ public class JsonObjectWrapper {
             FabricSkyBoxesClient.getLogger().debug(this.getFocusedObject().toString());
             return null;
         }
-        return new Identifier(this.focusedObject.get(key).getAsString());
+        return Identifier.tryParse(this.focusedObject.get(key).getAsString());
     }
 
     public Optional<JsonElement> getOptionalValue(String key) {

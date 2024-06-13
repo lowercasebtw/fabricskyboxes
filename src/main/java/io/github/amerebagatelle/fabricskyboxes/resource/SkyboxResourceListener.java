@@ -31,14 +31,13 @@ public class SkyboxResourceListener implements SimpleSynchronousResourceReloadLi
                 JsonObject json = GSON.fromJson(new InputStreamReader(resource.getInputStream()), JsonObject.class);
                 skyboxManager.addSkybox(identifier, json);
             } catch (Exception e) {
-                FabricSkyBoxesClient.getLogger().error("Error reading skybox " + identifier.toString());
-                e.printStackTrace();
+                FabricSkyBoxesClient.getLogger().error("Error reading skybox {}", identifier.toString(), e);
             }
         });
     }
 
     @Override
     public Identifier getFabricId() {
-        return new Identifier("fabricskyboxes", "skybox_json");
+        return Identifier.of("fabricskyboxes", "skybox_json");
     }
 }

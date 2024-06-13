@@ -43,8 +43,6 @@ public class OverworldSkybox extends AbstractSkybox {
         ClientWorld world = client.world;
         assert client.world != null;
 
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-
         Vec3d vec3d = world.getSkyColor(client.gameRenderer.getCamera().getPos(), tickDelta);
         float f = (float) vec3d.x;
         float g = (float) vec3d.y;
@@ -82,14 +80,14 @@ public class OverworldSkybox extends AbstractSkybox {
             float k = fs[1];
             float l = fs[2];
             Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-            bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
-            bufferBuilder.vertex(matrix4f, 0.0F, 100.0F, 0.0F).color(j, k, l, fs[3] * this.alpha).next();
+            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
+            bufferBuilder.vertex(matrix4f, 0.0F, 100.0F, 0.0F).color(j, k, l, fs[3] * this.alpha);
 
             for (int n = 0; n <= 16; ++n) {
                 float o = (float) n * (float) (Math.PI * 2) / 16.0F;
                 float p = MathHelper.sin(o);
                 float q = MathHelper.cos(o);
-                bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3]).color(fs[0], fs[1], fs[2], 0.0F).next();
+                bufferBuilder.vertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * fs[3]).color(fs[0], fs[1], fs[2], 0.0F);
             }
 
             BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
@@ -97,7 +95,7 @@ public class OverworldSkybox extends AbstractSkybox {
         }
 
 
-        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
+        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, this.alpha, fogCallback);
 
         // Dark Sky
         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);

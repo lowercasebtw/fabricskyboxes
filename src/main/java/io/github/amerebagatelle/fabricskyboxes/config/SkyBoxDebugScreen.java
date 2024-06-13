@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -25,11 +26,11 @@ public class SkyBoxDebugScreen extends Screen implements HudRenderCallback {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.onHudRender(context, delta);
+        this.onHudRender(context, MinecraftClient.getInstance().getRenderTickCounter());
     }
 
     @Override
-    public void onHudRender(DrawContext drawContext, float tickDelta) {
+    public void onHudRender(DrawContext drawContext, RenderTickCounter renderTickCounter) {
         if (FabricSkyBoxesClient.config().generalSettings.debugHud || MinecraftClient.getInstance().currentScreen == this) {
             int yPadding = 2;
             for (Map.Entry<Identifier, Skybox> identifierSkyboxEntry : SkyboxManager.getInstance().getSkyboxMap().entrySet()) {

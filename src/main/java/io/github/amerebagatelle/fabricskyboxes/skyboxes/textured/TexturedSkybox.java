@@ -7,10 +7,8 @@ import io.github.amerebagatelle.fabricskyboxes.skyboxes.AbstractSkybox;
 import io.github.amerebagatelle.fabricskyboxes.util.Utils;
 import io.github.amerebagatelle.fabricskyboxes.util.object.*;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.RotationAxis;
@@ -65,9 +63,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
         this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, thickFog, fogCallback);
         matrixStack.pop();
 
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-
-        this.renderDecorations(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
+        this.renderDecorations(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, this.alpha, fogCallback);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();

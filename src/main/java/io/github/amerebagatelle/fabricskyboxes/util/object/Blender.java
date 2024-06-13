@@ -81,43 +81,43 @@ public class Blender {
     }
 
     public boolean isSeparateFunction() {
-        return separateFunction;
+        return this.separateFunction;
     }
 
     public int getSourceFactor() {
-        return sourceFactor;
+        return this.sourceFactor;
     }
 
     public int getDestinationFactor() {
-        return destinationFactor;
+        return this.destinationFactor;
     }
 
     public int getEquation() {
-        return equation;
+        return this.equation;
     }
 
     public int getSourceFactorAlpha() {
-        return sourceFactorAlpha;
+        return this.sourceFactorAlpha;
     }
 
     public int getDestinationFactorAlpha() {
-        return destinationFactorAlpha;
+        return this.destinationFactorAlpha;
     }
 
     public boolean isRedAlphaEnabled() {
-        return redAlphaEnabled;
+        return this.redAlphaEnabled;
     }
 
     public boolean isGreenAlphaEnabled() {
-        return greenAlphaEnabled;
+        return this.greenAlphaEnabled;
     }
 
     public boolean isBlueAlphaEnabled() {
-        return blueAlphaEnabled;
+        return this.blueAlphaEnabled;
     }
 
     public boolean isAlphaEnabled() {
-        return alphaEnabled;
+        return this.alphaEnabled;
     }
 
     public boolean isValidFactor(int factor) {

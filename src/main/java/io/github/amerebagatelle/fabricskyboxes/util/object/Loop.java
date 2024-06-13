@@ -24,11 +24,11 @@ public class Loop {
     }
 
     public double getDays() {
-        return days;
+        return this.days;
     }
 
     public List<MinMaxEntry> getRanges() {
-        return ranges;
+        return this.ranges;
     }
 
     public static class Builder {

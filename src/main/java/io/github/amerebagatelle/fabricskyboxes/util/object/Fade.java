@@ -52,6 +52,6 @@ public class Fade {
     }
 
     public boolean isAlwaysOn() {
-        return alwaysOn;
+        return this.alwaysOn;
     }
 }

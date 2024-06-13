@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.amerebagatelle.fabricskyboxes.skyboxes.AbstractSkybox;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
@@ -44,6 +43,7 @@ public class Conditions {
         this.zRanges = zRanges;
         this.loop = loop;
     }
+
     public List<Identifier> getBiomes() {
         return this.biomes;
     }
@@ -53,11 +53,11 @@ public class Conditions {
     }
 
     public List<Identifier> getDimensions() {
-        return dimensions;
+        return this.dimensions;
     }
 
     public List<Identifier> getEffects() {
-        return effects;
+        return this.effects;
     }
 
     public List<Weather> getWeathers() {

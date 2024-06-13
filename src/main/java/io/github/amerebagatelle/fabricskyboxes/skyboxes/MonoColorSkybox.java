@@ -43,8 +43,7 @@ public class MonoColorSkybox extends AbstractSkybox {
             RenderSystem.enableBlend();
             RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             this.blend.applyBlendFunc(this.alpha);
-            BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
             for (int i = 0; i < 6; ++i) {
                 matrices.push();
@@ -64,15 +63,15 @@ public class MonoColorSkybox extends AbstractSkybox {
                 }
 
                 Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha).next();
-                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha).next();
-                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha).next();
-                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha).next();
+                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
+                bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
+                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
+                bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
                 matrices.pop();
             }
             BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
-            this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
+            this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, this.alpha, fogCallback);
 
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);
@@ -84,6 +83,6 @@ public class MonoColorSkybox extends AbstractSkybox {
     }
 
     public Blend getBlend() {
-        return blend;
+        return this.blend;
     }
 }

@@ -48,7 +48,7 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
         try {
             metadata = Metadata.CODEC.decode(JsonOps.INSTANCE, objectWrapper.getFocusedObject()).getOrThrow().getFirst();
         } catch (RuntimeException e) {
-            FabricSkyBoxesClient.getLogger().warn("Skipping invalid skybox " + id.toString(), e);
+            FabricSkyBoxesClient.getLogger().warn("Skipping invalid skybox {}", id.toString(), e);
             FabricSkyBoxesClient.getLogger().warn(objectWrapper.toString());
             return null;
         }
@@ -57,7 +57,7 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
         Preconditions.checkNotNull(type, "Unknown skybox type: " + metadata.getType().getPath().replace('_', '-'));
         if (metadata.getSchemaVersion() == 1) {
             Preconditions.checkArgument(type.isLegacySupported(), "Unsupported schema version '1' for skybox type " + type.getName());
-            FabricSkyBoxesClient.getLogger().debug("Using legacy deserializer for skybox " + id.toString());
+            FabricSkyBoxesClient.getLogger().debug("Using legacy deserializer for skybox {}", id.toString());
             skybox = type.instantiate();
             //noinspection ConstantConditions
             type.getDeserializer().getDeserializer().accept(objectWrapper, skybox);
@@ -167,6 +167,6 @@ public class SkyboxManager implements FabricSkyBoxesApi, ClientTickEvents.EndWor
     }
 
     public Map<Identifier, Skybox> getSkyboxMap() {
-        return skyboxMap;
+        return this.skyboxMap;
     }
 }

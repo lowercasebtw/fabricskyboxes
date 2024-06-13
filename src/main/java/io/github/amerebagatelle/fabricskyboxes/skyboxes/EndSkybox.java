@@ -35,13 +35,11 @@ public class EndSkybox extends AbstractSkybox {
         MinecraftClient client = MinecraftClient.getInstance();
         assert client.world != null;
 
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-
         RenderSystem.enableBlend();
         RenderSystem.depthMask(false);
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.setShaderTexture(0, WorldRendererAccess.getEndSky());
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+        BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
         for (int i = 0; i < 6; ++i) {
             matrices.push();
@@ -66,15 +64,15 @@ public class EndSkybox extends AbstractSkybox {
             }
 
             Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).texture(0.0F, 0.0F).color(40, 40, 40, (int) (255 * this.alpha)).next();
-            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).texture(0.0F, 16.0F).color(40, 40, 40, (int) (255 * this.alpha)).next();
-            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).texture(16.0F, 16.0F).color(40, 40, 40, (int) (255 * this.alpha)).next();
-            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).texture(16.0F, 0.0F).color(40, 40, 40, (int) (255 * this.alpha)).next();
+            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).texture(0.0F, 0.0F).color(40, 40, 40, (int) (255 * this.alpha));
+            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).texture(0.0F, 16.0F).color(40, 40, 40, (int) (255 * this.alpha));
+            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).texture(16.0F, 16.0F).color(40, 40, 40, (int) (255 * this.alpha));
+            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).texture(16.0F, 0.0F).color(40, 40, 40, (int) (255 * this.alpha));
             matrices.pop();
         }
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
-        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, bufferBuilder, this.alpha, fogCallback);
+        this.renderDecorations(worldRendererAccess, matrices, projectionMatrix, tickDelta, this.alpha, fogCallback);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();

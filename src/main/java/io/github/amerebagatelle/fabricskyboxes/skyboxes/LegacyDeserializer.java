@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 public class LegacyDeserializer<T extends Skybox> {
-    public static final Registry<LegacyDeserializer<? extends Skybox>> REGISTRY = FabricRegistryBuilder.<LegacyDeserializer<? extends Skybox>, SimpleRegistry<LegacyDeserializer<? extends Skybox>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier(FabricSkyBoxesClient.MODID, "legacy_skybox_deserializer")), Lifecycle.stable())).buildAndRegister();
+    public static final Registry<LegacyDeserializer<? extends Skybox>> REGISTRY = FabricRegistryBuilder.<LegacyDeserializer<? extends Skybox>, SimpleRegistry<LegacyDeserializer<? extends Skybox>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(Identifier.of(FabricSkyBoxesClient.MODID, "legacy_skybox_deserializer")), Lifecycle.stable())).buildAndRegister();
     public static final LegacyDeserializer<MonoColorSkybox> MONO_COLOR_SKYBOX_DESERIALIZER = register(new LegacyDeserializer<>(LegacyDeserializer::decodeMonoColor, MonoColorSkybox.class), "mono_color_skybox_legacy_deserializer");
     public static final LegacyDeserializer<SquareTexturedSkybox> SQUARE_TEXTURED_SKYBOX_DESERIALIZER = register(new LegacyDeserializer<>(LegacyDeserializer::decodeSquareTextured, SquareTexturedSkybox.class), "square_textured_skybox_legacy_deserializer");
     private final BiConsumer<JsonObjectWrapper, Skybox> deserializer;
@@ -103,16 +103,16 @@ public class LegacyDeserializer<T extends Skybox> {
         if (element != null) {
             if (element.isJsonArray()) {
                 for (JsonElement jsonElement : element.getAsJsonArray()) {
-                    list.add(new Identifier(jsonElement.getAsString()));
+                    list.add(Identifier.of(jsonElement.getAsString()));
                 }
             } else if (JsonHelper.isString(element)) {
-                list.add(new Identifier(element.getAsString()));
+                list.add(Identifier.of(element.getAsString()));
             }
         }
     }
 
     private static <T extends Skybox> LegacyDeserializer<T> register(LegacyDeserializer<T> deserializer, String name) {
-        return Registry.register(LegacyDeserializer.REGISTRY, new Identifier(FabricSkyBoxesClient.MODID, name), deserializer);
+        return Registry.register(LegacyDeserializer.REGISTRY, Identifier.of(FabricSkyBoxesClient.MODID, name), deserializer);
     }
 
     public BiConsumer<JsonObjectWrapper, Skybox> getDeserializer() {
