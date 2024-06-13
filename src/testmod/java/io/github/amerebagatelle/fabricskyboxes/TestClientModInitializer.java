@@ -31,8 +31,8 @@ public class TestClientModInitializer implements ClientModInitializer {
                 Blend.DECORATIONS
         );
         CONDITIONS = new Conditions.Builder()
-                .biomes(new Identifier("minecraft:plains"))
-                .worlds(new Identifier("minecraft:overworld"))
+                .biomes(Identifier.tryParse("minecraft:plains"))
+                .worlds(Identifier.tryParse("minecraft:overworld"))
                 .weather(Weather.CLEAR)
                 .yRanges(new MinMaxEntry(40, 120))
                 .build();

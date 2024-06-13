@@ -44,8 +44,8 @@ public class SkyboxGenerationTest {
                 .fade(new Fade(1000, 2000, 11000, 12000, false))
                 .build();
         Conditions conditions = new Conditions.Builder()
-                .biomes(new Identifier("minecraft:plains"))
-                .worlds(new Identifier("minecraft:overworld"))
+                .biomes(Identifier.tryParse("minecraft:plains"))
+                .worlds(Identifier.tryParse("minecraft:overworld"))
                 .weather(Weather.CLEAR)
                 .yRanges(new MinMaxEntry(40, 120))
                 .build();
@@ -61,7 +61,7 @@ public class SkyboxGenerationTest {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setLenient().create();
         this.test(gson, MonoColorSkybox.CODEC, new MonoColorSkybox(props, conditions, decorations, new RGBA(0.5F, 0.8F, 0.6F, 0.99F), Blend.DEFAULT));
-        this.test(gson, SquareTexturedSkybox.CODEC, new SquareTexturedSkybox(props, conditions, decorations, Blend.DEFAULT, new Textures(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, PlayerScreenHandler.EMPTY_BOOTS_SLOT_TEXTURE, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, PlayerScreenHandler.EMPTY_OFFHAND_ARMOR_SLOT, PlayerScreenHandler.EMPTY_BOOTS_SLOT_TEXTURE, new Identifier("missingno"))));
+        this.test(gson, SquareTexturedSkybox.CODEC, new SquareTexturedSkybox(props, conditions, decorations, Blend.DEFAULT, new Textures(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, PlayerScreenHandler.EMPTY_BOOTS_SLOT_TEXTURE, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, PlayerScreenHandler.EMPTY_OFFHAND_ARMOR_SLOT, PlayerScreenHandler.EMPTY_BOOTS_SLOT_TEXTURE, Identifier.tryParse("missingno"))));
         this.test(gson, AnimatedSquareTexturedSkybox.CODEC, new AnimatedSquareTexturedSkybox(props, conditions, decorations, Blend.DEFAULT, Arrays.asList(
                 new Textures(
                         PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
@@ -69,14 +69,14 @@ public class SkyboxGenerationTest {
                         PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
                         PlayerScreenHandler.EMPTY_OFFHAND_ARMOR_SLOT,
                         PlayerScreenHandler.EMPTY_BOOTS_SLOT_TEXTURE,
-                        new Identifier("missingno")
+                        Identifier.tryParse("missingno")
                 ),
                 new Textures(
                         SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE,
                         SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE,
                         SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE,
                         SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE,
-                        new Identifier("missingno"),
+                        Identifier.tryParse("missingno"),
                         SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE
                 ),
                 new Textures(
