@@ -11,10 +11,13 @@ import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.components.Metadata;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.DefaultHandler;
+import io.github.amerebagatelle.mods.nuit.skybox.TextureRegistrar;
 import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.joml.Matrix4f;
@@ -23,6 +26,7 @@ import java.util.*;
 
 public class SkyboxManager implements NuitApi {
     private static final SkyboxManager INSTANCE = new SkyboxManager();
+    private final List<ResourceLocation> preloadedTextures = new ArrayList<>();
     private final Map<ResourceLocation, Skybox> skyboxMap = new Object2ObjectLinkedOpenHashMap<>();
     /**
      * Stores a list of permanent skyboxes
@@ -65,7 +69,7 @@ public class SkyboxManager implements NuitApi {
     }
 
     public void addSkybox(ResourceLocation identifier, JsonObject jsonObject) {
-        var skybox = SkyboxManager.parseSkyboxJson(identifier, jsonObject);
+        Optional<Skybox> skybox = SkyboxManager.parseSkyboxJson(identifier, jsonObject);
         if (skybox.isPresent()) {
             NuitClient.getLogger().info("Adding skybox {}", identifier.toString());
             this.addSkybox(identifier, skybox.get());
@@ -76,6 +80,14 @@ public class SkyboxManager implements NuitApi {
         Preconditions.checkNotNull(identifier, "Identifier was null");
         Preconditions.checkNotNull(skybox, "Skybox was null");
         DefaultHandler.addConditions(skybox);
+
+        if (skybox instanceof TextureRegistrar textureRegistrar) {
+            textureRegistrar.getTexturesToRegister().forEach(resourceLocation -> {
+                Minecraft.getInstance().getTextureManager().register(resourceLocation, new SimpleTexture(resourceLocation));
+                this.preloadedTextures.add(resourceLocation);
+            });
+        }
+
         this.skyboxMap.put(identifier, skybox);
     }
 
@@ -98,6 +110,8 @@ public class SkyboxManager implements NuitApi {
         DefaultHandler.clearConditionsExcept(this.permanentSkyboxMap.values());
         this.skyboxMap.clear();
         this.activeSkyboxes.clear();
+        this.preloadedTextures.forEach(texture -> Minecraft.getInstance().getTextureManager().release(texture));
+        this.preloadedTextures.clear();
     }
 
     @Internal

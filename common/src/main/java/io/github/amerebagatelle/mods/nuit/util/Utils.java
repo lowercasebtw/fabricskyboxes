@@ -37,10 +37,16 @@ public class Utils {
      * @return The output intersection
      */
     public static UVRange mapUVRanges(UVRange input, UVRange output, UVRange inputIntersection) {
-        float u1 = (inputIntersection.getMinU() - input.getMinU()) / (input.getMaxU() - input.getMinU()) * (output.getMaxU() - output.getMinU()) + output.getMinU();
-        float u2 = (inputIntersection.getMaxU() - input.getMinU()) / (input.getMaxU() - input.getMinU()) * (output.getMaxU() - output.getMinU()) + output.getMinU();
-        float v1 = (inputIntersection.getMinV() - input.getMinV()) / (input.getMaxV() - input.getMinV()) * (output.getMaxV() - output.getMinV()) + output.getMinV();
-        float v2 = (inputIntersection.getMaxV() - input.getMinV()) / (input.getMaxV() - input.getMinV()) * (output.getMaxV() - output.getMinV()) + output.getMinV();
+        float inputUWidth = input.getMaxU() - input.getMinU();
+        float outputUWidth = output.getMaxU() - output.getMinU();
+        float inputVHeight = input.getMaxV() - input.getMinV();
+        float outputVHeight = output.getMaxV() - output.getMinV();
+
+        float u1 = (inputIntersection.getMinU() - input.getMinU()) / inputUWidth * outputUWidth + output.getMinU();
+        float u2 = (inputIntersection.getMaxU() - input.getMinU()) / inputUWidth * outputUWidth + output.getMinU();
+        float v1 = (inputIntersection.getMinV() - input.getMinV()) / inputVHeight * outputVHeight + output.getMinV();
+        float v2 = (inputIntersection.getMaxV() - input.getMinV()) / inputVHeight * outputVHeight + output.getMinV();
+
         return new UVRange(u1, v1, u2, v2);
     }
 
@@ -70,8 +76,8 @@ public class Utils {
      */
     public static boolean checkRanges(double value, List<MinMaxEntry> minMaxEntries, boolean inverse) {
         return minMaxEntries.isEmpty() || (inverse ^ minMaxEntries.stream()
-                .anyMatch(minMaxEntry -> Range.closed(minMaxEntry.min(), minMaxEntry.max())
-                        .contains((float) value)));
+                .map(entry -> Range.closed(entry.min(), entry.max()))
+                .anyMatch(range -> range.contains((float) value)));
     }
 
     /**

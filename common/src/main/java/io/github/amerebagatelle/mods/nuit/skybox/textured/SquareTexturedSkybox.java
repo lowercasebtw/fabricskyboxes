@@ -10,7 +10,10 @@ import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
+
+import java.util.List;
 
 public class SquareTexturedSkybox extends TexturedSkybox {
     public static Codec<SquareTexturedSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -67,5 +70,10 @@ public class SquareTexturedSkybox extends TexturedSkybox {
             matrices.popPose();
         }
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+    }
+
+    @Override
+    public List<ResourceLocation> getTexturesToRegister() {
+        return List.of(this.texture.getTextureId());
     }
 }
