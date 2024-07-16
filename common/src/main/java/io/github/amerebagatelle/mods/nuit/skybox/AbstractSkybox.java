@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.effect.MobEffects;
@@ -122,9 +121,8 @@ public abstract class AbstractSkybox implements NuitSkybox {
      * @return Whether all conditions were met
      */
     protected boolean checkConditions() {
-        return this.checkDimensions() && this.checkWorlds() && this.checkBiomes() &&
-                this.checkXRanges() && this.checkYRanges() && this.checkZRanges() &&
-                this.checkWeather() && this.checkEffects();
+        return this.checkDimensions() && this.checkWorlds() && this.checkBiomes() && this.checkXRanges() &&
+                this.checkYRanges() && this.checkZRanges() && this.checkWeather() && this.checkEffects();
     }
 
     /**
@@ -132,18 +130,11 @@ public abstract class AbstractSkybox implements NuitSkybox {
      */
     protected boolean checkBiomes() {
         Minecraft client = Minecraft.getInstance();
-        ClientLevel level = Objects.requireNonNull(client.level);
-        LocalPlayer player = Objects.requireNonNull(client.player);
-
-        if (this.conditions.getBiomes().getEntries().isEmpty()) {
-            return true;
-        }
-
-        boolean isExcluded = this.conditions.getBiomes().isExcludes();
-        ResourceLocation biomeKey = level.getBiome(player.blockPosition()).unwrapKey().orElseThrow().location();
-        boolean isDefault = this.conditions.getBiomes().getEntries().contains(DefaultHandler.DEFAULT);
-
-        return isExcluded ^ (this.conditions.getBiomes().getEntries().contains(biomeKey) || (isDefault && DefaultHandler.checkFallbackBiomes()));
+        Objects.requireNonNull(client.level);
+        Objects.requireNonNull(client.player);
+        return this.conditions.getBiomes().getEntries().isEmpty() || this.conditions.getBiomes().isExcludes() ^ (
+                this.conditions.getBiomes().getEntries().contains(client.level.getBiome(client.player.blockPosition()).unwrapKey().orElseThrow().location()) ||
+                        this.conditions.getBiomes().getEntries().contains(DefaultHandler.DEFAULT) && DefaultHandler.checkFallbackBiomes());
     }
 
     /**
@@ -227,26 +218,26 @@ public abstract class AbstractSkybox implements NuitSkybox {
      * @return Whether the current weather is valid for this skybox.
      */
     protected boolean checkWeather() {
+        ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
+        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
+        Biome.Precipitation precipitation = world.getBiome(player.blockPosition()).value().getPrecipitationAt(player.blockPosition());
         if (this.conditions.getWeathers().getEntries().isEmpty()) {
             return true;
         }
 
-        ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
-        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        Biome.Precipitation precipitation = world.getBiome(player.blockPosition()).value().getPrecipitationAt(player.blockPosition());
-
-        boolean isExcluded = this.conditions.getWeathers().isExcludes();
-        boolean isThundering = world.isThundering();
-        boolean isRaining = world.isRaining();
-        boolean isSnowing = isRaining && precipitation == Biome.Precipitation.SNOW;
-        boolean isBiomeRaining = isRaining && precipitation == Biome.Precipitation.RAIN;
-        boolean isClear = !isRaining && !isThundering;
-
-        return (isExcluded ^ this.conditions.getWeathers().getEntries().contains(Weather.THUNDER) && isThundering) ||
-                (isExcluded ^ this.conditions.getWeathers().getEntries().contains(Weather.RAIN) && isRaining && !isThundering) ||
-                (isExcluded ^ this.conditions.getWeathers().getEntries().contains(Weather.SNOW) && isSnowing) ||
-                (isExcluded ^ this.conditions.getWeathers().getEntries().contains(Weather.BIOME_RAIN) && isBiomeRaining) ||
-                (isExcluded ^ this.conditions.getWeathers().getEntries().contains(Weather.CLEAR) && isClear);
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.THUNDER)) && world.isThundering()) {
+            return true;
+        }
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.RAIN)) && world.isRaining() && !world.isThundering()) {
+            return true;
+        }
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.SNOW)) && world.isRaining() && precipitation == Biome.Precipitation.SNOW) {
+            return true;
+        }
+        if ((this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.BIOME_RAIN)) && world.isRaining() && precipitation == Biome.Precipitation.RAIN) {
+            return true;
+        }
+        return (this.conditions.getWeathers().isExcludes() ^ this.conditions.getWeathers().getEntries().contains(Weather.CLEAR)) && !world.isRaining() && !world.isThundering();
     }
 
     @Override
