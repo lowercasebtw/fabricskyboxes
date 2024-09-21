@@ -430,7 +430,7 @@ Stores all specifications for the stars, sun and moon configuration. For optimal
     "static": [0.0, 0.0, 0.0],
     "axis": [0.0, 0.0, 90.0],
     "timeShift": [0, 0, 0],
-    "skyboxRotation": "false"
+    "skyboxRotation": false
   }
 }
 ```
