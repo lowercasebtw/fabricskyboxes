@@ -9,6 +9,7 @@ import io.github.amerebagatelle.mods.nuit.components.Properties;
 import io.github.amerebagatelle.mods.nuit.components.Rotation;
 import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
+import io.github.amerebagatelle.mods.nuit.skybox.TextureRegistrar;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -17,7 +18,7 @@ import org.joml.Matrix4f;
 
 import java.util.Objects;
 
-public abstract class TexturedSkybox extends AbstractSkybox implements RotatableSkybox {
+public abstract class TexturedSkybox extends AbstractSkybox implements RotatableSkybox, TextureRegistrar {
     public Rotation rotation;
     public Blend blend;
 

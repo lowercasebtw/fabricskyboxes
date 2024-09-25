@@ -3,7 +3,6 @@ package io.github.amerebagatelle.mods.nuit.neoforge;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
-import io.github.amerebagatelle.mods.nuit.resource.SkyboxResourceListener;
 import io.github.amerebagatelle.mods.nuit.screen.SkyboxDebugScreen;
 import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
 import net.minecraft.client.Minecraft;
@@ -22,8 +21,6 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
-
-import java.util.concurrent.CompletableFuture;
 
 @Mod(NuitClient.MOD_ID)
 public final class NuitNeoForge {
@@ -76,6 +73,6 @@ public final class NuitNeoForge {
 
     @SubscribeEvent
     public void registerClientReloadListener(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener((pPreparationBarrier, pResourceManager, pPreparationsProfiler, pReloadProfiler, pBackgroundExecutor, pGameExecutor) -> CompletableFuture.runAsync(() -> new SkyboxResourceListener().readFiles(pResourceManager), pGameExecutor).thenCompose(pPreparationBarrier::wait));
+        event.registerReloadListener((pPreparationBarrier, pResourceManager, pPreparationsProfiler, pReloadProfiler, pBackgroundExecutor, pGameExecutor) -> NuitClient.skyboxResourceListener().reload(pPreparationBarrier, pResourceManager, pPreparationsProfiler, pReloadProfiler, pBackgroundExecutor, pGameExecutor));
     }
 }

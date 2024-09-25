@@ -10,6 +10,7 @@ import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -88,5 +89,10 @@ public class MultiTexturedSkybox extends TexturedSkybox {
 
     public List<AnimatableTexture> getAnimations() {
         return this.animatableTextures;
+    }
+
+    @Override
+    public List<ResourceLocation> getTexturesToRegister() {
+        return this.animatableTextures.stream().map(texture -> texture.getTexture().getTextureId()).toList();
     }
 }

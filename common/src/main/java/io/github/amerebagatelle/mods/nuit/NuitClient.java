@@ -2,6 +2,7 @@ package io.github.amerebagatelle.mods.nuit;
 
 import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.config.NuitConfig;
+import io.github.amerebagatelle.mods.nuit.resource.SkyboxResourceListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +11,7 @@ public class NuitClient {
 
     private static Logger LOGGER;
     private static NuitConfig CONFIG;
+    private static final SkyboxResourceListener skyboxResourceListener = new SkyboxResourceListener();
 
     public static void init() {
         SkyboxManager.getInstance().setEnabled(config().generalSettings.enable);
@@ -28,6 +30,10 @@ public class NuitClient {
         }
 
         return CONFIG;
+    }
+
+    public static SkyboxResourceListener skyboxResourceListener() {
+        return skyboxResourceListener;
     }
 
     private static NuitConfig loadConfig() {

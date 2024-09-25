@@ -6,16 +6,21 @@ import com.google.gson.JsonObject;
 import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-public class SkyboxResourceListener {
+public class SkyboxResourceListener implements PreparableReloadListener {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().setLenient().create();
 
-    public void readFiles(ResourceManager resourceManager) {
+    public void readFiles(ResourceManager resourceManager, Executor backgroundExecutor) {
         NuitApi skyboxManager = NuitApi.getInstance();
 
         skyboxManager.clearSkyboxes();
@@ -30,5 +35,10 @@ public class SkyboxResourceListener {
                 NuitClient.getLogger().error("Error reading skybox {}", identifier.toString(), e);
             }
         });
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller2, Executor executor, Executor executor2) {
+        return CompletableFuture.runAsync(() -> this.readFiles(resourceManager, executor), executor2).thenCompose(preparationBarrier::wait);
     }
 }
