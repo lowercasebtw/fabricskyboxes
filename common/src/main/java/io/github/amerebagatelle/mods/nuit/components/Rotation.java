@@ -21,7 +21,13 @@ public class Rotation {
         if (list.size() != 3) {
             return DataResult.error(() -> "Invalid number of elements in vector");
         }
-        return DataResult.success(new Quaternionf().rotateXYZ((float) Math.toRadians(list.get(0)), (float) Math.toRadians(list.get(1)), (float) Math.toRadians(list.get(2))));
+
+        Quaternionf result = new Quaternionf();
+        result.rotateLocalX((float) Math.toRadians(list.get(0))); // X
+        result.rotateLocalY((float) Math.toRadians(list.get(1))); // Y
+        result.rotateLocalZ((float) Math.toRadians(list.get(2))); // Y
+
+        return DataResult.success(result);
     }, (vec) -> ImmutableList.of(vec.x(), vec.y(), vec.z()));
     public static final Codec<Rotation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("skyboxRotation", true).forGetter(Rotation::getSkyboxRotation),
@@ -50,25 +56,30 @@ public class Rotation {
     public void rotateStack(PoseStack matrixStack, ClientLevel world) {
         long currentTime = world.getDayTime() % this.duration;
         // static
+        Quaternionf resultRot = new Quaternionf();
+
         Optional<Tuple<Long, Long>> possibleMappingKeyframes = Utils.findClosestKeyframes(this.mapping, currentTime);
         Quaternionf mappingRot = new Quaternionf();
-        if (possibleMappingKeyframes.isPresent()) {
-            mappingRot.set(Utils.interpolateQuatKeyframes(this.mapping, possibleMappingKeyframes.get(), currentTime));
-            matrixStack.mulPose(mappingRot);
-        }
 
         Optional<Tuple<Long, Long>> possibleAxisKeyframes = Utils.findClosestKeyframes(this.axis, currentTime);
         Quaternionf axisRot = new Quaternionf();
-        if (possibleAxisKeyframes.isPresent()) {
-            axisRot.set(Utils.interpolateQuatKeyframes(this.axis, possibleAxisKeyframes.get(), currentTime));
-            axisRot.difference(mappingRot.conjugate());
-            matrixStack.mulPose(axisRot);
+
+        possibleAxisKeyframes.ifPresent(axisKeyframe -> {
+            // Set the axis rotation to the multiplication of the mapping rot and the axis rot
+            mappingRot.mul(Utils.interpolateQuatKeyframes(this.axis, axisKeyframe, currentTime), axisRot);
+            resultRot.mul(axisRot);
 
             double timeRotation = Utils.calculateRotation(this.speed, this.skyboxRotation, world);
-            matrixStack.mulPose(Axis.XP.rotationDegrees((float) timeRotation));
+            resultRot.mul(Axis.XP.rotationDegrees((float) timeRotation).mul(mappingRot));
 
-            matrixStack.mulPose(axisRot.conjugate());
-        }
+            resultRot.mul(axisRot.conjugate());
+        });
+
+        possibleMappingKeyframes.ifPresent(mappingKeyframe -> {
+            mappingRot.set(Utils.interpolateQuatKeyframes(this.mapping, mappingKeyframe, currentTime));
+            resultRot.mul(mappingRot);
+        });
+        matrixStack.mulPose(resultRot);
     }
 
     public boolean getSkyboxRotation() {
