@@ -7,13 +7,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.components.Blend;
 import io.github.amerebagatelle.mods.nuit.components.Conditions;
 import io.github.amerebagatelle.mods.nuit.components.Properties;
-import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
+import io.github.amerebagatelle.mods.nuit.mixin.SkyRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
@@ -21,8 +21,8 @@ public class DecorationBox extends AbstractSkybox {
     public static Codec<DecorationBox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Properties.CODEC.optionalFieldOf("properties", Properties.decorations()).forGetter(DecorationBox::getProperties),
             Conditions.CODEC.optionalFieldOf("conditions", Conditions.of()).forGetter(DecorationBox::getConditions),
-            ResourceLocation.CODEC.optionalFieldOf("sun", LevelRendererAccessor.getSun()).forGetter(DecorationBox::getSunTexture),
-            ResourceLocation.CODEC.optionalFieldOf("moon", LevelRendererAccessor.getMoonPhases()).forGetter(DecorationBox::getMoonTexture),
+            ResourceLocation.CODEC.optionalFieldOf("sun", SkyRendererAccessor.getSun()).forGetter(DecorationBox::getSunTexture),
+            ResourceLocation.CODEC.optionalFieldOf("moon", SkyRendererAccessor.getMoonPhases()).forGetter(DecorationBox::getMoonTexture),
             Codec.BOOL.optionalFieldOf("showSun", false).forGetter(DecorationBox::isSunEnabled),
             Codec.BOOL.optionalFieldOf("showMoon", false).forGetter(DecorationBox::isMoonEnabled),
             Codec.BOOL.optionalFieldOf("showStars", false).forGetter(DecorationBox::isStarsEnabled),
@@ -47,7 +47,7 @@ public class DecorationBox extends AbstractSkybox {
     }
 
     @Override
-    public void render(LevelRendererAccessor levelRendererAccessor, PoseStack poseStack, Matrix4f matrix4f, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f matrix4f, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
         RenderSystem.enableBlend();
         var world = Minecraft.getInstance().level;
         assert world != null;
@@ -64,7 +64,7 @@ public class DecorationBox extends AbstractSkybox {
         //poseStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(world.getSkyAngle(tickDelta) * 360.0F * this.decorations.getRotation().getRotationSpeed()));
 
         Matrix4f matrix4f2 = poseStack.last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
         // Sun
         if (this.sunEnabled) {
             this.renderSun(matrix4f2);
@@ -75,7 +75,7 @@ public class DecorationBox extends AbstractSkybox {
         }
         // Stars
         if (this.starsEnabled) {
-            this.renderStars(levelRendererAccessor, tickDelta, poseStack, matrix4f);
+            this.renderStars(skyRendererAccessor, tickDelta, poseStack, matrix4f);
         }
         poseStack.popPose();
 
@@ -111,15 +111,15 @@ public class DecorationBox extends AbstractSkybox {
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
-    public void renderStars(LevelRendererAccessor levelRendererAccessor, float tickDelta, PoseStack poseStack, Matrix4f matrix4f) {
+    public void renderStars(SkyRendererAccessor skyRendererAccessor, float tickDelta, PoseStack poseStack, Matrix4f matrix4f) {
         ClientLevel world = Minecraft.getInstance().level;
         float i = 1.0F - world.getRainLevel(tickDelta);
         float brightness = world.getStarBrightness(tickDelta) * i;
         if (brightness > 0.0F) {
             RenderSystem.setShaderColor(brightness, brightness, brightness, brightness);
-            FogRenderer.setupNoFog();
-            levelRendererAccessor.getStarsBuffer().bind();
-            levelRendererAccessor.getStarsBuffer().drawWithShader(poseStack.last().pose(), matrix4f, GameRenderer.getPositionShader());
+            RenderSystem.setShaderFog(FogParameters.NO_FOG);
+            skyRendererAccessor.getStarsBuffer().bind();
+            skyRendererAccessor.getStarsBuffer().drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
             VertexBuffer.unbind();
         }
     }

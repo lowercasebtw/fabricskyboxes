@@ -9,7 +9,7 @@ import io.github.amerebagatelle.mods.nuit.api.NuitApi;
 import io.github.amerebagatelle.mods.nuit.api.NuitPlatformHelper;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.components.Metadata;
-import io.github.amerebagatelle.mods.nuit.mixin.LevelRendererAccessor;
+import io.github.amerebagatelle.mods.nuit.mixin.SkyRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.DefaultHandler;
 import io.github.amerebagatelle.mods.nuit.skybox.TextureRegistrar;
 import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
@@ -18,6 +18,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.SimpleTexture;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.joml.Matrix4f;
@@ -49,14 +50,15 @@ public class SkyboxManager implements NuitApi {
             return Optional.empty();
         }
 
-        SkyboxType<? extends Skybox> type = NuitPlatformHelper.INSTANCE.getSkyboxTypeRegistry().get(metadata.getType());
-        if (type == null) {
+        Optional<Holder.Reference<SkyboxType<? extends Skybox>>> optionalType = NuitPlatformHelper.INSTANCE.getSkyboxTypeRegistry().get(metadata.getType());
+        if (optionalType.isEmpty()) {
             NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", id.toString(), metadata.getType().getPath().replace('_', '-'));
             return Optional.empty();
         }
 
+        Holder.Reference<SkyboxType<? extends Skybox>> type = optionalType.get();
         try {
-            return Optional.of(type.getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst());
+            return Optional.of(type.value().getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst());
         } catch (RuntimeException e) {
             NuitClient.getLogger().warn("Skipping invalid skybox {}", id.toString(), e);
             NuitClient.getLogger().warn(jsonObject.toString());
@@ -115,7 +117,7 @@ public class SkyboxManager implements NuitApi {
     }
 
     @Internal
-    public void renderSkyboxes(LevelRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+    public void renderSkyboxes(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
         for (Skybox skybox : this.activeSkyboxes) {
             this.currentSkybox = skybox;
             skybox.render(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, camera, thickFog, fogCallback);

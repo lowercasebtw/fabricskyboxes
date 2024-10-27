@@ -36,8 +36,8 @@ public class NuitClientFabric implements ClientModInitializer {
         SkyboxType.register(skyboxType -> Registry.register(REGISTRY, skyboxType.createId(), skyboxType));
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
-            public @NotNull CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller2, Executor executor, Executor executor2) {
-                return NuitClient.skyboxResourceListener().reload(preparationBarrier, resourceManager, profilerFiller, profilerFiller2, executor, executor2);
+            public @NotNull CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, Executor executor, Executor executor2) {
+                return NuitClient.skyboxResourceListener().reload(preparationBarrier, resourceManager, executor, executor2);
             }
 
             @Override
