@@ -47,7 +47,7 @@ public class DecorationBox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f matrix4f, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f matrix4f, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         RenderSystem.enableBlend();
         var world = Minecraft.getInstance().level;
         assert world != null;

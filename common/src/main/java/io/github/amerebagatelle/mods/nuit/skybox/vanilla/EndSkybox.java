@@ -12,7 +12,7 @@ import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.CoreShaders;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.FogParameters;
 import org.joml.Matrix4f;
 
 public class EndSkybox extends AbstractSkybox {
@@ -26,7 +26,7 @@ public class EndSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor worldRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+    public void render(SkyRendererAccessor worldRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         Minecraft client = Minecraft.getInstance();
         assert client.level != null;
 

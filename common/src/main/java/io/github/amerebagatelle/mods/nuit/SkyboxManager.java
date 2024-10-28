@@ -11,12 +11,13 @@ import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.components.Metadata;
 import io.github.amerebagatelle.mods.nuit.mixin.SkyRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.DefaultHandler;
-import io.github.amerebagatelle.mods.nuit.skybox.TextureRegistrar;
 import io.github.amerebagatelle.mods.nuit.skybox.SkyboxType;
+import io.github.amerebagatelle.mods.nuit.skybox.TextureRegistrar;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -117,10 +118,10 @@ public class SkyboxManager implements NuitApi {
     }
 
     @Internal
-    public void renderSkyboxes(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+    public void renderSkyboxes(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         for (Skybox skybox : this.activeSkyboxes) {
             this.currentSkybox = skybox;
-            skybox.render(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, camera, thickFog, fogCallback);
+            skybox.render(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, camera, fogParameters, fogCallback);
         }
     }
 

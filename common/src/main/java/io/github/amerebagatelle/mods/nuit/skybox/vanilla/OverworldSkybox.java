@@ -17,8 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.CompiledShaderProgram;
 import net.minecraft.client.renderer.CoreShaders;
-import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -35,7 +34,7 @@ public class OverworldSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor worldRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+    public void render(SkyRendererAccessor worldRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         fogCallback.run();
         Minecraft client = Minecraft.getInstance();
         ClientLevel world = client.level;

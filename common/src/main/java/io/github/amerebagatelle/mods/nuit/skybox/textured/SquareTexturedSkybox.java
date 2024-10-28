@@ -10,6 +10,7 @@ import io.github.amerebagatelle.mods.nuit.mixin.SkyRendererAccessor;
 import io.github.amerebagatelle.mods.nuit.skybox.AbstractSkybox;
 import io.github.amerebagatelle.mods.nuit.util.Utils;
 import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
@@ -34,7 +35,7 @@ public class SquareTexturedSkybox extends TexturedSkybox {
     }
 
     @Override
-    public void renderSkybox(SkyRendererAccessor worldRendererAccess, PoseStack matrices, float tickDelta, Camera camera, boolean thickFog, Runnable runnable) {
+    public void renderSkybox(SkyRendererAccessor worldRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable) {
         BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         RenderSystem.setShaderTexture(0, this.texture.getTextureId());
         for (int face = 0; face < 6; face++) {

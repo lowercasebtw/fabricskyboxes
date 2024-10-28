@@ -14,7 +14,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.CoreShaders;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.FogParameters;
 import org.joml.Matrix4f;
 
 import java.util.Objects;
@@ -37,7 +37,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
      * @param tickDelta           The current tick delta.
      */
     @Override
-    public final void render(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback) {
+    public final void render(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
 
@@ -51,7 +51,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
         // static
         this.rotation.rotateStack(matrixStack, world);
 
-        this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, thickFog, fogCallback);
+        this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, fogParameters, fogCallback);
         matrixStack.popPose();
 
         RenderSystem.depthMask(true);
@@ -62,7 +62,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
     /**
      * Override this method instead of render if you are extending this skybox.
      */
-    public abstract void renderSkybox(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, float tickDelta, Camera camera, boolean thickFog, Runnable runnable);
+    public abstract void renderSkybox(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable);
 
     public Blend getBlend() {
         return this.blend;
