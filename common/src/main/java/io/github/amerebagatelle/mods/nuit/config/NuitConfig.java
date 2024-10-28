@@ -68,7 +68,6 @@ public class NuitConfig {
         public boolean enable = true;
         public int unexpectedTransitionDuration = 20;
         public long fadeCacheDuration = 24000;
-        public boolean keepVanillaBehaviour = true;
 
         public boolean debugMode = false;
         public boolean debugHud = false;

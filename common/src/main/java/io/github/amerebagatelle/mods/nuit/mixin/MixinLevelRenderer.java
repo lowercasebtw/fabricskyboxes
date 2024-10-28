@@ -2,7 +2,6 @@ package io.github.amerebagatelle.mods.nuit.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.amerebagatelle.mods.nuit.NuitClient;
 import io.github.amerebagatelle.mods.nuit.SkyboxManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -26,20 +25,16 @@ public abstract class MixinLevelRenderer {
     private void renderCustomSkyboxes(FogParameters fogParameters, DimensionSpecialEffects.SkyType skyType, float tickDelta, DimensionSpecialEffects dimensionSpecialEffects, CallbackInfo ci) {
         SkyboxManager skyboxManager = SkyboxManager.getInstance();
         if (skyboxManager.isEnabled() && !skyboxManager.getActiveSkyboxes().isEmpty()) {
-            boolean renderSky = !NuitClient.config().generalSettings.keepVanillaBehaviour;
-            if (renderSky) {
-                PoseStack poseStack = new PoseStack();
-                poseStack.mulPose(RenderSystem.getModelViewMatrix());
-                skyboxManager.renderSkyboxes(
-                        (SkyRendererAccessor) skyRenderer,
-                        poseStack,
-                        RenderSystem.getProjectionMatrix(),
-                        tickDelta,
-                        Minecraft.getInstance().gameRenderer.getMainCamera(),
-                        fogParameters,
-                        FogRenderer::toggleFog
-                );
-            }
+            PoseStack poseStack = new PoseStack();
+            skyboxManager.renderSkyboxes(
+                    (SkyRendererAccessor) skyRenderer,
+                    poseStack,
+                    RenderSystem.getProjectionMatrix(),
+                    tickDelta,
+                    Minecraft.getInstance().gameRenderer.getMainCamera(),
+                    fogParameters,
+                    FogRenderer::toggleFog
+            );
             ci.cancel();
         }
     }
