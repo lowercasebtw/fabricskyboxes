@@ -79,12 +79,9 @@ public class OverworldSkybox extends AbstractSkybox {
             float i = Mth.sin(skyAngleRadian) < 0.0F ? 180.0F : 0.0F;
             matrices.mulPose(Axis.ZP.rotationDegrees(i));
             matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
-            float j = skyColorR;
-            float k = skyColorG;
-            float l = skyColorB;
             Matrix4f matrix4f = matrices.last().pose();
             BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-            bufferBuilder.addVertex(matrix4f, 0.0F, 100.0F, 0.0F).setColor(j, k, l, skyColorA * this.alpha);
+            bufferBuilder.addVertex(matrix4f, 0.0F, 100.0F, 0.0F).setColor(skyColorR, skyColorG, skyColorB, skyColorA * this.alpha);
 
             for (int n = 0; n <= 16; ++n) {
                 float o = (float) n * (float) (Math.PI * 2) / 16.0F;
