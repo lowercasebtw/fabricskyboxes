@@ -40,20 +40,20 @@ public class SkyboxManager implements NuitApi {
     private Skybox currentSkybox = null;
     private boolean enabled = true;
 
-    public static Optional<Skybox> parseSkyboxJson(ResourceLocation id, JsonObject jsonObject) {
+    public static Optional<Skybox> parseSkyboxJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
         Metadata metadata;
 
         try {
             metadata = Metadata.CODEC.decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst();
         } catch (RuntimeException e) {
-            NuitClient.getLogger().warn("Skipping invalid skybox {}", id.toString(), e);
+            NuitClient.getLogger().warn("Skipping invalid skybox {}", resourceLocation.toString(), e);
             NuitClient.getLogger().warn(jsonObject.toString());
             return Optional.empty();
         }
 
         Optional<Holder.Reference<SkyboxType<? extends Skybox>>> optionalType = NuitPlatformHelper.INSTANCE.getSkyboxTypeRegistry().get(metadata.getType());
         if (optionalType.isEmpty()) {
-            NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", id.toString(), metadata.getType().getPath().replace('_', '-'));
+            NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", resourceLocation.toString(), metadata.getType().getPath().replace('_', '-'));
             return Optional.empty();
         }
 
@@ -61,7 +61,7 @@ public class SkyboxManager implements NuitApi {
         try {
             return Optional.of(type.value().getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst());
         } catch (RuntimeException e) {
-            NuitClient.getLogger().warn("Skipping invalid skybox {}", id.toString(), e);
+            NuitClient.getLogger().warn("Skipping invalid skybox {}", resourceLocation.toString(), e);
             NuitClient.getLogger().warn(jsonObject.toString());
             return Optional.empty();
         }
@@ -71,27 +71,27 @@ public class SkyboxManager implements NuitApi {
         return INSTANCE;
     }
 
-    public void addSkybox(ResourceLocation identifier, JsonObject jsonObject) {
-        Optional<Skybox> skybox = SkyboxManager.parseSkyboxJson(identifier, jsonObject);
+    public void addSkybox(ResourceLocation resourceLocation, JsonObject jsonObject) {
+        Optional<Skybox> skybox = SkyboxManager.parseSkyboxJson(resourceLocation, jsonObject);
         if (skybox.isPresent()) {
-            NuitClient.getLogger().info("Adding skybox {}", identifier.toString());
-            this.addSkybox(identifier, skybox.get());
+            NuitClient.getLogger().info("Adding skybox {}", resourceLocation.toString());
+            this.addSkybox(resourceLocation, skybox.get());
         }
     }
 
-    public void addSkybox(ResourceLocation identifier, Skybox skybox) {
-        Preconditions.checkNotNull(identifier, "Identifier was null");
+    public void addSkybox(ResourceLocation resourceLocation, Skybox skybox) {
+        Preconditions.checkNotNull(resourceLocation, "Identifier was null");
         Preconditions.checkNotNull(skybox, "Skybox was null");
         DefaultHandler.addConditions(skybox);
 
         if (skybox instanceof TextureRegistrar textureRegistrar) {
-            textureRegistrar.getTexturesToRegister().forEach(resourceLocation -> {
-                Minecraft.getInstance().getTextureManager().register(resourceLocation, new SimpleTexture(resourceLocation));
-                this.preloadedTextures.add(resourceLocation);
+            textureRegistrar.getTexturesToRegister().forEach((theResourceLocation) -> {
+                Minecraft.getInstance().getTextureManager().register(theResourceLocation, new SimpleTexture(theResourceLocation));
+                this.preloadedTextures.add(theResourceLocation);
             });
         }
 
-        this.skyboxMap.put(identifier, skybox);
+        this.skyboxMap.put(resourceLocation, skybox);
     }
 
     /**
@@ -101,11 +101,11 @@ public class SkyboxManager implements NuitApi {
      *
      * @param skybox the skybox to be added to the list of permanent skyboxes
      */
-    public void addPermanentSkybox(ResourceLocation identifier, Skybox skybox) {
-        Preconditions.checkNotNull(identifier, "Identifier was null");
+    public void addPermanentSkybox(ResourceLocation resourceLocation, Skybox skybox) {
+        Preconditions.checkNotNull(resourceLocation, "Identifier was null");
         Preconditions.checkNotNull(skybox, "Skybox was null");
         DefaultHandler.addConditions(skybox);
-        this.permanentSkyboxMap.put(identifier, skybox);
+        this.permanentSkyboxMap.put(resourceLocation, skybox);
     }
 
     @Internal
@@ -118,10 +118,10 @@ public class SkyboxManager implements NuitApi {
     }
 
     @Internal
-    public void renderSkyboxes(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void renderSkyboxes(SkyRendererAccessor skyRendererAccessor, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         for (Skybox skybox : this.activeSkyboxes) {
             this.currentSkybox = skybox;
-            skybox.render(worldRendererAccess, matrixStack, projectionMatrix, tickDelta, camera, fogParameters, fogCallback);
+            skybox.render(skyRendererAccessor, matrixStack, projectionMatrix, tickDelta, camera, fogParameters, fogCallback);
         }
     }
 

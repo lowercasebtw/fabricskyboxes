@@ -12,7 +12,7 @@ public interface Skybox {
         return 0;
     }
 
-    void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f matrix4f, float tickDelta, Camera camera, FogParameters thickFog, Runnable fogCallback);
+    void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters thickFog, Runnable fogCallback);
 
     void tick(ClientLevel clientLevel);
 

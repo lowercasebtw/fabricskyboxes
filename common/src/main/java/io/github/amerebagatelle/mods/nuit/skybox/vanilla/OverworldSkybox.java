@@ -34,7 +34,7 @@ public class OverworldSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor worldRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         fogCallback.run();
         Minecraft client = Minecraft.getInstance();
         ClientLevel world = client.level;
@@ -51,8 +51,8 @@ public class OverworldSkybox extends AbstractSkybox {
         // Light Sky
         RenderSystem.setShaderColor(f, g, h, this.alpha);
         CompiledShaderProgram shaderProgram = RenderSystem.getShader();
-        worldRendererAccess.getTopSkyBuffer().bind();
-        worldRendererAccess.getTopSkyBuffer().drawWithShader(matrices.last().pose(), projectionMatrix, shaderProgram);
+        skyRendererAccess.getTopSkyBuffer().bind();
+        skyRendererAccess.getTopSkyBuffer().drawWithShader(matrices.last().pose(), projectionMatrix, shaderProgram);
         VertexBuffer.unbind();
 
 
@@ -103,8 +103,8 @@ public class OverworldSkybox extends AbstractSkybox {
         if (d < 0.0) {
             matrices.pushPose();
             matrices.translate(0.0F, 12.0F, 0.0F);
-            worldRendererAccess.getBottomSkyBuffer().bind();
-            worldRendererAccess.getBottomSkyBuffer().drawWithShader(matrices.last().pose(), projectionMatrix, shaderProgram);
+            skyRendererAccess.getBottomSkyBuffer().bind();
+            skyRendererAccess.getBottomSkyBuffer().drawWithShader(matrices.last().pose(), projectionMatrix, shaderProgram);
             VertexBuffer.unbind();
             matrices.popPose();
         }

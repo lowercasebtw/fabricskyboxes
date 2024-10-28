@@ -23,7 +23,7 @@ public abstract class MixinLevelRenderer {
      * Contains the logic for when skyboxes should be rendered.
      */
     @Inject(method = "method_62215", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;setupRenderState()V", shift = At.Shift.AFTER), cancellable = true)
-    private void renderCustomSkyboxes(FogParameters fogParameters, DimensionSpecialEffects.SkyType skyType, float f, DimensionSpecialEffects dimensionSpecialEffects, CallbackInfo ci) {
+    private void renderCustomSkyboxes(FogParameters fogParameters, DimensionSpecialEffects.SkyType skyType, float tickDelta, DimensionSpecialEffects dimensionSpecialEffects, CallbackInfo ci) {
         SkyboxManager skyboxManager = SkyboxManager.getInstance();
         if (skyboxManager.isEnabled() && !skyboxManager.getActiveSkyboxes().isEmpty()) {
             boolean renderSky = !NuitClient.config().generalSettings.keepVanillaBehaviour;
@@ -34,7 +34,7 @@ public abstract class MixinLevelRenderer {
                         (SkyRendererAccessor) skyRenderer,
                         matrixStack,
                         RenderSystem.getProjectionMatrix(),
-                        f,
+                        tickDelta,
                         Minecraft.getInstance().gameRenderer.getMainCamera(),
                         fogParameters,
                         FogRenderer::toggleFog

@@ -35,7 +35,7 @@ public class MultiTexturedSkybox extends TexturedSkybox {
     }
 
     @Override
-    public void renderSkybox(SkyRendererAccessor worldRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable) {
+    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable) {
         for (int i = 0; i < 6; ++i) {
             // 0 = bottom
             // 1 = north

@@ -24,14 +24,13 @@ public class SkyboxResourceListener implements PreparableReloadListener {
 
         skyboxManager.clearSkyboxes();
 
-        Map<ResourceLocation, Resource> resources = resourceManager.listResources("sky", identifier -> identifier.getPath().endsWith(".json"));
-
-        resources.forEach((identifier, resource) -> {
+        Map<ResourceLocation, Resource> resources = resourceManager.listResources("sky", resourceLocation -> resourceLocation.getPath().endsWith(".json"));
+        resources.forEach((resourceLocation, resource) -> {
             try {
                 JsonObject json = GSON.fromJson(new InputStreamReader(resource.open()), JsonObject.class);
-                skyboxManager.addSkybox(identifier, json);
+                skyboxManager.addSkybox(resourceLocation, json);
             } catch (Exception e) {
-                NuitClient.getLogger().error("Error reading skybox {}", identifier.toString(), e);
+                NuitClient.getLogger().error("Error reading skybox {}", resourceLocation.toString(), e);
             }
         });
     }

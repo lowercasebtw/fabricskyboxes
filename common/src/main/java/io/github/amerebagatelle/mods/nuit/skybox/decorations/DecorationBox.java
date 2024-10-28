@@ -47,7 +47,7 @@ public class DecorationBox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f matrix4f, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         RenderSystem.enableBlend();
         var world = Minecraft.getInstance().level;
         assert world != null;
@@ -75,7 +75,7 @@ public class DecorationBox extends AbstractSkybox {
         }
         // Stars
         if (this.starsEnabled) {
-            this.renderStars(skyRendererAccessor, tickDelta, poseStack, matrix4f);
+            this.renderStars(skyRendererAccessor, tickDelta, poseStack, projectionMatrix);
         }
         poseStack.popPose();
 

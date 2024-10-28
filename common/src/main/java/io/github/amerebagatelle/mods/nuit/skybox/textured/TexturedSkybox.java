@@ -32,12 +32,12 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
     /**
      * Overrides and makes final here as there are options that should always be respected in a textured skybox.
      *
-     * @param worldRendererAccess Access to the worldRenderer as skyboxes often require it.
+     * @param skyRendererAccess Access to the worldRenderer as skyboxes often require it.
      * @param matrixStack         The current MatrixStack.
      * @param tickDelta           The current tick delta.
      */
     @Override
-    public final void render(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public final void render(SkyRendererAccessor skyRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
 
@@ -51,7 +51,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
         // static
         this.rotation.rotateStack(matrixStack, world);
 
-        this.renderSkybox(worldRendererAccess, matrixStack, tickDelta, camera, fogParameters, fogCallback);
+        this.renderSkybox(skyRendererAccess, matrixStack, tickDelta, camera, fogParameters, fogCallback);
         matrixStack.popPose();
 
         RenderSystem.depthMask(true);
@@ -62,7 +62,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
     /**
      * Override this method instead of render if you are extending this skybox.
      */
-    public abstract void renderSkybox(SkyRendererAccessor worldRendererAccess, PoseStack matrixStack, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable);
+    public abstract void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrixStack, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable);
 
     public Blend getBlend() {
         return this.blend;
