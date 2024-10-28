@@ -44,12 +44,12 @@ if (FabricLoader.getInstance().isModLoaded("Nuit")) {
 ### Skybox Implementation
 
 ```java
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.amerebagatelle.mods.nuit.api.skyboxes.Skybox;
 import io.github.amerebagatelle.mods.nuit.mixin.skybox.SkyRendererAccess;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.FogParameters;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 
 public class MyModSkybox implements Skybox {
     @Override

@@ -28,11 +28,11 @@ public abstract class MixinLevelRenderer {
         if (skyboxManager.isEnabled() && !skyboxManager.getActiveSkyboxes().isEmpty()) {
             boolean renderSky = !NuitClient.config().generalSettings.keepVanillaBehaviour;
             if (renderSky) {
-                PoseStack matrixStack = new PoseStack();
-                matrixStack.mulPose(RenderSystem.getModelViewMatrix());
+                PoseStack poseStack = new PoseStack();
+                poseStack.mulPose(RenderSystem.getModelViewMatrix());
                 skyboxManager.renderSkyboxes(
                         (SkyRendererAccessor) skyRenderer,
-                        matrixStack,
+                        poseStack,
                         RenderSystem.getProjectionMatrix(),
                         tickDelta,
                         Minecraft.getInstance().gameRenderer.getMainCamera(),

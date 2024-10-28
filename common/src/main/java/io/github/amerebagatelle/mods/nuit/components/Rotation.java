@@ -53,7 +53,7 @@ public class Rotation {
         this.speed = speed;
     }
 
-    public void rotateStack(PoseStack matrixStack, ClientLevel world) {
+    public void rotateStack(PoseStack poseStack, ClientLevel world) {
         long currentTime = world.getDayTime() % this.duration;
         // static
         Quaternionf resultRot = new Quaternionf();
@@ -79,7 +79,7 @@ public class Rotation {
             mappingRot.set(Utils.interpolateQuatKeyframes(this.mapping, mappingKeyframe, currentTime));
             resultRot.mul(mappingRot);
         });
-        matrixStack.mulPose(resultRot);
+        poseStack.mulPose(resultRot);
     }
 
     public boolean getSkyboxRotation() {

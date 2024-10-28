@@ -65,18 +65,22 @@ public class DecorationBox extends AbstractSkybox {
 
         Matrix4f matrix4f2 = poseStack.last().pose();
         RenderSystem.setShader(CoreShaders.POSITION_TEX);
+
         // Sun
         if (this.sunEnabled) {
             this.renderSun(matrix4f2);
         }
+
         // Moon
         if (this.moonEnabled) {
             this.renderMoon(matrix4f2);
         }
+
         // Stars
         if (this.starsEnabled) {
             this.renderStars(skyRendererAccessor, tickDelta, poseStack, projectionMatrix);
         }
+
         poseStack.popPose();
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -111,7 +115,7 @@ public class DecorationBox extends AbstractSkybox {
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
-    public void renderStars(SkyRendererAccessor skyRendererAccessor, float tickDelta, PoseStack poseStack, Matrix4f matrix4f) {
+    public void renderStars(SkyRendererAccessor skyRendererAccessor, float tickDelta, PoseStack poseStack, Matrix4f projectionMatrix) {
         ClientLevel world = Minecraft.getInstance().level;
         float i = 1.0F - world.getRainLevel(tickDelta);
         float brightness = world.getStarBrightness(tickDelta) * i;
@@ -119,7 +123,7 @@ public class DecorationBox extends AbstractSkybox {
             RenderSystem.setShaderColor(brightness, brightness, brightness, brightness);
             RenderSystem.setShaderFog(FogParameters.NO_FOG);
             skyRendererAccessor.getStarsBuffer().bind();
-            skyRendererAccessor.getStarsBuffer().drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
+            skyRendererAccessor.getStarsBuffer().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
             VertexBuffer.unbind();
         }
     }

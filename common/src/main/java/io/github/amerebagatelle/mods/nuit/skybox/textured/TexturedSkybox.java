@@ -33,11 +33,11 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
      * Overrides and makes final here as there are options that should always be respected in a textured skybox.
      *
      * @param skyRendererAccess Access to the worldRenderer as skyboxes often require it.
-     * @param matrixStack         The current MatrixStack.
+     * @param poseStack         The current PoseStack.
      * @param tickDelta           The current tick delta.
      */
     @Override
-    public final void render(SkyRendererAccessor skyRendererAccess, PoseStack matrixStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public final void render(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
 
@@ -46,13 +46,13 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
 
         ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
 
-        matrixStack.pushPose();
+        poseStack.pushPose();
 
         // static
-        this.rotation.rotateStack(matrixStack, world);
+        this.rotation.rotateStack(poseStack, world);
 
-        this.renderSkybox(skyRendererAccess, matrixStack, tickDelta, camera, fogParameters, fogCallback);
-        matrixStack.popPose();
+        this.renderSkybox(skyRendererAccess, poseStack, tickDelta, camera, fogParameters, fogCallback);
+        poseStack.popPose();
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
@@ -62,7 +62,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
     /**
      * Override this method instead of render if you are extending this skybox.
      */
-    public abstract void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrixStack, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable);
+    public abstract void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable);
 
     public Blend getBlend() {
         return this.blend;
