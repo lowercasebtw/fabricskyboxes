@@ -32,7 +32,7 @@ public abstract class TexturedSkybox extends AbstractSkybox implements Rotatable
     /**
      * Overrides and makes final here as there are options that should always be respected in a textured skybox.
      *
-     * @param skyRendererAccess Access to the worldRenderer as skyboxes often require it.
+     * @param skyRendererAccess Access to the skyRenderer as skyboxes often require it.
      * @param poseStack         The current PoseStack.
      * @param tickDelta           The current tick delta.
      */

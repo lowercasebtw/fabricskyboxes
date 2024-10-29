@@ -22,6 +22,7 @@ public class MonoColorSkybox extends AbstractSkybox {
             RGBA.CODEC.optionalFieldOf("color", RGBA.of()).forGetter(MonoColorSkybox::getColor),
             Blend.CODEC.optionalFieldOf("blend", Blend.normal()).forGetter(MonoColorSkybox::getBlend)
     ).apply(instance, MonoColorSkybox::new));
+
     public RGBA color;
     public Blend blend;
 
@@ -38,8 +39,8 @@ public class MonoColorSkybox extends AbstractSkybox {
             RenderSystem.enableBlend();
             RenderSystem.setShader(CoreShaders.POSITION_COLOR);
             this.blend.applyBlendFunc(this.alpha);
-            BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
+            BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             for (int i = 0; i < 6; ++i) {
                 matrices.pushPose();
                 if (i == 1) {
