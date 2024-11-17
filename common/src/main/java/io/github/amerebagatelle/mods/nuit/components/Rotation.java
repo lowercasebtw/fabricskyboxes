@@ -79,6 +79,7 @@ public class Rotation {
             mappingRot.set(Utils.interpolateQuatKeyframes(this.mapping, mappingKeyframe, currentTime));
             resultRot.mul(mappingRot);
         });
+
         poseStack.mulPose(resultRot);
     }
 

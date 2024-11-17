@@ -35,7 +35,7 @@ public class MultiTexturedSkybox extends TexturedSkybox {
     }
 
     @Override
-    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable) {
+    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         for (int i = 0; i < 6; ++i) {
             // 0 = bottom
             // 1 = north
@@ -46,7 +46,6 @@ public class MultiTexturedSkybox extends TexturedSkybox {
             // List of UV ranges for each face of the cube
             UVRange faceUVRange = Utils.TEXTURE_FACES[i];
             matrices.pushPose();
-
             if (i == 1) {
                 matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
             } else if (i == 2) {
@@ -66,7 +65,6 @@ public class MultiTexturedSkybox extends TexturedSkybox {
 
             // animations
             for (AnimatableTexture animatableTexture : this.animatableTextures) {
-
                 animatableTexture.tick();
                 UVRange intersect = Utils.findUVIntersection(faceUVRange, animatableTexture.getUvRange()); // todo: cache this intersections so we don't waste gpu cycles
                 if (intersect != null && animatableTexture.getCurrentFrame() != null) {

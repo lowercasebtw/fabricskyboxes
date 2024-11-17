@@ -35,12 +35,9 @@ public class SquareTexturedSkybox extends TexturedSkybox {
     }
 
     @Override
-    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable runnable) {
+    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tesselator.begin(
-                VertexFormat.Mode.QUADS,
-                DefaultVertexFormat.POSITION_TEX
-        );
+        BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         RenderSystem.setShaderTexture(0, this.texture.getTextureId());
         for (int face = 0; face < 6; face++) {
             // 0 = bottom
@@ -51,7 +48,6 @@ public class SquareTexturedSkybox extends TexturedSkybox {
             // 5 = west
             UVRange tex = Utils.TEXTURE_FACES[face];
             matrices.pushPose();
-
             if (face == 1) {
                 matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
             } else if (face == 2) {
