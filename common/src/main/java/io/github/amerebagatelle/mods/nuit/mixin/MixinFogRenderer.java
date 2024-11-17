@@ -51,7 +51,15 @@ public class MixinFogRenderer {
     @ModifyReturnValue(method = "setupFog", at = @At(value = "RETURN"))
     private static FogParameters redirectSetShaderFogColor(FogParameters original) {
         float fogDensity = Utils.alphaBlendFogDensity(SkyboxManager.getInstance().getActiveSkyboxes(), original.alpha());
-        return new FogParameters(original.start(), original.end(), original.shape(), nuit$fogRed, nuit$fogBlue, nuit$fogGreen, fogDensity);
+        boolean enabled = SkyboxManager.getInstance().isEnabled();
+        return new FogParameters(
+                original.start(),
+                original.end(),
+                original.shape(),
+                enabled ? original.red() : nuit$fogRed,
+                enabled ? original.green() : nuit$fogGreen,
+                enabled ? original.blue() : nuit$fogBlue,
+                fogDensity);
     }
 
     @Redirect(method = "computeFogColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getTimeOfDay(F)F"))
@@ -77,8 +85,9 @@ public class MixinFogRenderer {
             constant = @Constant(intValue = 4, ordinal = 0)
     )
     private static int renderSkyColor(int original) {
-        Skybox skybox = SkyboxManager.getInstance().getCurrentSkybox();
-        if (skybox instanceof NuitSkybox nuitSkybox) {
+        SkyboxManager skyboxManager = SkyboxManager.getInstance();
+        Skybox skybox = skyboxManager.getCurrentSkybox();
+        if (skyboxManager.isEnabled() && skybox instanceof NuitSkybox nuitSkybox) {
             if (!nuitSkybox.getProperties().isRenderSunSkyTint()) {
                 return Integer.MAX_VALUE;
             }
