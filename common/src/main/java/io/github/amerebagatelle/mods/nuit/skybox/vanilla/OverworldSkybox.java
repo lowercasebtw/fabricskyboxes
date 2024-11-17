@@ -45,7 +45,7 @@ public class OverworldSkybox extends AbstractSkybox {
         float f = (float) vec3d.x;
         float g = (float) vec3d.y;
         float h = (float) vec3d.z;
-//        FogRenderer.levelFogColor();
+        RenderSystem.setShaderFog(fogParameters);
         RenderSystem.depthMask(false);
 
         // Light Sky
@@ -55,13 +55,11 @@ public class OverworldSkybox extends AbstractSkybox {
         skyRendererAccess.getTopSkyBuffer().drawWithShader(matrices.last().pose(), projectionMatrix, shaderProgram);
         VertexBuffer.unbind();
 
-
         RenderSystem.enableBlend();
-        float skyAngle = world.getTimeOfDay(tickDelta);
-        float skyAngleRadian = world.getSunAngle(tickDelta);
 
+        float skyAngleRadian = world.getSunAngle(tickDelta);
         if (SkyboxManager.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorationBox && decorationBox.getProperties().getRotation().getSkyboxRotation())) {
-            skyAngle = Mth.positiveModulo(world.getDayTime() / 24000F + 0.75F, 1);
+            float skyAngle = Mth.positiveModulo(world.getDayTime() / 24000F + 0.75F, 1);
             skyAngleRadian = skyAngle * (float) (Math.PI * 2);
         }
 
@@ -96,6 +94,7 @@ public class OverworldSkybox extends AbstractSkybox {
 
         // Dark Sky
         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
+        assert client.player != null;
         double d = client.player.getEyePosition(tickDelta).y - world.getLevelData().getHorizonHeight(world);
         if (d < 0.0) {
             matrices.pushPose();
@@ -106,7 +105,6 @@ public class OverworldSkybox extends AbstractSkybox {
             matrices.popPose();
         }
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
