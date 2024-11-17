@@ -25,7 +25,7 @@ public class EndSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor skyRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         RenderSystem.enableBlend();
         RenderSystem.depthMask(false);
         RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
@@ -33,33 +33,33 @@ public class EndSkybox extends AbstractSkybox {
         BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
         for (int i = 0; i < 6; ++i) {
-            matrices.pushPose();
+            poseStack.pushPose();
             if (i == 1) {
-                matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             }
 
             if (i == 2) {
-                matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             }
 
             if (i == 3) {
-                matrices.mulPose(Axis.XP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
             }
 
             if (i == 4) {
-                matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
             }
 
             if (i == 5) {
-                matrices.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
             }
 
-            Matrix4f matrix4f = matrices.last().pose();
+            Matrix4f matrix4f = poseStack.last().pose();
             bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, -100.0F).setUv(0.0F, 0.0F).setColor(40, 40, 40, (int) (255 * this.alpha));
             bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, 100.0F).setUv(0.0F, 16.0F).setColor(40, 40, 40, (int) (255 * this.alpha));
             bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, 100.0F).setUv(16.0F, 16.0F).setColor(40, 40, 40, (int) (255 * this.alpha));
             bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, -100.0F).setUv(16.0F, 0.0F).setColor(40, 40, 40, (int) (255 * this.alpha));
-            matrices.popPose();
+            poseStack.popPose();
         }
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 

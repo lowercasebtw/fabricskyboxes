@@ -34,7 +34,7 @@ public class OverworldSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor skyRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         fogCallback.run();
         Minecraft client = Minecraft.getInstance();
         ClientLevel world = client.level;
@@ -52,7 +52,7 @@ public class OverworldSkybox extends AbstractSkybox {
         RenderSystem.setShaderColor(f, g, h, this.alpha);
         CompiledShaderProgram shaderProgram = RenderSystem.getShader();
         skyRendererAccess.getTopSkyBuffer().bind();
-        skyRendererAccess.getTopSkyBuffer().drawWithShader(matrices.last().pose(), projectionMatrix, shaderProgram);
+        skyRendererAccess.getTopSkyBuffer().drawWithShader(poseStack.last().pose(), projectionMatrix, shaderProgram);
         VertexBuffer.unbind();
 
         RenderSystem.enableBlend();
@@ -72,12 +72,12 @@ public class OverworldSkybox extends AbstractSkybox {
 
             RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            matrices.pushPose();
-            matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             float i = Mth.sin(skyAngleRadian) < 0.0F ? 180.0F : 0.0F;
-            matrices.mulPose(Axis.ZP.rotationDegrees(i));
-            matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
-            Matrix4f matrix4f = matrices.last().pose();
+            poseStack.mulPose(Axis.ZP.rotationDegrees(i));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+            Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
             bufferBuilder.addVertex(matrix4f, 0.0F, 100.0F, 0.0F).setColor(skyColorR, skyColorG, skyColorB, skyColorA * this.alpha);
 
@@ -89,7 +89,7 @@ public class OverworldSkybox extends AbstractSkybox {
             }
 
             BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-            matrices.popPose();
+            poseStack.popPose();
         }
 
         // Dark Sky
@@ -97,12 +97,12 @@ public class OverworldSkybox extends AbstractSkybox {
         assert client.player != null;
         double d = client.player.getEyePosition(tickDelta).y - world.getLevelData().getHorizonHeight(world);
         if (d < 0.0) {
-            matrices.pushPose();
-            matrices.translate(0.0F, 12.0F, 0.0F);
+            poseStack.pushPose();
+            poseStack.translate(0.0F, 12.0F, 0.0F);
             skyRendererAccess.getBottomSkyBuffer().bind();
-            skyRendererAccess.getBottomSkyBuffer().drawWithShader(matrices.last().pose(), projectionMatrix, shaderProgram);
+            skyRendererAccess.getBottomSkyBuffer().drawWithShader(poseStack.last().pose(), projectionMatrix, shaderProgram);
             VertexBuffer.unbind();
-            matrices.popPose();
+            poseStack.popPose();
         }
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 

@@ -33,7 +33,7 @@ public class MonoColorSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor skyRendererAccess, PoseStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         if (this.alpha > 0) {
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
@@ -42,28 +42,28 @@ public class MonoColorSkybox extends AbstractSkybox {
 
             BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             for (int i = 0; i < 6; ++i) {
-                matrices.pushPose();
+                poseStack.pushPose();
                 if (i == 1) {
-                    matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
+                    poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
                 } else if (i == 2) {
-                    matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
-                    matrices.mulPose(Axis.YP.rotationDegrees(180.0F));
+                    poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
                 } else if (i == 3) {
-                    matrices.mulPose(Axis.XP.rotationDegrees(180.0F));
+                    poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
                 } else if (i == 4) {
-                    matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
-                    matrices.mulPose(Axis.YP.rotationDegrees(-90.0F));
+                    poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
                 } else if (i == 5) {
-                    matrices.mulPose(Axis.ZP.rotationDegrees(-90.0F));
-                    matrices.mulPose(Axis.YP.rotationDegrees(90.0F));
+                    poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
                 }
 
-                Matrix4f matrix4f = matrices.last().pose();
+                Matrix4f matrix4f = poseStack.last().pose();
                 bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, -100.0F).setColor(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
                 bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, 100.0F).setColor(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
                 bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, 100.0F).setColor(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
                 bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, -100.0F).setColor(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), this.alpha);
-                matrices.popPose();
+                poseStack.popPose();
             }
             BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 

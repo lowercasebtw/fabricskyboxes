@@ -35,7 +35,7 @@ public class MultiTexturedSkybox extends TexturedSkybox {
     }
 
     @Override
-    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         for (int i = 0; i < 6; ++i) {
             // 0 = bottom
             // 1 = north
@@ -45,23 +45,23 @@ public class MultiTexturedSkybox extends TexturedSkybox {
             // 5 = west
             // List of UV ranges for each face of the cube
             UVRange faceUVRange = Utils.TEXTURE_FACES[i];
-            matrices.pushPose();
+            poseStack.pushPose();
             if (i == 1) {
-                matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             } else if (i == 2) {
-                matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
-                matrices.mulPose(Axis.YP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             } else if (i == 3) {
-                matrices.mulPose(Axis.XP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
             } else if (i == 4) {
-                matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
-                matrices.mulPose(Axis.YP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             } else if (i == 5) {
-                matrices.mulPose(Axis.ZP.rotationDegrees(-90.0F));
-                matrices.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
             }
 
-            Matrix4f matrix4f = matrices.last().pose();
+            Matrix4f matrix4f = poseStack.last().pose();
 
             // animations
             for (AnimatableTexture animatableTexture : this.animatableTextures) {
@@ -82,7 +82,7 @@ public class MultiTexturedSkybox extends TexturedSkybox {
                 }
             }
 
-            matrices.popPose();
+            poseStack.popPose();
         }
     }
 

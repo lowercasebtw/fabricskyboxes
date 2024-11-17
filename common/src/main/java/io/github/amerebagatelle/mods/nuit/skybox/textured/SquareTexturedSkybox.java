@@ -35,7 +35,7 @@ public class SquareTexturedSkybox extends TexturedSkybox {
     }
 
     @Override
-    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack matrices, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void renderSkybox(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         RenderSystem.setShaderTexture(0, this.texture.getTextureId());
@@ -47,28 +47,28 @@ public class SquareTexturedSkybox extends TexturedSkybox {
             // 4 = east
             // 5 = west
             UVRange tex = Utils.TEXTURE_FACES[face];
-            matrices.pushPose();
+            poseStack.pushPose();
             if (face == 1) {
-                matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             } else if (face == 2) {
-                matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
-                matrices.mulPose(Axis.YP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             } else if (face == 3) {
-                matrices.mulPose(Axis.XP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
             } else if (face == 4) {
-                matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
-                matrices.mulPose(Axis.YP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             } else if (face == 5) {
-                matrices.mulPose(Axis.ZP.rotationDegrees(-90.0F));
-                matrices.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
             }
 
-            Matrix4f matrix4f = matrices.last().pose();
+            Matrix4f matrix4f = poseStack.last().pose();
             bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, -100.0F).setUv(tex.getMinU(), tex.getMinV());
             bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, 100.0F).setUv(tex.getMinU(), tex.getMaxV());
             bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, 100.0F).setUv(tex.getMaxU(), tex.getMaxV());
             bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, -100.0F).setUv(tex.getMaxU(), tex.getMinV());
-            matrices.popPose();
+            poseStack.popPose();
         }
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
