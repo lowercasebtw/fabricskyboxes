@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,23 +23,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(FogRenderer.class)
 public class MixinFogRenderer {
     @Unique
-    private static float nuit$fogRed;
+    @Nullable
+    private static Float nuit$fogRed = null;
 
     @Unique
-    private static float nuit$fogGreen;
+    @Nullable
+    private static Float nuit$fogGreen = null;
 
     @Unique
-    private static float nuit$fogBlue;
+    @Nullable
+    private static Float nuit$fogBlue = null;
 
     /**
      * Checks if we should change the fog color to whatever the skybox set it to, and sets it.
      */
     @Inject(method = "computeFogColor", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/FogRenderer;biomeChangedTime:J", ordinal = 6))
     private static void modifyColors(Camera camera, float f, ClientLevel clientLevel, int i, float g, CallbackInfoReturnable<Vector4f> cir) {
-        int y = clientLevel.getSkyColor(camera.getPosition(), f);
-        float fogRed = ARGB.from8BitChannel(ARGB.red(y));
-        float fogGreen = ARGB.from8BitChannel(ARGB.green(y));
-        float fogBlue = ARGB.from8BitChannel(ARGB.blue(y));
+        int skyColor = clientLevel.getSkyColor(camera.getPosition(), f);
+        float fogRed = ARGB.from8BitChannel(ARGB.red(skyColor));
+        float fogGreen = ARGB.from8BitChannel(ARGB.green(skyColor));
+        float fogBlue = ARGB.from8BitChannel(ARGB.blue(skyColor));
         RGB initialFogColor = new RGB(fogRed, fogGreen, fogBlue);
         RGB fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), initialFogColor);
         if (SkyboxManager.getInstance().isEnabled() && fogColor != initialFogColor) {
@@ -56,9 +60,9 @@ public class MixinFogRenderer {
                 original.start(),
                 original.end(),
                 original.shape(),
-                enabled ? original.red() : nuit$fogRed,
-                enabled ? original.green() : nuit$fogGreen,
-                enabled ? original.blue() : nuit$fogBlue,
+                enabled && (nuit$fogRed != null) ? nuit$fogRed : original.red(),
+                enabled && (nuit$fogGreen != null) ? nuit$fogGreen : original.green(),
+                enabled && (nuit$fogBlue != null) ? nuit$fogBlue : original.blue(),
                 fogDensity);
     }
 
@@ -66,8 +70,9 @@ public class MixinFogRenderer {
     private static float nuit$redirectSkyAngle(ClientLevel instance, float v) {
         if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().getRotation().getSkyboxRotation())) {
             return Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
+        } else {
+            return instance.getTimeOfDay(v);
         }
-        return instance.getTimeOfDay(v);
     }
 
     @Redirect(method = "computeFogColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getSunAngle(F)F"))
@@ -75,8 +80,9 @@ public class MixinFogRenderer {
         if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().getRotation().getSkyboxRotation())) {
             float skyAngle = Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
             return skyAngle * (float) (Math.PI * 2);
+        } else {
+            return instance.getSunAngle(v);
         }
-        return instance.getSunAngle(v);
     }
 
     @ModifyConstant(
