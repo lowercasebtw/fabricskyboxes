@@ -40,10 +40,7 @@ public class MixinFogRenderer {
     @Inject(method = "computeFogColor", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/FogRenderer;biomeChangedTime:J", ordinal = 6))
     private static void modifyColors(Camera camera, float f, ClientLevel clientLevel, int i, float g, CallbackInfoReturnable<Vector4f> cir) {
         int skyColor = clientLevel.getSkyColor(camera.getPosition(), f);
-        float fogRed = ARGB.from8BitChannel(ARGB.red(skyColor));
-        float fogGreen = ARGB.from8BitChannel(ARGB.green(skyColor));
-        float fogBlue = ARGB.from8BitChannel(ARGB.blue(skyColor));
-        RGB initialFogColor = new RGB(fogRed, fogGreen, fogBlue);
+        RGB initialFogColor = new RGB(ARGB.redFloat(skyColor), ARGB.greenFloat(skyColor), ARGB.blueFloat(skyColor));
         RGB fogColor = Utils.alphaBlendFogColors(SkyboxManager.getInstance().getActiveSkyboxes(), initialFogColor);
         if (SkyboxManager.getInstance().isEnabled() && fogColor != initialFogColor) {
             nuit$fogRed = fogColor.getRed();
@@ -68,7 +65,7 @@ public class MixinFogRenderer {
 
     @Redirect(method = "computeFogColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getTimeOfDay(F)F"))
     private static float nuit$redirectSkyAngle(ClientLevel instance, float v) {
-        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().rotation().skyboxRotation())) {
             return Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
         } else {
             return instance.getTimeOfDay(v);
@@ -77,7 +74,7 @@ public class MixinFogRenderer {
 
     @Redirect(method = "computeFogColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getSunAngle(F)F"))
     private static float nuit$redirectSkyAngleRadian(ClientLevel instance, float v) {
-        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && SkyboxManager.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorBox && decorBox.getProperties().rotation().skyboxRotation())) {
             float skyAngle = Mth.positiveModulo(instance.getDayTime() / 24000F + 0.75F, 1);
             return skyAngle * (float) (Math.PI * 2);
         } else {
@@ -94,7 +91,7 @@ public class MixinFogRenderer {
         SkyboxManager skyboxManager = SkyboxManager.getInstance();
         Skybox skybox = skyboxManager.getCurrentSkybox();
         if (skyboxManager.isEnabled() && skybox instanceof NuitSkybox nuitSkybox) {
-            if (!nuitSkybox.getProperties().isRenderSunSkyTint()) {
+            if (!nuitSkybox.getProperties().renderSunSkyTint()) {
                 return Integer.MAX_VALUE;
             }
         }

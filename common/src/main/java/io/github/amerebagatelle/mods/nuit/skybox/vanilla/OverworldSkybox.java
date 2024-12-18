@@ -15,13 +15,16 @@ import io.github.amerebagatelle.mods.nuit.skybox.decorations.DecorationBox;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.CompiledShaderProgram;
 import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.FogParameters;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+
+import java.util.Objects;
 
 public class OverworldSkybox extends AbstractSkybox {
     public static Codec<OverworldSkybox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -34,14 +37,13 @@ public class OverworldSkybox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccess, PoseStack poseStack, float tickDelta, Camera camera, MultiBufferSource.BufferSource bufferSource, FogParameters fogParameters, Runnable fogCallback) {
         fogCallback.run();
         Minecraft client = Minecraft.getInstance();
-        ClientLevel world = client.level;
-        assert client.level != null;
+        ClientLevel world = Objects.requireNonNull(client.level);
 
         int skyColor = world.getSkyColor(client.gameRenderer.getMainCamera().getPosition(), tickDelta);
-        Vec3 vec3d = new Vec3(ARGB.from8BitChannel(ARGB.red(skyColor)), ARGB.from8BitChannel(ARGB.green(skyColor)), ARGB.from8BitChannel(ARGB.blue(skyColor)));
+        Vec3 vec3d = new Vec3(ARGB.red(skyColor), ARGB.green(skyColor), ARGB.blue(skyColor));
         float f = (float) vec3d.x;
         float g = (float) vec3d.y;
         float h = (float) vec3d.z;
@@ -50,25 +52,24 @@ public class OverworldSkybox extends AbstractSkybox {
 
         // Light Sky
         RenderSystem.setShaderColor(f, g, h, this.alpha);
-        CompiledShaderProgram shaderProgram = RenderSystem.getShader();
         skyRendererAccess.getTopSkyBuffer().bind();
-        skyRendererAccess.getTopSkyBuffer().drawWithShader(poseStack.last().pose(), projectionMatrix, shaderProgram);
+        skyRendererAccess.getTopSkyBuffer().drawWithShader(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
         VertexBuffer.unbind();
 
         RenderSystem.enableBlend();
 
         float skyAngleRadian = world.getSunAngle(tickDelta);
-        if (SkyboxManager.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorationBox && decorationBox.getProperties().getRotation().getSkyboxRotation())) {
+        if (SkyboxManager.getInstance().isEnabled() && NuitApi.getInstance().getActiveSkyboxes().stream().anyMatch(skybox -> skybox instanceof DecorationBox decorationBox && decorationBox.getProperties().rotation().skyboxRotation())) {
             float skyAngle = Mth.positiveModulo(world.getDayTime() / 24000F + 0.75F, 1);
             skyAngleRadian = skyAngle * (float) (Math.PI * 2);
         }
 
         int fs = world.effects().getSunriseOrSunsetColor(tickDelta);
         if (fs != 0) {
-            float skyColorR = ARGB.from8BitChannel(ARGB.red(skyColor));
-            float skyColorG = ARGB.from8BitChannel(ARGB.green(skyColor));
-            float skyColorB = ARGB.from8BitChannel(ARGB.blue(skyColor));
-            float skyColorA = ARGB.from8BitChannel(ARGB.alpha(skyColor));
+            float skyColorR = ARGB.redFloat(skyColor);
+            float skyColorG = ARGB.greenFloat(skyColor);
+            float skyColorB = ARGB.blueFloat(skyColor);
+            float skyColorA = ARGB.alphaFloat(skyColor);
 
             RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -78,34 +79,33 @@ public class OverworldSkybox extends AbstractSkybox {
             poseStack.mulPose(Axis.ZP.rotationDegrees(i));
             poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
             Matrix4f matrix4f = poseStack.last().pose();
-            BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-            bufferBuilder.addVertex(matrix4f, 0.0F, 100.0F, 0.0F).setColor(skyColorR, skyColorG, skyColorB, skyColorA * this.alpha);
 
+            VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.sunriseSunset());
+            vertexConsumer.addVertex(matrix4f, 0.0F, 100.0F, 0.0F).setColor(skyColorR, skyColorG, skyColorB, skyColorA * this.alpha);
             for (int n = 0; n <= 16; ++n) {
                 float o = (float) n * (float) (Math.PI * 2) / 16.0F;
                 float p = Mth.sin(o);
                 float q = Mth.cos(o);
-                bufferBuilder.addVertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * skyColorA).setColor(skyColorR, skyColorG, skyColorB, 0.0F);
+                vertexConsumer.addVertex(matrix4f, p * 120.0F, q * 120.0F, -q * 40.0F * skyColorA).setColor(skyColorR, skyColorG, skyColorB, 0.0F);
             }
 
-            BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+            BufferUploader.drawWithShader(((BufferBuilder) vertexConsumer).buildOrThrow());
             poseStack.popPose();
         }
 
         // Dark Sky
         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
-        assert client.player != null;
-        double d = client.player.getEyePosition(tickDelta).y - world.getLevelData().getHorizonHeight(world);
+        double d = Objects.requireNonNull(client.player).getEyePosition(tickDelta).y - world.getLevelData().getHorizonHeight(world);
         if (d < 0.0) {
             poseStack.pushPose();
             poseStack.translate(0.0F, 12.0F, 0.0F);
             skyRendererAccess.getBottomSkyBuffer().bind();
-            skyRendererAccess.getBottomSkyBuffer().drawWithShader(poseStack.last().pose(), projectionMatrix, shaderProgram);
+            skyRendererAccess.getBottomSkyBuffer().drawWithShader(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
             VertexBuffer.unbind();
             poseStack.popPose();
         }
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
     }

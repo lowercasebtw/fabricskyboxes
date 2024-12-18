@@ -18,11 +18,11 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogParameters;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.joml.Matrix4f;
 
 import java.util.*;
 
@@ -51,15 +51,15 @@ public class SkyboxManager implements NuitApi {
             return Optional.empty();
         }
 
-        Optional<Holder.Reference<SkyboxType<? extends Skybox>>> optionalType = NuitPlatformHelper.INSTANCE.getSkyboxTypeRegistry().get(metadata.getType());
+        Optional<Holder.Reference<SkyboxType<? extends Skybox>>> optionalType = NuitPlatformHelper.INSTANCE.getSkyboxTypeRegistry().get(metadata.type());
         if (optionalType.isEmpty()) {
-            NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", resourceLocation.toString(), metadata.getType().getPath().replace('_', '-'));
+            NuitClient.getLogger().warn("Skipping skybox {} with unknown type {}", resourceLocation.toString(), metadata.type().getPath().replace('_', '-'));
             return Optional.empty();
         }
 
         Holder.Reference<SkyboxType<? extends Skybox>> type = optionalType.get();
         try {
-            return Optional.of(type.value().getCodec(metadata.getSchemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst());
+            return Optional.of(type.value().getCodec(metadata.schemaVersion()).decode(JsonOps.INSTANCE, jsonObject).getOrThrow().getFirst());
         } catch (RuntimeException e) {
             NuitClient.getLogger().warn("Skipping invalid skybox {}", resourceLocation.toString(), e);
             NuitClient.getLogger().warn(jsonObject.toString());
@@ -86,7 +86,7 @@ public class SkyboxManager implements NuitApi {
 
         if (skybox instanceof TextureRegistrar textureRegistrar) {
             textureRegistrar.getTexturesToRegister().forEach((theResourceLocation) -> {
-                Minecraft.getInstance().getTextureManager().register(theResourceLocation, new SimpleTexture(theResourceLocation));
+                Minecraft.getInstance().getTextureManager().registerAndLoad(theResourceLocation, new SimpleTexture(theResourceLocation));
                 this.preloadedTextures.add(theResourceLocation);
             });
         }
@@ -118,10 +118,11 @@ public class SkyboxManager implements NuitApi {
     }
 
     @Internal
-    public void renderSkyboxes(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void renderSkyboxes(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, float tickDelta, Camera camera, MultiBufferSource.BufferSource bufferSource, FogParameters fogParameters, Runnable fogCallback) {
         for (Skybox skybox : this.activeSkyboxes) {
             this.currentSkybox = skybox;
-            skybox.render(skyRendererAccessor, poseStack, projectionMatrix, tickDelta, camera, fogParameters, fogCallback);
+            skybox.render(skyRendererAccessor, poseStack, tickDelta, camera, bufferSource, fogParameters, fogCallback);
+            bufferSource.endBatch();
         }
     }
 

@@ -5,6 +5,7 @@ import io.github.amerebagatelle.mods.nuit.mixin.SkyRendererAccessor;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogParameters;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.joml.Matrix4f;
 
 public interface Skybox {
@@ -12,7 +13,7 @@ public interface Skybox {
         return 0;
     }
 
-    void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters thickFog, Runnable fogCallback);
+    void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, float tickDelta, Camera camera, MultiBufferSource.BufferSource bufferSource, FogParameters thickFog, Runnable fogCallback);
 
     void tick(ClientLevel clientLevel);
 

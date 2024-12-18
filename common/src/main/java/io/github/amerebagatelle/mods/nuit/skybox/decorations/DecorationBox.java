@@ -1,7 +1,9 @@
 package io.github.amerebagatelle.mods.nuit.skybox.decorations;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.amerebagatelle.mods.nuit.components.Blend;
@@ -14,8 +16,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.FogParameters;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
+
+import java.util.Objects;
 
 public class DecorationBox extends AbstractSkybox {
     public static Codec<DecorationBox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -47,17 +54,16 @@ public class DecorationBox extends AbstractSkybox {
     }
 
     @Override
-    public void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, Matrix4f projectionMatrix, float tickDelta, Camera camera, FogParameters fogParameters, Runnable fogCallback) {
+    public void render(SkyRendererAccessor skyRendererAccessor, PoseStack poseStack, float tickDelta, Camera camera, MultiBufferSource.BufferSource bufferSource, FogParameters fogParameters, Runnable fogCallback) {
         RenderSystem.enableBlend();
-        var world = Minecraft.getInstance().level;
-        assert world != null;
+        ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
 
         // Custom Blender
         this.blend.applyBlendFunc(this.alpha);
         poseStack.pushPose();
 
         // static
-        this.properties.getRotation().rotateStack(poseStack, world);
+        this.properties.rotation().rotateStack(poseStack, world);
 
         // Iris Compat
         //poseStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(IrisCompat.getSunPathRotation()));
@@ -68,17 +74,19 @@ public class DecorationBox extends AbstractSkybox {
 
         // Sun
         if (this.sunEnabled) {
-            this.renderSun(matrix4f2);
+            this.renderSun(matrix4f2, bufferSource);
         }
 
         // Moon
         if (this.moonEnabled) {
-            this.renderMoon(matrix4f2);
+            this.renderMoon(matrix4f2, bufferSource);
         }
+
+        bufferSource.endBatch();
 
         // Stars
         if (this.starsEnabled) {
-            this.renderStars(skyRendererAccessor, tickDelta, poseStack, projectionMatrix);
+            this.renderStars(skyRendererAccessor, tickDelta, poseStack);
         }
 
         poseStack.popPose();
@@ -88,46 +96,47 @@ public class DecorationBox extends AbstractSkybox {
         RenderSystem.defaultBlendFunc();
     }
 
-    public void renderSun(Matrix4f matrix4f) {
+    public void renderSun(Matrix4f matrix4f, MultiBufferSource.BufferSource bufferSource) {
         RenderSystem.setShaderTexture(0, this.sunTexture);
-        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.addVertex(matrix4f, -30.0F, 100.0F, -30.0F).setUv(0.0F, 0.0F);
-        bufferBuilder.addVertex(matrix4f, 30.0F, 100.0F, -30.0F).setUv(1.0F, 0.0F);
-        bufferBuilder.addVertex(matrix4f, 30.0F, 100.0F, 30.0F).setUv(1.0F, 1.0F);
-        bufferBuilder.addVertex(matrix4f, -30.0F, 100.0F, 30.0F).setUv(0.0F, 1.0F);
-        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.celestial(SkyRendererAccessor.getSun()));
+        vertexConsumer.addVertex(matrix4f, -30.0F, 100.0F, -30.0F).setUv(0.0F, 0.0F);
+        vertexConsumer.addVertex(matrix4f, 30.0F, 100.0F, -30.0F).setUv(1.0F, 0.0F);
+        vertexConsumer.addVertex(matrix4f, 30.0F, 100.0F, 30.0F).setUv(1.0F, 1.0F);
+        vertexConsumer.addVertex(matrix4f, -30.0F, 100.0F, 30.0F).setUv(0.0F, 1.0F);
     }
 
-    public void renderMoon(Matrix4f matrix4f) {
+    public void renderMoon(Matrix4f matrix4f, MultiBufferSource.BufferSource bufferSource) {
         RenderSystem.setShaderTexture(0, this.moonTexture);
-        int moonPhase = Minecraft.getInstance().level.getMoonPhase();
+        int moonPhase = Objects.requireNonNull(Minecraft.getInstance().level).getMoonPhase();
         int xCoord = moonPhase % 4;
         int yCoord = moonPhase / 4 % 2;
         float startX = xCoord / 4.0F;
         float startY = yCoord / 2.0F;
         float endX = (xCoord + 1) / 4.0F;
         float endY = (yCoord + 1) / 2.0F;
-        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.addVertex(matrix4f, -20.0F, -100.0F, 20.0F).setUv(endX, endY);
-        bufferBuilder.addVertex(matrix4f, 20.0F, -100.0F, 20.0F).setUv(startX, endY);
-        bufferBuilder.addVertex(matrix4f, 20.0F, -100.0F, -20.0F).setUv(startX, startY);
-        bufferBuilder.addVertex(matrix4f, -20.0F, -100.0F, -20.0F).setUv(endX, startY);
-        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.celestial(SkyRendererAccessor.getMoonPhases()));
+        vertexConsumer.addVertex(matrix4f, -20.0F, -100.0F, 20.0F).setUv(endX, endY);
+        vertexConsumer.addVertex(matrix4f, 20.0F, -100.0F, 20.0F).setUv(startX, endY);
+        vertexConsumer.addVertex(matrix4f, 20.0F, -100.0F, -20.0F).setUv(startX, startY);
+        vertexConsumer.addVertex(matrix4f, -20.0F, -100.0F, -20.0F).setUv(endX, startY);
     }
 
-    public void renderStars(SkyRendererAccessor skyRendererAccessor, float tickDelta, PoseStack poseStack, Matrix4f projectionMatrix) {
-        ClientLevel world = Minecraft.getInstance().level;
+    public void renderStars(SkyRendererAccessor skyRendererAccessor, float tickDelta, PoseStack poseStack) {
+        ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
         float i = 1.0F - world.getRainLevel(tickDelta);
         float brightness = world.getStarBrightness(tickDelta) * i;
         if (brightness > 0.0F) {
+            Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
+            matrix4fStack.pushMatrix();
+            matrix4fStack.mul(poseStack.last().pose());
             RenderSystem.setShaderColor(brightness, brightness, brightness, brightness);
             RenderSystem.setShaderFog(FogParameters.NO_FOG);
             skyRendererAccessor.getStarsBuffer().bind();
-            skyRendererAccessor.getStarsBuffer().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
+            skyRendererAccessor.getStarsBuffer().drawWithShader(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
             VertexBuffer.unbind();
+            matrix4fStack.popMatrix();
         }
     }
-
 
     public ResourceLocation getSunTexture() {
         return this.sunTexture;
